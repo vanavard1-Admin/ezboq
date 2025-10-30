@@ -1,0 +1,29 @@
+# robots.txt for EZBOQ.COM
+# https://ezboq.com/robots.txt
+
+# Allow all search engines
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://ezboq.com/sitemap.xml
+
+# Crawl-delay (optional, helps prevent overload)
+Crawl-delay: 1
+
+# Disallow admin/private paths (if any in the future)
+# Disallow: /admin/
+# Disallow: /api/private/
+
+# Allow specific important pages
+Allow: /boq
+Allow: /quotation
+Allow: /invoice
+Allow: /receipt
+Allow: /customers
+Allow: /partners
+Allow: /reports
+Allow: /membership
+
+# Note: Login/signup pages are allowed for indexing
+# but users need to be logged in to access content
