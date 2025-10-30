@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuclear Mode Deployment Checker</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+        }
+        .pending {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .metric.fast {
+            background: #d4edda;
+        }
+        .metric.slow {
+            background: #f8d7da;
+        }
+        .code {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Nuclear Mode Deployment Checker</h1>
+        
+        <div class="status pending" id="status">
+            ⏳ กำลังรอการ deploy server... กรุณา deploy ก่อนทดสอบ
+        </div>
+
+        <div class="step">
+            <h3>📋 ขั้นตอนการ Deploy:</h3>
+            <ol>
+                <li>เปิด <a href="https://supabase.com/dashboard" target="_blank">Supabase Dashboard</a></li>
+                <li>ไปที่ <strong>Edge Functions</strong> → <strong>server</strong></li>
+                <li>กด <strong>Deploy</strong> หรือ <strong>Redeploy</strong></li>
+                <li>รอ 10-30 วินาที</li>
+                <li>กด "ทดสอบ Nuclear Mode" ด้านล่าง</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <button onclick="testNuclearMode()" id="testBtn">🧪 ทดสอบ Nuclear Mode</button>
+            <button onclick="testAllEndpoints()" id="testAllBtn">🔍 ทดสอบทุก Endpoints</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin.includes('localhost') 
+            ? 'http://localhost:54321/functions/v1/make-server-6e95bca3'
+            : 'REPLACE_WITH_YOUR_SUPABASE_URL/functions/v1/make-server-6e95bca3';
+
+        async function testEndpoint(name, path) {
+            const startTime = performance.now();
+            try {
+                const response = await fetch(`${API_BASE}${path}`, {
+                    headers: {
+                        'Authorization': 'Bearer YOUR_ANON_KEY',
+                    }
+                });
+                const duration = Math.round(performance.now() - startTime);
+                const data = await response.json();
+                
+                // Check headers
+                const cache = response.headers.get('X-Cache');
+                const perfMode = response.headers.get('X-Performance-Mode');
+                
+                return {
+                    name,
+                    duration,
+                    status: response.status,
+                    cache,
+                    perfMode,
+                    success: duration < 50, // Less than 50ms is good
+                    isNuclear: perfMode === 'cache-only'
+                };
+            } catch (error) {
+                return {
+                    name,
+                    duration: Math.round(performance.now() - startTime),
+                    error: error.message,
+                    success: false
+                };
+            }
+        }
+
+        async function testNuclearMode() {
+            const btn = document.getElementById('testBtn');
+            const status = document.getElementById('status');
+            const results = document.getElementById('results');
+            
+            btn.disabled = true;
+            status.className = 'status pending';
+            status.textContent = '⏳ กำลังทดสอบ...';
+            results.innerHTML = '';
+
+            // Test partners endpoint
+            const result = await testEndpoint('Partners', '/partners');
+            
+            const html = `
+                <div class="result">
+<strong>📊 ผลการทดสอบ:</strong>
+
+Endpoint: GET /partners
+Duration: ${result.duration}ms
+Status: ${result.status || 'Error'}
+X-Cache: ${result.cache || 'N/A'}
+X-Performance-Mode: ${result.perfMode || 'N/A'}
+
+${result.isNuclear ? '✅ Nuclear Mode ACTIVE!' : '❌ Nuclear Mode NOT ACTIVE'}
+${result.success ? '✅ Speed: EXCELLENT (<50ms)' : '⚠️ Speed: Still slow (>50ms)'}
+
+${result.error ? `Error: ${result.error}` : ''}
+                </div>
+            `;
+            
+            results.innerHTML = html;
+
+            if (result.isNuclear && result.success) {
+                status.className = 'status success';
+                status.innerHTML = '✅ <strong>สำเร็จ!</strong> Nuclear Mode ทำงานแล้ว - เร็ว ' + result.duration + 'ms';
+            } else if (result.duration < 50) {
+                status.className = 'status success';
+                status.innerHTML = '⚡ เร็วแล้ว (' + result.duration + 'ms) แต่อาจยังไม่ใช่ Nuclear Mode';
+            } else {
+                status.className = 'status error';
+                status.innerHTML = '❌ ยังช้าอยู่ (' + result.duration + 'ms) - กรุณา deploy server อีกครั้ง';
+            }
+
+            btn.disabled = false;
+        }
+
+        async function testAllEndpoints() {
+            const btn = document.getElementById('testAllBtn');
+            const status = document.getElementById('status');
+            const results = document.getElementById('results');
+            
+            btn.disabled = true;
+            status.className = 'status pending';
+            status.textContent = '⏳ กำลังทดสอบทุก endpoints...';
+            results.innerHTML = '<div class="result">กำลังทดสอบ...</div>';
+
+            const endpoints = [
+                { name: 'Customers', path: '/customers' },
+                { name: 'Documents', path: '/documents' },
+                { name: 'Partners', path: '/partners' },
+                { name: 'Analytics', path: '/analytics?range=month' },
+            ];
+
+            const testResults = [];
+            for (const ep of endpoints) {
+                const result = await testEndpoint(ep.name, ep.path);
+                testResults.push(result);
+            }
+
+            // Calculate stats
+            const avgDuration = Math.round(
+                testResults.reduce((sum, r) => sum + r.duration, 0) / testResults.length
+            );
+            const allFast = testResults.every(r => r.success);
+            const allNuclear = testResults.every(r => r.isNuclear);
+
+            let html = '<div class="result"><strong>📊 ผลการทดสอบทั้งหมด:</strong>\n\n';
+            
+            testResults.forEach(r => {
+                const speedClass = r.success ? 'fast' : 'slow';
+                html += `<div class="metric ${speedClass}">
+                    <span>${r.name}</span>
+                    <span>${r.duration}ms ${r.isNuclear ? '⚡' : ''}</span>
+                </div>`;
+            });
+
+            html += `\n<strong>สรุป:</strong>
+Average: ${avgDuration}ms
+All Fast: ${allFast ? '✅ Yes' : '❌ No'}
+Nuclear Mode: ${allNuclear ? '✅ Active' : '❌ Not Active'}
+</div>`;
+
+            results.innerHTML = html;
+
+            if (allNuclear && allFast) {
+                status.className = 'status success';
+                status.innerHTML = '✅ <strong>Perfect!</strong> ทุก endpoints ใช้ Nuclear Mode และเร็วมาก!';
+            } else if (allFast) {
+                status.className = 'status success';
+                status.innerHTML = '⚡ ทุก endpoints เร็วแล้ว (avg: ' + avgDuration + 'ms)';
+            } else {
+                status.className = 'status error';
+                status.innerHTML = '❌ ยังมี endpoints ที่ช้า (avg: ' + avgDuration + 'ms) - ต้อง deploy!';
+            }
+
+            btn.disabled = false;
+        }
+
+        // Auto-detect API URL
+        window.addEventListener('load', () => {
+            // Try to get from current page
+            const currentUrl = window.location.origin;
+            console.log('Current URL:', currentUrl);
+            
+            // Show instructions
+            if (API_BASE.includes('REPLACE')) {
+                alert('กรุณาแก้ไข API_BASE ในไฟล์ HTML ให้ตรงกับ Supabase URL ของคุณ\n\nหรือรันจาก localhost ด้วย Supabase local development');
+            }
+        });
+    </script>
+</body>
+</html>
