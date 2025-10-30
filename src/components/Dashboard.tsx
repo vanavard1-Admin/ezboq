@@ -1,5 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { api } from '../utils/api';
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
@@ -60,6 +59,7 @@ import {
   RadialBar,
 } from "recharts";
 import { UserProfile, Membership } from "../types/boq";
+import { api } from "../utils/api";
 import { isDemoMode } from "../utils/demoStorage";
 import { toast } from "sonner@2.0.3";
 
@@ -187,86 +187,34 @@ export function Dashboard({
       const response = await api.get(`/profile/${user.id}`);
 
       if (response.ok) {
-        try {
-          const data = await response.json();
-          console.log('✅ User profile loaded:', data);
-          setProfile(data.profile);
-          setMembership(data.membership);
-        } catch (jsonError) {
-          console.error('❌ Failed to parse profile JSON:', jsonError);
-          // ✅ FIX: Try localStorage first before using fallback
-          const localStorageKey = `boq_profile_${user.id}`;
-          const localMembershipKey = `boq_membership_${user.id}`;
-          const storedProfile = localStorage.getItem(localStorageKey);
-          const storedMembership = localStorage.getItem(localMembershipKey);
-          
-          if (storedProfile) {
-            setProfile(JSON.parse(storedProfile));
-            console.log('✅ Loaded profile from localStorage (parse error fallback)');
-          } else {
-            // Last resort: use minimal default
-            setProfile({
-              name: user.user_metadata?.name || '',
-              email: user.email || '',
-              companyName: '',
-              address: '',
-              phone: '',
-              taxId: '',
-              wastagePercentage: 3,
-              operationPercentage: 5,
-            });
-          }
-          
-          if (storedMembership) {
-            setMembership(JSON.parse(storedMembership));
-            console.log('✅ Loaded membership from localStorage (parse error fallback)');
-          } else {
-            // ✅ FIX: Use 'tier' instead of 'plan'
-            setMembership({ tier: 'free', expiresAt: null, features: [] });
-          }
-        }
+        const data = await response.json();
+        console.log('✅ User profile loaded:', data);
+        setProfile(data.profile);
+        setMembership(data.membership);
       } else {
-        console.warn('⚠️ Profile API failed, using localStorage fallback');
-        // ✅ FIX: Try localStorage first before using fallback
-        const localStorageKey = `boq_profile_${user.id}`;
-        const localMembershipKey = `boq_membership_${user.id}`;
-        const storedProfile = localStorage.getItem(localStorageKey);
-        const storedMembership = localStorage.getItem(localMembershipKey);
-        
-        if (storedProfile) {
-          setProfile(JSON.parse(storedProfile));
-          console.log('✅ Loaded profile from localStorage (API failed)');
-        } else {
-          // Last resort: set minimal profile
-          setProfile({
-            name: user.user_metadata?.name || '',
-            email: user.email || '',
-            companyName: '',
-            address: '',
-            phone: '',
-            taxId: '',
-            wastagePercentage: 3,
-            operationPercentage: 5,
-            errorPercentage: 2,
-            profitPercentage: 10,
-            bankName: '',
-            bankAccountNumber: '',
-            bankAccountName: '',
-            promptpayQR: '',
-          });
-        }
-        
-        if (storedMembership) {
-          setMembership(JSON.parse(storedMembership));
-          console.log('✅ Loaded membership from localStorage (API failed)');
-        } else {
-          // ✅ FIX: Use 'tier' instead of 'plan'
-          setMembership({
-            tier: 'free',
-            expiresAt: null,
-            features: [],
-          });
-        }
+        console.warn('⚠️ Profile API failed, using default values');
+        // Set minimal profile from user object
+        setProfile({
+          name: user.user_metadata?.name || user.email?.split('@')[0] || 'ผู้ใช้',
+          email: user.email || '',
+          companyName: '',
+          address: '',
+          phone: '',
+          taxId: '',
+          wastagePercentage: 3,
+          operationPercentage: 5,
+          errorPercentage: 2,
+          profitPercentage: 10,
+          bankName: '',
+          bankAccountNumber: '',
+          bankAccountName: '',
+          promptpayQR: '',
+        });
+        setMembership({
+          tier: 'free',
+          expiresAt: null,
+          features: [],
+        });
       }
     } catch (error) {
       console.error("Failed to load user data:", error);
@@ -283,28 +231,18 @@ export function Dashboard({
       });
       
       if (analyticsResponse?.ok) {
-        try {
-          const analytics = await analyticsResponse.json();
-          
-          // Use analytics data for stats (consistent with Reports page)
-          const newStats = {
-            totalProjects: analytics.totalProjects || 0,
-            totalRevenue: analytics.totalRevenue || 0,
-            totalProfit: analytics.netProfitAfterTax || analytics.grossProfit || 0,
-            avgProjectValue: analytics.averageProjectValue || 0,
-          };
-          
-          console.log('✅ Dashboard stats loaded:', newStats.totalProjects > 0 ? 'with data' : 'empty (new user or cache warming up)');
-          setStats(newStats);
-        } catch (jsonError) {
-          console.error('❌ Failed to parse analytics JSON:', jsonError);
-          setStats({
-            totalProjects: 0,
-            totalRevenue: 0,
-            totalProfit: 0,
-            avgProjectValue: 0,
-          });
-        }
+        const analytics = await analyticsResponse.json();
+        
+        // Use analytics data for stats (consistent with Reports page)
+        const newStats = {
+          totalProjects: analytics.totalProjects || 0,
+          totalRevenue: analytics.totalRevenue || 0,
+          totalProfit: analytics.netProfitAfterTax || analytics.grossProfit || 0,
+          avgProjectValue: analytics.averageProjectValue || 0,
+        };
+        
+        console.log('✅ Dashboard stats loaded:', newStats.totalProjects > 0 ? 'with data' : 'empty (new user or cache warming up)');
+        setStats(newStats);
       } else {
         console.log('⚡ Analytics loading... (cache warmup in progress or new user)');
         // Set empty stats gracefully (normal for new users or during warmup)
@@ -337,61 +275,49 @@ export function Dashboard({
       });
       
       if (response?.ok) {
-        try {
-          const data = await response.json();
-          console.log('✅ Analytics charts loaded:', data.revenueByMonth?.length > 0 ? 'with data' : 'empty (new user or cache warming up)');
+        const data = await response.json();
+        console.log('✅ Analytics charts loaded:', data.revenueByMonth?.length > 0 ? 'with data' : 'empty (new user or cache warming up)');
+        
+        // Calculate trends from month-over-month data
+        const revenueByMonth = data.revenueByMonth || [];
+        let projectTrend = null;
+        let revenueTrend = null;
+        let profitTrend = null;
+        let avgProjectTrend = null;
+        
+        if (revenueByMonth.length >= 2) {
+          const currentMonth = revenueByMonth[revenueByMonth.length - 1];
+          const previousMonth = revenueByMonth[revenueByMonth.length - 2];
           
-          // Calculate trends from month-over-month data
-          const revenueByMonth = data.revenueByMonth || [];
-          let projectTrend = null;
-          let revenueTrend = null;
-          let profitTrend = null;
-          let avgProjectTrend = null;
-          
-          if (revenueByMonth.length >= 2) {
-            const currentMonth = revenueByMonth[revenueByMonth.length - 1];
-            const previousMonth = revenueByMonth[revenueByMonth.length - 2];
-            
-            // Calculate percentage changes (only if previous month had data)
-            if (previousMonth.projects > 0 && currentMonth.projects !== previousMonth.projects) {
-              projectTrend = ((currentMonth.projects - previousMonth.projects) / previousMonth.projects) * 100;
-            }
-            if (previousMonth.revenue > 0 && currentMonth.revenue !== previousMonth.revenue) {
-              revenueTrend = ((currentMonth.revenue - previousMonth.revenue) / previousMonth.revenue) * 100;
-            }
-            if (previousMonth.netIncome > 0 && currentMonth.netIncome !== previousMonth.netIncome) {
-              profitTrend = ((currentMonth.netIncome - previousMonth.netIncome) / previousMonth.netIncome) * 100;
-            }
-            
-            // Calculate avg project value trend
-            const currentAvg = currentMonth.projects > 0 ? currentMonth.revenue / currentMonth.projects : 0;
-            const previousAvg = previousMonth.projects > 0 ? previousMonth.revenue / previousMonth.projects : 0;
-            if (previousAvg > 0 && currentAvg !== previousAvg) {
-              avgProjectTrend = ((currentAvg - previousAvg) / previousAvg) * 100;
-            }
+          // Calculate percentage changes (only if previous month had data)
+          if (previousMonth.projects > 0 && currentMonth.projects !== previousMonth.projects) {
+            projectTrend = ((currentMonth.projects - previousMonth.projects) / previousMonth.projects) * 100;
+          }
+          if (previousMonth.revenue > 0 && currentMonth.revenue !== previousMonth.revenue) {
+            revenueTrend = ((currentMonth.revenue - previousMonth.revenue) / previousMonth.revenue) * 100;
+          }
+          if (previousMonth.netIncome > 0 && currentMonth.netIncome !== previousMonth.netIncome) {
+            profitTrend = ((currentMonth.netIncome - previousMonth.netIncome) / previousMonth.netIncome) * 100;
           }
           
-          // Ensure the data has required fields with safe defaults
-          setAnalyticsData({
-            monthlyRevenue: revenueByMonth,
-            projectTypes: data.projectTypes || [],
-            projectTrend,
-            revenueTrend,
-            profitTrend,
-            avgProjectTrend,
-            ...data
-          });
-        } catch (jsonError) {
-          console.error('❌ Failed to parse analytics charts JSON:', jsonError);
-          setAnalyticsData({
-            monthlyRevenue: [],
-            projectTypes: [],
-            projectTrend: null,
-            revenueTrend: null,
-            profitTrend: null,
-            avgProjectTrend: null,
-          });
+          // Calculate avg project value trend
+          const currentAvg = currentMonth.projects > 0 ? currentMonth.revenue / currentMonth.projects : 0;
+          const previousAvg = previousMonth.projects > 0 ? previousMonth.revenue / previousMonth.projects : 0;
+          if (previousAvg > 0 && currentAvg !== previousAvg) {
+            avgProjectTrend = ((currentAvg - previousAvg) / previousAvg) * 100;
+          }
         }
+        
+        // Ensure the data has required fields with safe defaults
+        setAnalyticsData({
+          monthlyRevenue: revenueByMonth,
+          projectTypes: data.projectTypes || [],
+          projectTrend,
+          revenueTrend,
+          profitTrend,
+          avgProjectTrend,
+          ...data
+        });
       } else {
         console.log('⚡ Analytics charts loading... (cache warmup in progress or new user)');
         // Set empty data structure gracefully (normal for new users or during warmup)
@@ -418,106 +344,23 @@ export function Dashboard({
     }
   };
 
-  const getInitials = useCallback((name: string) => {
+  const getInitials = (name: string) => {
     if (!name) return "U";
     const parts = name.split(" ");
     if (parts.length >= 2) {
       return (parts[0][0] + parts[1][0]).toUpperCase();
     }
     return name.substring(0, 2).toUpperCase();
-  }, []);
+  };
 
-  const formatCurrency = useCallback((amount: number) => {
+  const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('th-TH', {
       style: 'currency',
       currency: 'THB',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
-  }, []);
-
-  // Memoize profit margin calculation
-  const profitMargin = useMemo(() => {
-    return stats.totalRevenue > 0 
-      ? ((stats.totalProfit / stats.totalRevenue) * 100).toFixed(1)
-      : 0;
-  }, [stats.totalRevenue, stats.totalProfit]);
-
-  // Memoize stats cards data
-  const statsCards = useMemo(() => [
-    {
-      icon: Briefcase,
-      label: "โครงการทั้งหมด",
-      value: stats.totalProjects.toLocaleString(),
-      subtitle: "โครงการที่ทำ",
-      trendValue: analyticsData?.projectTrend,
-      gradient: "from-blue-500 to-cyan-400",
-      delay: 0.5,
-    },
-    {
-      icon: CircleDollarSign,
-      label: "รายได้รวม",
-      value: formatCurrency(stats.totalRevenue),
-      subtitle: "มูลค่ารวมทั้งหมด",
-      trendValue: analyticsData?.revenueTrend,
-      gradient: "from-green-500 to-emerald-400",
-      delay: 0.6,
-    },
-    {
-      icon: TrendingUpIcon,
-      label: "กำไรสุทธิ",
-      value: formatCurrency(stats.totalProfit),
-      subtitle: `${profitMargin}% Margin`,
-      trendValue: analyticsData?.profitTrend,
-      gradient: "from-purple-500 to-pink-400",
-      delay: 0.7,
-    },
-    {
-      icon: Target,
-      label: "มูลค่าเฉลี่ย",
-      value: formatCurrency(stats.avgProjectValue),
-      subtitle: "ต่อโครงการ",
-      trendValue: analyticsData?.avgProjectTrend,
-      gradient: "from-orange-500 to-red-400",
-      delay: 0.8,
-    },
-  ], [stats, analyticsData, formatCurrency, profitMargin]);
-
-  // Memoize quick actions data
-  const quickActions = useMemo(() => [
-    { 
-      icon: Plus, 
-      label: "สร้าง BOQ", 
-      subtitle: "เริ่มโครงการใหม่",
-      gradient: "from-blue-600 to-cyan-500", 
-      onClick: onStartBOQ,
-      glow: "shadow-blue-500/50",
-    },
-    { 
-      icon: UserPlus, 
-      label: "ลูกค้า", 
-      subtitle: "จัดการข้อมูล",
-      gradient: "from-green-600 to-emerald-500", 
-      onClick: onOpenCustomers,
-      glow: "shadow-green-500/50",
-    },
-    { 
-      icon: Handshake, 
-      label: "พาร์ทเนอร์", 
-      subtitle: "ผู้ร่วมงาน",
-      gradient: "from-orange-600 to-red-500", 
-      onClick: onOpenPartners,
-      glow: "shadow-orange-500/50",
-    },
-    { 
-      icon: FileText, 
-      label: "ประวัติ", 
-      subtitle: "เอกสารทั้งหมด",
-      gradient: "from-purple-600 to-pink-500", 
-      onClick: onOpenHistory,
-      glow: "shadow-purple-500/50",
-    },
-  ], [onStartBOQ, onOpenCustomers, onOpenPartners, onOpenHistory]);
+  };
 
   if (loading) {
     return (
@@ -547,9 +390,14 @@ export function Dashboard({
 
   const COLORS = ['#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6'];
 
+  // Calculate profit margin percentage
+  const profitMargin = stats.totalRevenue > 0 
+    ? ((stats.totalProfit / stats.totalRevenue) * 100).toFixed(1)
+    : 0;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 relative overflow-hidden">
-      {/* Animated Background Elements - ⚡ GPU Accelerated */}
+      {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{
@@ -561,7 +409,6 @@ export function Dashboard({
             repeat: Infinity,
             ease: "linear"
           }}
-          style={{ willChange: 'transform' }}
           className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"
         />
         <motion.div
@@ -574,7 +421,6 @@ export function Dashboard({
             repeat: Infinity,
             ease: "linear"
           }}
-          style={{ willChange: 'transform' }}
           className="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl"
         />
       </div>
@@ -670,7 +516,44 @@ export function Dashboard({
 
           {/* Big Stats Cards - Hero Style */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            {statsCards.map((stat, index) => {
+            {[
+              {
+                icon: Briefcase,
+                label: "โครงการทั้งหมด",
+                value: stats.totalProjects.toLocaleString(),
+                subtitle: "โครงการที่ทำ",
+                trendValue: analyticsData?.projectTrend,
+                gradient: "from-blue-500 to-cyan-400",
+                delay: 0.5,
+              },
+              {
+                icon: CircleDollarSign,
+                label: "รายได้รวม",
+                value: formatCurrency(stats.totalRevenue),
+                subtitle: "มูลค่ารวมทั้งหมด",
+                trendValue: analyticsData?.revenueTrend,
+                gradient: "from-green-500 to-emerald-400",
+                delay: 0.6,
+              },
+              {
+                icon: TrendingUpIcon,
+                label: "กำไรสุทธิ",
+                value: formatCurrency(stats.totalProfit),
+                subtitle: `${profitMargin}% Margin`,
+                trendValue: analyticsData?.profitTrend,
+                gradient: "from-purple-500 to-pink-400",
+                delay: 0.7,
+              },
+              {
+                icon: Target,
+                label: "มูลค่าเฉลี่ย",
+                value: formatCurrency(stats.avgProjectValue),
+                subtitle: "ต่อโครงการ",
+                trendValue: analyticsData?.avgProjectTrend,
+                gradient: "from-orange-500 to-red-400",
+                delay: 0.8,
+              },
+            ].map((stat, index) => {
               // Calculate trend display
               const trend = stat.trendValue;
               const hasTrend = trend !== null && trend !== undefined;
@@ -749,7 +632,40 @@ export function Dashboard({
             Quick Actions
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {quickActions.map((action, i) => (
+            {[
+              { 
+                icon: Plus, 
+                label: "สร้าง BOQ", 
+                subtitle: "เริ่มโครงการใหม่",
+                gradient: "from-blue-600 to-cyan-500", 
+                onClick: onStartBOQ,
+                glow: "shadow-blue-500/50",
+              },
+              { 
+                icon: UserPlus, 
+                label: "ลูกค้า", 
+                subtitle: "จัดการข้อมูล",
+                gradient: "from-green-600 to-emerald-500", 
+                onClick: onOpenCustomers,
+                glow: "shadow-green-500/50",
+              },
+              { 
+                icon: Handshake, 
+                label: "พาร์ทเนอร์", 
+                subtitle: "ผู้ร่วมงาน",
+                gradient: "from-orange-600 to-red-500", 
+                onClick: onOpenPartners,
+                glow: "shadow-orange-500/50",
+              },
+              { 
+                icon: FileText, 
+                label: "ประวัติ", 
+                subtitle: "เอกสารทั้งหมด",
+                gradient: "from-purple-600 to-pink-500", 
+                onClick: onOpenHistory,
+                glow: "shadow-purple-500/50",
+              },
+            ].map((action, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, scale: 0.8 }}

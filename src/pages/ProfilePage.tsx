@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
@@ -235,275 +235,93 @@ export function ProfilePage({ onBack, onNavigateToMembership, user }: ProfilePag
     },
   });
 
-  const loadAllData = useCallback(async () => {
+  useEffect(() => {
+    loadAllData();
+  }, [user]);
+
+  const loadAllData = async () => {
     if (!user) {
       console.log('⚠️ No user found, skipping data load');
       return;
     }
 
-    // ✅ Get user ID with fallback
-    const userId = user.id || user.email || 'demo-user-default';
-    
-    if (!user.id) {
-      console.warn('⚠️ User ID not found, using fallback:', userId);
-    }
-
     try {
-      console.log('🔄 Loading all data for user:', userId);
+      console.log('🔄 Loading all data for user:', user.id);
       setLoading(true);
       
-      // ✅ Create default Free Plan membership in case API fails
-      const defaultMembership: Membership = {
-        userId: userId,
-        tier: 'free', // ✅ FIX: Use 'tier' not 'plan'
-        freeBoqUsed: false,
-        autoRenew: false,
-        paymentHistory: [],
-      };
-      
-      // 🔥 EMERGENCY FALLBACK: Use localStorage if API unavailable
-      // This allows page to work even if server hasn't restarted
-      const localStorageKey = `boq_profile_${userId}`;
-      const localMembershipKey = `boq_membership_${userId}`;
-      const localTeamKey = `boq_team_${userId}`;
-      
-      // ⚡ Try to load from API first, with timeout
-      let profileResponse = null;
-      let teamResponse = null;
-      
-      try {
-        const apiTimeout = 3000; // 3 second timeout
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), apiTimeout);
+      // ⚡ Load profile and team members in parallel for better performance
+      const [profileResponse, teamResponse] = await Promise.all([
+        api.get(`/profile/${user.id}`).catch(err => {
+          console.error('Profile load failed:', err);
+          return null;
+        }),
+        api.get(`/team/members/${user.id}`).catch(err => {
+          console.error('Team members load failed:', err);
+          return null;
+        })
+      ]);
+
+      if (profileResponse?.ok) {
+        const data = await profileResponse.json();
+        setProfile(data.profile);
+        setMembership(data.membership);
         
-        [profileResponse, teamResponse] = await Promise.race([
-          Promise.all([
-            api.get(`/profile/${userId}`).catch(err => {
-              console.warn('Profile API failed, will use fallback:', err.message);
-              return null;
-            }),
-            api.get(`/team/members/${userId}`).catch(err => {
-              console.warn('Team API failed, will use fallback:', err.message);
-              return null;
-            })
-          ]),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('API timeout')), apiTimeout)
-          )
-        ]) as [any, any];
-        
-        clearTimeout(timeoutId);
-      } catch (timeoutError) {
-        console.warn('⚠️ API timeout, using localStorage fallback');
-        profileResponse = null;
-        teamResponse = null;
+        // Populate form with enhanced data
+        if (data.profile) {
+          setFormData({
+            name: data.profile.name || '',
+            position: data.profile.position || '',
+            department: data.profile.department || '',
+            proposerType: data.profile.proposerType || 'general_contractor',
+            proposerName: data.profile.proposerName || '',
+            phone: data.profile.phone || '',
+            mobilePhone: data.profile.mobilePhone || '',
+            lineId: data.profile.lineId || '',
+            address: data.profile.address || '',
+            company: {
+              name: data.profile.companyName || '',
+              nameEn: data.profile.companyNameEn || '',
+              registrationNumber: data.profile.registrationNumber || '',
+              address: data.profile.address || '',
+              addressEn: data.profile.addressEn || '',
+              taxId: data.profile.taxId || '',
+              phone: data.profile.phone || '',
+              fax: data.profile.fax || '',
+              email: data.profile.email || user.email || '',
+              website: data.profile.website || '',
+              businessType: data.profile.businessType || '',
+              establishedYear: data.profile.establishedYear || '',
+              registeredCapital: data.profile.registeredCapital || '',
+              numberOfEmployees: data.profile.numberOfEmployees || '',
+              ceoName: data.profile.ceoName || '',
+              contactPerson: data.profile.contactPerson || '',
+              contactPosition: data.profile.contactPosition || '',
+              contactPhone: data.profile.contactPhone || '',
+              contactEmail: data.profile.contactEmail || '',
+              billingAddress: data.profile.billingAddress || '',
+              shippingAddress: data.profile.shippingAddress || '',
+              siteAddress: data.profile.siteAddress || '',
+            },
+          });
+        }
       }
 
-      // ✅ Handle profile response with localStorage fallback
-      let profileData = null;
-      let membershipData = null;
-      
-      if (profileResponse) {
-        try {
-          let data;
-          
-          // Check if it's a Response object or already parsed
-          if (typeof profileResponse === 'object' && 'ok' in profileResponse) {
-            // It's a Response object
-            if (profileResponse.ok) {
-              try {
-                data = await profileResponse.json();
-              } catch (jsonError: any) {
-                console.warn('⚠️ Response body consumed, loading from localStorage...');
-                // Try localStorage
-                const stored = localStorage.getItem(localStorageKey);
-                const storedMembership = localStorage.getItem(localMembershipKey);
-                if (stored) {
-                  profileData = JSON.parse(stored);
-                }
-                if (storedMembership) {
-                  membershipData = JSON.parse(storedMembership);
-                }
-                data = null; // Skip API data
-              }
-            } else {
-              // API error (404, 500, etc.)
-              console.warn(`API error ${profileResponse.status}, using localStorage fallback`);
-              const stored = localStorage.getItem(localStorageKey);
-              const storedMembership = localStorage.getItem(localMembershipKey);
-              if (stored) {
-                profileData = JSON.parse(stored);
-                console.log('✅ Loaded profile from localStorage');
-              }
-              if (storedMembership) {
-                membershipData = JSON.parse(storedMembership);
-                console.log('✅ Loaded membership from localStorage');
-              }
-              data = null;
-            }
-          } else {
-            // Already parsed data (from cache)
-            data = profileResponse;
-          }
-          
-          if (data) {
-            profileData = data.profile;
-            membershipData = data.membership;
-            
-            // Save to localStorage for future fallback
-            if (profileData) {
-              localStorage.setItem(localStorageKey, JSON.stringify(profileData));
-            }
-            if (membershipData) {
-              localStorage.setItem(localMembershipKey, JSON.stringify(membershipData));
-            }
-          }
-        } catch (error) {
-          console.error('❌ Failed to process profile response:', error);
-        }
+      if (teamResponse?.ok) {
+        const data = await teamResponse.json();
+        setTeamMembers(data.members || []);
       }
-      
-      // If no data from API or localStorage, try localStorage one more time
-      if (!profileData && !membershipData) {
-        const stored = localStorage.getItem(localStorageKey);
-        const storedMembership = localStorage.getItem(localMembershipKey);
-        if (stored) {
-          profileData = JSON.parse(stored);
-          console.log('✅ Loaded profile from localStorage (fallback)');
-        }
-        if (storedMembership) {
-          membershipData = JSON.parse(storedMembership);
-          console.log('✅ Loaded membership from localStorage (fallback)');
-        }
-      }
-      
-      // Set profile and membership (use default if still null)
-      setProfile(profileData);
-      setMembership(membershipData || defaultMembership);
-      
-      if (!membershipData) {
-        console.log('ℹ️ Using default Free Plan membership');
-        // Save default membership to localStorage
-        localStorage.setItem(localMembershipKey, JSON.stringify(defaultMembership));
-      }
-      
-      // Populate form if we have profile data
-      if (profileData) {
-        setFormData({
-          name: profileData.name || '',
-          position: profileData.position || '',
-          department: profileData.department || '',
-          proposerType: profileData.proposerType || 'general_contractor',
-          proposerName: profileData.proposerName || '',
-          phone: profileData.phone || '',
-          mobilePhone: profileData.mobilePhone || '',
-          lineId: profileData.lineId || '',
-          address: profileData.address || '',
-          company: {
-            name: profileData.companyName || '',
-            nameEn: profileData.companyNameEn || '',
-            registrationNumber: profileData.registrationNumber || '',
-            address: profileData.address || '',
-            addressEn: profileData.addressEn || '',
-            taxId: profileData.taxId || '',
-            phone: profileData.phone || '',
-            fax: profileData.fax || '',
-            email: profileData.email || user.email || '',
-            website: profileData.website || '',
-            businessType: profileData.businessType || '',
-            establishedYear: profileData.establishedYear || '',
-            registeredCapital: profileData.registeredCapital || '',
-            numberOfEmployees: profileData.numberOfEmployees || '',
-            ceoName: profileData.ceoName || '',
-            contactPerson: profileData.contactPerson || '',
-            contactPosition: profileData.contactPosition || '',
-            contactPhone: profileData.contactPhone || '',
-            contactEmail: profileData.contactEmail || '',
-            billingAddress: profileData.billingAddress || '',
-            shippingAddress: profileData.shippingAddress || '',
-            siteAddress: profileData.siteAddress || '',
-          },
-        });
-      }
-
-      // ✅ Handle team response with localStorage fallback
-      let teamMembers = [];
-      
-      if (teamResponse) {
-        try {
-          let data;
-          
-          if (typeof teamResponse === 'object' && 'ok' in teamResponse) {
-            // It's a Response object
-            if (teamResponse.ok) {
-              try {
-                data = await teamResponse.json();
-              } catch (jsonError: any) {
-                console.warn('⚠️ Team response body consumed, loading from localStorage...');
-                const stored = localStorage.getItem(localTeamKey);
-                if (stored) {
-                  teamMembers = JSON.parse(stored);
-                  console.log('✅ Loaded team from localStorage');
-                }
-                data = null;
-              }
-            } else {
-              // API error
-              console.warn(`Team API error ${teamResponse.status}, using localStorage fallback`);
-              const stored = localStorage.getItem(localTeamKey);
-              if (stored) {
-                teamMembers = JSON.parse(stored);
-              }
-              data = null;
-            }
-          } else {
-            // Already parsed data
-            data = teamResponse;
-          }
-          
-          if (data && data.members) {
-            teamMembers = data.members;
-            // Save to localStorage
-            localStorage.setItem(localTeamKey, JSON.stringify(teamMembers));
-          }
-        } catch (error) {
-          console.error('❌ Failed to process team response:', error);
-        }
-      }
-      
-      // Try localStorage if no team data yet
-      if (teamMembers.length === 0) {
-        const stored = localStorage.getItem(localTeamKey);
-        if (stored) {
-          teamMembers = JSON.parse(stored);
-          console.log('✅ Loaded team from localStorage (fallback)');
-        }
-      }
-      
-      setTeamMembers(teamMembers);
     } catch (error) {
       console.error('❌ Error loading data:', error);
       toast.error('ไม่สามารถโหลดข้อมูลได้');
     } finally {
       setLoading(false);
     }
-  }, [user]); // ✅ Dependencies: only re-create when user object changes
-
-  useEffect(() => {
-    loadAllData();
-  }, [loadAllData]); // ✅ FIX: Run when loadAllData changes (which is stable via useCallback)
+  };
 
   const handleSave = async () => {
     if (!user) {
       toast.error('ไม่พบข้อมูลผู้ใช้');
       return;
-    }
-
-    // ✅ Get user ID with fallback
-    const userId = user.id || user.email || 'demo-user-default';
-    
-    if (!user.id) {
-      console.warn('⚠️ User ID not found, using fallback:', userId);
     }
 
     try {
@@ -535,28 +353,14 @@ export function ProfilePage({ onBack, onNavigateToMembership, user }: ProfilePag
         siteAddress: formData.company.siteAddress,
       };
 
-      // 🔥 EMERGENCY: Save to localStorage first (works even if API down)
-      const localStorageKey = `boq_profile_${userId}`;
-      localStorage.setItem(localStorageKey, JSON.stringify(profileData));
-      console.log('✅ Saved profile to localStorage');
-      
-      // Try to save to API (but don't block if it fails)
-      try {
-        const response = await api.put(`/profile/${userId}`, profileData);
+      const response = await api.put(`/profile/${user.id}`, profileData);
 
-        if (response.ok) {
-          toast.success('บันทึกข้อมูลสำเร็จ!');
-          await loadAllData();
-        } else {
-          // API failed but localStorage saved
-          toast.success('บันทึกข้อมูลในเครื่องสำเร็จ! (API ไม่พร้อม)');
-          setProfile(profileData);
-        }
-      } catch (apiError) {
-        // API completely failed but localStorage saved
-        console.warn('API save failed, but localStorage saved:', apiError);
-        toast.success('บันทึกข้อมูลในเครื่องสำเร็จ!');
-        setProfile(profileData);
+      if (response.ok) {
+        toast.success('บันทึกข้อมูลสำเร็จ!');
+        await loadAllData();
+      } else {
+        const error = await response.text();
+        toast.error(`ไม่สามารถบันทึกข้อมูลได้: ${error}`);
       }
     } catch (error) {
       console.error('Failed to save profile:', error);

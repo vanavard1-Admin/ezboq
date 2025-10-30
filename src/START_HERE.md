@@ -348,44 +348,19 @@ git push
 
 ## 🐛 Troubleshooting
 
-### ⚠️ ปัญหา: API Error (401) - Invalid JWT ← **ใหม่!**
-
-**Symptoms:**
-```
-❌ API Error (401): {"code":401,"message":"Invalid JWT"}
-❌ Profile page ไม่โหลด
-❌ Dashboard แสดง error
-```
-
-**Quick Fix (30 วินาที):**
-
-```bash
-# 1. ตรวจสอบว่ามีไฟล์ .env
-cat .env
-
-# 2. ถ้าไม่มี ให้สร้าง
-cp .env.example .env
-
-# 3. RESTART dev server (สำคัญ!)
-# กด Ctrl+C แล้วรัน:
-npm run dev
-
-# 4. Refresh browser (F5)
-```
-
-**อ่านเพิ่มเติม:**
-- [QUICK_FIX_401.md](./QUICK_FIX_401.md) - วิธีแก้ไขด่วน
-- [FIX_401_JWT_ERROR.md](./FIX_401_JWT_ERROR.md) - คู่มือครบถ้วน
-- [RESTART_DEV_SERVER.md](./RESTART_DEV_SERVER.md) - วิธี restart
-
----
-
 ### ปัญหา: npm install ล้ม
 
 ```bash
 # ลบแล้วติดตั้งใหม่
 rm -rf node_modules package-lock.json
 npm install
+```
+
+### ปัญหา: Login Error
+
+```
+✅ ใช้ปุ่ม Demo Mode!
+❌ อย่าใช้ Login/Signup แบบปกติ
 ```
 
 ### ปัญหา: ไม่เห็นปุ่ม Demo Mode
@@ -410,26 +385,6 @@ localStorage.setItem('demo-user', JSON.stringify({
   user_metadata: { name: 'ผู้ใช้ทดลอง' }
 }));
 window.location.reload();
-```
-
-### ปัญหา: Vite ไม่อ่าน .env file
-
-**Symptoms:**
-```
-⚠️ Using fallback Supabase URL (development mode)
-```
-
-**Fix:**
-```bash
-# 1. ตรวจสอบชื่อไฟล์ (ต้องเป็น .env ไม่ใช่ env.txt)
-ls -la | grep env
-
-# 2. ตรวจสอบว่าอยู่ที่ root directory
-pwd
-
-# 3. RESTART dev server
-# Ctrl+C แล้วรัน:
-npm run dev
 ```
 
 ---

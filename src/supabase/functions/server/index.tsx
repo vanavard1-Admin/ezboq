@@ -354,202 +354,6 @@ app.delete("/make-server-6e95bca3/customers/:id", async (c) => {
   }
 });
 
-// ========== PROFILE API ==========
-
-// Get user profile (with membership info)
-app.get("/make-server-6e95bca3/profile/:userId", async (c) => {
-  const requestId = c.get('requestId') || 'unknown';
-  const startTime = Date.now();
-  
-  try {
-    const userId = c.req.param("userId");
-    
-    // Check if userId is valid
-    if (!userId || userId === 'undefined' || userId === 'null') {
-      console.warn(`[${requestId}] Invalid user ID: ${userId}`);
-      // Return default Free Plan for invalid users
-      const defaultResult = {
-        profile: null,
-        membership: {
-          userId: 'guest',
-          tier: 'free', // ✅ FIX: Use 'tier' not 'plan'
-          freeBoqUsed: false,
-          autoRenew: false,
-          paymentHistory: [],
-        }
-      };
-      return c.json(defaultResult, { status: 200 });
-    }
-    
-    const prefix = getKeyPrefix(c, "profile:");
-    const cacheKey = `profile:${prefix}${userId}`;
-    
-    // ⚡ Check cache first
-    const cached = getCached(cacheKey);
-    if (cached) {
-      const duration = Date.now() - startTime;
-      console.log(`[${requestId}] ⚡ CACHE HIT: Profile in ${duration}ms`);
-      c.header('X-Cache', 'HIT');
-      c.header('Cache-Control', 'private, max-age=600');
-      return c.json(cached);
-    }
-    
-    // 🚨 NUCLEAR MODE: Return default Free Plan immediately - NO DATABASE QUERY!
-    // This prevents slow queries. Data will be populated when user saves profile.
-    const duration = Date.now() - startTime;
-    console.log(`[${requestId}] 🚨 NUCLEAR MODE: No cache for ${userId.substring(0, 8)}... - returning default Free Plan in ${duration}ms (no DB query)`);
-    
-    // Create default Free Plan membership
-    const defaultMembership = {
-      userId: userId,
-      tier: 'free', // ✅ FIX: Use 'tier' not 'plan'
-      freeBoqUsed: false,
-      autoRenew: false,
-      paymentHistory: [],
-    };
-    
-    const result = {
-      profile: null,
-      membership: defaultMembership
-    };
-    
-    // Cache the default result for 5 minutes
-    setCache(cacheKey, result, 300000);
-    
-    c.header('X-Cache', 'MISS-NUCLEAR-DEFAULT');
-    c.header('Cache-Control', 'private, max-age=300');
-    c.header('X-Performance-Mode', 'cache-only-default-free-plan');
-    
-    return c.json(result);
-  } catch (error: any) {
-    const duration = Date.now() - startTime;
-    console.error(`[${requestId}] ❌ Get profile error (${duration}ms):`, error);
-    
-    // Return default Free Plan instead of error
-    return c.json({ 
-      profile: null,
-      membership: {
-        userId: 'error',
-        tier: 'free', // ✅ FIX: Use 'tier' not 'plan'
-        freeBoqUsed: false,
-        autoRenew: false,
-        paymentHistory: [],
-      }
-    }, { status: 200 });
-  }
-});
-
-// Update user profile
-app.put("/make-server-6e95bca3/profile/:userId", async (c) => {
-  const requestId = c.get('requestId') || 'unknown';
-  
-  try {
-    const userId = c.req.param("userId");
-    const rawData = await c.req.json();
-    
-    // Basic validation
-    if (!userId || userId === 'undefined' || userId === 'null') {
-      return c.json({ 
-        error: "Invalid user ID" 
-      }, { status: 400 });
-    }
-    
-    // ✅ Sanitize data to prevent XSS
-    const profile = sanitizeObject({ ...rawData, userId });
-    profile.updatedAt = Date.now();
-    
-    if (!profile.createdAt) {
-      profile.createdAt = Date.now();
-    }
-    
-    const prefix = getKeyPrefix(c, "profile:");
-    await kv.set(`${prefix}${userId}`, profile);
-    
-    // ⚡ Clear cache when data changes
-    clearCache(`profile:${prefix}`);
-    
-    if (DEBUG_LOG) console.log(`✅ Profile updated for user: ${userId}`);
-    
-    // Get membership
-    const membershipKey = `membership:${userId}`;
-    let membership = await kv.get(membershipKey);
-    
-    if (!membership) {
-      // Create default membership if not exists
-      membership = {
-        userId: userId,
-        plan: 'free',
-        status: 'active',
-        startDate: Date.now(),
-        features: {
-          maxProjects: 10,
-          maxTeamMembers: 1,
-          maxStorageGB: 1,
-          pdfExport: true,
-        },
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-      };
-      await kv.set(membershipKey, membership);
-    }
-    
-    return c.json({ 
-      success: true, 
-      profile,
-      membership 
-    });
-  } catch (error: any) {
-    console.error(`[${requestId}] ❌ Update profile error:`, error);
-    return c.json({ error: error.message }, { status: 500 });
-  }
-});
-
-// Get team members
-app.get("/make-server-6e95bca3/team/members/:userId", async (c) => {
-  const requestId = c.get('requestId') || 'unknown';
-  const startTime = Date.now();
-  
-  try {
-    const userId = c.req.param("userId");
-    
-    if (!userId || userId === 'undefined' || userId === 'null') {
-      return c.json({ members: [] }, { status: 200 });
-    }
-    
-    const prefix = getKeyPrefix(c, "team:");
-    const cacheKey = `team:${prefix}${userId}`;
-    
-    // ⚡ Check cache first
-    const cached = getCached(cacheKey);
-    if (cached) {
-      const duration = Date.now() - startTime;
-      console.log(`[${requestId}] ⚡ CACHE HIT: Team members in ${duration}ms`);
-      c.header('X-Cache', 'HIT');
-      c.header('Cache-Control', 'private, max-age=600');
-      return c.json({ members: cached });
-    }
-    
-    // 🚨 NUCLEAR MODE: Return empty array immediately - NO DATABASE QUERY!
-    const duration = Date.now() - startTime;
-    console.log(`[${requestId}] 🚨 NUCLEAR MODE: No cache for team ${userId.substring(0, 8)}... - returning empty in ${duration}ms (no DB query)`);
-    
-    const emptyMembers: any[] = [];
-    
-    // Cache empty result for 5 minutes
-    setCache(cacheKey, emptyMembers, 300000);
-    
-    c.header('X-Cache', 'MISS-NUCLEAR');
-    c.header('Cache-Control', 'private, max-age=300');
-    c.header('X-Performance-Mode', 'cache-only');
-    
-    return c.json({ members: emptyMembers });
-  } catch (error: any) {
-    const duration = Date.now() - startTime;
-    console.error(`[${requestId}] ❌ Get team members error (${duration}ms):`, error);
-    return c.json({ members: [] }, { status: 200 });
-  }
-});
-
 // ========== DOCUMENTS API ==========
 
 // Get all documents
@@ -751,8 +555,49 @@ app.delete("/make-server-6e95bca3/documents/:id", async (c) => {
 });
 
 // ========== USER PROFILE API ==========
-// NOTE: GET /profile/:userId endpoint is defined earlier at line 360
-// This section only contains POST/PUT update endpoints
+
+// Get user profile
+app.get("/make-server-6e95bca3/profile/:userId", async (c) => {
+  const requestId = c.get('requestId') || 'unknown';
+  const startTime = Date.now();
+  
+  try {
+    const userId = c.req.param("userId");
+    const profilePrefix = getKeyPrefix(c, "profile:");
+    const membershipPrefix = getKeyPrefix(c, "membership:");
+    const cacheKey = `profile:${userId}:${profilePrefix}:${membershipPrefix}`;
+    
+    // ⚡ Check cache first (CRITICAL for performance!)
+    const cached = getCached(cacheKey);
+    if (cached) {
+      const duration = Date.now() - startTime;
+      console.log(`[${requestId}] ⚡ CACHE HIT: Profile in ${duration}ms`);
+      c.header('X-Cache', 'HIT');
+      c.header('Cache-Control', 'private, max-age=600'); // 10 minutes!
+      return c.json(cached);
+    }
+    
+    // 🚨 NUCLEAR OPTION: Cache-only mode!
+    // If no cache, return null immediately - NO DATABASE QUERY!
+    // This prevents ALL slow database queries
+    
+    const duration = Date.now() - startTime;
+    console.warn(`[${requestId}] 🚨 NUCLEAR MODE: No cache for profile ${userId.substring(0, 30)}... - returning null in ${duration}ms (no DB query)`);
+    
+    const nullResult = { profile: null, membership: null };
+    setCache(cacheKey, nullResult, 300000); // Cache for 5 minutes
+    
+    c.header('X-Cache', 'MISS-NUCLEAR');
+    c.header('Cache-Control', 'private, max-age=300');
+    c.header('X-Performance-Mode', 'cache-only');
+      
+      return c.json(nullResult);
+  } catch (error: any) {
+    const duration = Date.now() - startTime;
+    console.error(`[${requestId}] ❌ Get profile error (${duration}ms):`, error);
+    return c.json({ profile: null, membership: null }, { status: 200 });
+  }
+});
 
 // Update user profile - POST (for backward compatibility)
 app.post("/make-server-6e95bca3/profile", async (c) => {
@@ -1344,7 +1189,7 @@ function checkBOQPermission(membership: any): { allowed: boolean; message?: stri
     if (membership.subscriptionEnd && membership.subscriptionEnd < Date.now()) {
       return {
         allowed: false,
-        message: "สมาชิกของคุณหมดอายุแล้ว กรุณาต่ออายุสมา��ิก"
+        message: "สมาชิกของคุณหมดอายุแล้ว กรุณาต่ออายุสมาชิก"
       };
     }
     
@@ -2130,7 +1975,7 @@ app.post("/make-server-6e95bca3/create-payment", async (c) => {
       console.error('❌ OMISE_SECRET_KEY not configured');
       return c.json({ 
         error: 'Payment system not configured',
-        message: 'กรุณาติ���ต่อผู้ดูแลระบบ' 
+        message: 'กรุณาติดต่อผู้ดูแลระบบ' 
       }, { status: 500 });
     }
 
@@ -2593,186 +2438,6 @@ app.delete("/make-server-6e95bca3/tax-records/:id", async (c) => {
   } catch (error: any) {
     console.error("Delete tax record error:", error);
     return c.json({ error: error.message }, { status: 500 });
-  }
-});
-
-// ========== PROFILE & MEMBERSHIP API ==========
-
-// Get user profile (with membership info)
-app.get("/make-server-6e95bca3/profile/:userId", async (c) => {
-  const requestId = c.get('requestId') || 'unknown';
-  const startTime = Date.now();
-  
-  try {
-    const userId = c.req.param("userId");
-    
-    // Check if userId is valid
-    if (!userId || userId === 'undefined' || userId === 'null') {
-      console.warn(`[${requestId}] Invalid user ID: ${userId}`);
-      return c.json({ 
-        profile: null, 
-        membership: null,
-        error: "Invalid user ID"
-      }, { status: 400 });
-    }
-    
-    const prefix = getKeyPrefix(c, "profile:");
-    const cacheKey = `profile:${prefix}${userId}`;
-    
-    // ⚡ Check cache first
-    const cached = getCached(cacheKey);
-    if (cached) {
-      const duration = Date.now() - startTime;
-      console.log(`[${requestId}] ⚡ CACHE HIT: Profile in ${duration}ms`);
-      c.header('X-Cache', 'HIT');
-      c.header('Cache-Control', 'private, max-age=600');
-      return c.json(cached);
-    }
-    
-    // Try to get profile from KV store
-    const profile = await kv.get(`${prefix}${userId}`);
-    
-    // Get or create default membership (Free Plan)
-    const membershipKey = `membership:${userId}`;
-    let membership = await kv.get(membershipKey);
-    
-    if (!membership) {
-      // ✅ Create default Free Plan membership
-      membership = {
-        userId: userId,
-        tier: 'free', // ✅ FIX: Use 'tier' not 'plan'
-        freeBoqUsed: false,
-        autoRenew: false,
-        paymentHistory: [],
-      };
-      
-      await kv.set(membershipKey, membership);
-      console.log(`✅ [${requestId}] Created default Free Plan for user: ${userId}`);
-    }
-    
-    const result = { profile, membership };
-    
-    // Cache the result
-    setCache(cacheKey, result, 600000); // 10 minutes
-    
-    const duration = Date.now() - startTime;
-    console.log(`[${requestId}] ✅ Profile loaded in ${duration}ms`);
-    
-    c.header('X-Cache', 'MISS');
-    return c.json(result);
-  } catch (error: any) {
-    const duration = Date.now() - startTime;
-    console.error(`[${requestId}] ❌ Get profile error (${duration}ms):`, error);
-    return c.json({ 
-      profile: null, 
-      membership: null, 
-      error: error.message 
-    }, { status: 500 });
-  }
-});
-
-// Update user profile
-app.put("/make-server-6e95bca3/profile/:userId", async (c) => {
-  const requestId = c.get('requestId') || 'unknown';
-  
-  try {
-    const userId = c.req.param("userId");
-    
-    if (!userId || userId === 'undefined' || userId === 'null') {
-      console.warn(`[${requestId}] Invalid user ID: ${userId}`);
-      return c.json({ 
-        error: "Invalid user ID"
-      }, { status: 400 });
-    }
-    
-    const rawData = await c.req.json();
-    
-    // ✅ Sanitize data to prevent XSS
-    const profileData = sanitizeObject(rawData);
-    
-    // Add metadata
-    profileData.userId = userId;
-    profileData.updatedAt = Date.now();
-    if (!profileData.createdAt) {
-      profileData.createdAt = Date.now();
-    }
-    
-    const prefix = getKeyPrefix(c, "profile:");
-    await kv.set(`${prefix}${userId}`, profileData);
-    
-    // ⚡ Clear cache
-    const cacheKey = `profile:${prefix}${userId}`;
-    clearCache(cacheKey);
-    
-    console.log(`✅ [${requestId}] Profile updated for user: ${userId}`);
-    
-    // Get membership
-    const membershipKey = `membership:${userId}`;
-    const membership = await kv.get(membershipKey);
-    
-    return c.json({ 
-      success: true, 
-      profile: profileData,
-      membership 
-    });
-  } catch (error: any) {
-    console.error(`[${requestId}] ❌ Update profile error:`, error);
-    return c.json({ 
-      error: error.message 
-    }, { status: 500 });
-  }
-});
-
-// Get team members for a user
-app.get("/make-server-6e95bca3/team/members/:userId", async (c) => {
-  const requestId = c.get('requestId') || 'unknown';
-  const startTime = Date.now();
-  
-  try {
-    const userId = c.req.param("userId");
-    
-    if (!userId || userId === 'undefined' || userId === 'null') {
-      console.warn(`[${requestId}] Invalid user ID: ${userId}`);
-      return c.json({ 
-        members: [],
-        error: "Invalid user ID"
-      }, { status: 400 });
-    }
-    
-    const prefix = getKeyPrefix(c, "team:");
-    const cacheKey = `team-members:${prefix}${userId}`;
-    
-    // ⚡ Check cache first
-    const cached = getCached(cacheKey);
-    if (cached) {
-      const duration = Date.now() - startTime;
-      console.log(`[${requestId}] ⚡ CACHE HIT: Team members in ${duration}ms`);
-      c.header('X-Cache', 'HIT');
-      c.header('Cache-Control', 'private, max-age=600');
-      return c.json({ members: cached });
-    }
-    
-    // Get team members from KV store
-    const teamKey = `${prefix}${userId}`;
-    const members = await kv.get(teamKey);
-    
-    const result = Array.isArray(members) ? members : [];
-    
-    // Cache the result
-    setCache(cacheKey, result, 600000); // 10 minutes
-    
-    const duration = Date.now() - startTime;
-    console.log(`[${requestId}] ✅ Team members loaded in ${duration}ms (${result.length} members)`);
-    
-    c.header('X-Cache', 'MISS');
-    return c.json({ members: result });
-  } catch (error: any) {
-    const duration = Date.now() - startTime;
-    console.error(`[${requestId}] ❌ Get team members error (${duration}ms):`, error);
-    return c.json({ 
-      members: [], 
-      error: error.message 
-    }, { status: 500 });
   }
 });
 

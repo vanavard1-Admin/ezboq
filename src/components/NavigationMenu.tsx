@@ -62,60 +62,15 @@ export function NavigationMenu({
     if (!user) return;
 
     try {
-      // ⚡ Try localStorage first (instant load)
-      const localStorageKey = `boq_profile_${user.id}`;
-      const localMembershipKey = `boq_membership_${user.id}`;
-      const cachedProfile = localStorage.getItem(localStorageKey);
-      const cachedMembership = localStorage.getItem(localMembershipKey);
-      
-      if (cachedProfile && cachedMembership) {
-        try {
-          setProfile(JSON.parse(cachedProfile));
-          setMembership(JSON.parse(cachedMembership));
-          console.log('⚡ NavigationMenu loaded from cache (instant)');
-          
-          // Still refresh in background to keep data fresh
-          refreshProfileInBackground();
-          return;
-        } catch (e) {
-          console.warn('Failed to parse cached profile in NavigationMenu');
-        }
-      }
-      
-      // No cache - fetch from API
-      await refreshProfileInBackground();
-    } catch (error) {
-      console.error('Failed to load user data in NavigationMenu:', error);
-    }
-  };
-  
-  const refreshProfileInBackground = async () => {
-    if (!user) return;
-    
-    try {
       const response = await api.get(`/profile/${user.id}`);
 
       if (response.ok) {
-        try {
-          // ✅ No need to clone - api.ts already returns a new Response object
-          const data = await response.json();
-          setProfile(data.profile);
-          setMembership(data.membership);
-          
-          // Save to localStorage for future use
-          if (data.profile) {
-            localStorage.setItem(`boq_profile_${user.id}`, JSON.stringify(data.profile));
-          }
-          if (data.membership) {
-            localStorage.setItem(`boq_membership_${user.id}`, JSON.stringify(data.membership));
-          }
-          console.log('🔄 NavigationMenu profile refreshed');
-        } catch (jsonError) {
-          console.log('NavigationMenu: Could not parse profile JSON (using cached data)');
-        }
+        const data = await response.json();
+        setProfile(data.profile);
+        setMembership(data.membership);
       }
     } catch (error) {
-      console.log('NavigationMenu: Background refresh failed (not critical)');
+      console.error('Failed to load user data:', error);
     }
   };
 

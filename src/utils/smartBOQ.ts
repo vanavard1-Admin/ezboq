@@ -1,3 +1,4 @@
+import { evalExpression } from "./safeExpr";
 import { BOQItem } from "../types/boq";
 import { catalog } from "../data/catalog";
 
@@ -289,14 +290,14 @@ function evalFormula(formula: string, context: Record<string, any>): number {
     while ((expr.includes('ceil(') || expr.includes('floor(')) && maxIterations-- > 0) {
       expr = expr.replace(/ceil\(([^()]+)\)/g, (match, a) => {
         try {
-          return String(Math.ceil(eval(a)));
+          return String(Math.ceil(evalExpression(a)));
         } catch {
           return match; // Keep original if eval fails
         }
       });
       expr = expr.replace(/floor\(([^()]+)\)/g, (match, a) => {
         try {
-          return String(Math.floor(eval(a)));
+          return String(Math.floor(evalExpression(a)));
         } catch {
           return match; // Keep original if eval fails
         }
@@ -308,14 +309,14 @@ function evalFormula(formula: string, context: Record<string, any>): number {
     while ((expr.includes('max(') || expr.includes('min(')) && maxIterations-- > 0) {
       expr = expr.replace(/max\(([^(),]+),([^()]+)\)/g, (match, a, b) => {
         try {
-          return String(Math.max(eval(a.trim()), eval(b.trim())));
+          return String(Math.max(evalExpression(a.trim()), evalExpression(b.trim())));
         } catch {
           return match; // Keep original if eval fails
         }
       });
       expr = expr.replace(/min\(([^(),]+),([^()]+)\)/g, (match, a, b) => {
         try {
-          return String(Math.min(eval(a.trim()), eval(b.trim())));
+          return String(Math.min(evalExpression(a.trim()), evalExpression(b.trim())));
         } catch {
           return match; // Keep original if eval fails
         }
@@ -323,7 +324,7 @@ function evalFormula(formula: string, context: Record<string, any>): number {
     }
     
     // Final eval
-    const result = eval(expr);
+    const result = evalExpression(expr);
     return typeof result === 'number' ? result : 0;
   } catch (e) {
     console.error(`Failed to eval formula: ${formula}`, e);

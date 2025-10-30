@@ -93,37 +93,11 @@ export function CustomersPage({ onBack }: CustomersPageProps) {
     const startTime = Date.now();
     try {
       setLoading(true);
-      
-      // 🔥 NUCLEAR MODE: Try localStorage first (instant load)
-      const cached = localStorage.getItem('cache-customers');
-      if (cached) {
-        try {
-          const data = JSON.parse(cached);
-          setCustomers(data.customers || []);
-          console.log('⚡ Customers loaded from cache (instant)');
-          setLoading(false);
-          
-          // Still fetch in background to update cache
-          fetchCustomersInBackground();
-          return;
-        } catch (e) {
-          console.warn('Failed to parse customers cache:', e);
-        }
-      }
-      
-      // If no cache, fetch normally
       const response = await api.get('/customers');
 
       if (response.ok) {
         const data = await response.json();
         setCustomers(data.customers || []);
-        
-        // 🔥 Save to localStorage for next time
-        try {
-          localStorage.setItem('cache-customers', JSON.stringify(data));
-        } catch (e) {
-          console.warn('Failed to cache customers:', e);
-        }
         
         const duration = Date.now() - startTime;
         if (duration > 1000) {
@@ -135,43 +109,9 @@ export function CustomersPage({ onBack }: CustomersPageProps) {
     } catch (error) {
       const duration = Date.now() - startTime;
       console.error(`Failed to load customers (${duration}ms):`, error);
-      
-      // 🔥 Fallback to cache even on error
-      const cached = localStorage.getItem('cache-customers');
-      if (cached) {
-        try {
-          const data = JSON.parse(cached);
-          setCustomers(data.customers || []);
-          console.log('⚡ Using cached customers (offline mode)');
-          toast.info('ใช้ข้อมูลแบบ offline');
-          return;
-        } catch (e) {
-          console.warn('Failed to use cached customers:', e);
-        }
-      }
-      
       toast.error('ไม่สามารถโหลดข้อมูลลูกค้าได้');
     } finally {
       setLoading(false);
-    }
-  };
-  
-  // 🔥 Background fetch to update cache
-  const fetchCustomersInBackground = async () => {
-    try {
-      const response = await api.get('/customers');
-      if (response.ok) {
-        const data = await response.json();
-        
-        // Update state if data changed
-        setCustomers(data.customers || []);
-        
-        // Update cache
-        localStorage.setItem('cache-customers', JSON.stringify(data));
-        console.log('🔄 Customers cache updated in background');
-      }
-    } catch (error) {
-      console.log('Background fetch failed (not critical):', error);
     }
   };
 

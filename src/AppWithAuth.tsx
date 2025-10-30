@@ -394,14 +394,7 @@ function AppWithAuth() {
               </button>
             </div>
           </div>
-          <AppWorkflow 
-            user={user} 
-            editingDocument={editingDocument}
-            onNavigate={(newView) => {
-              setView(newView as View);
-              setEditingDocument(null);
-            }}
-          />
+          <AppWorkflow user={user} editingDocument={editingDocument} />
         </div>
       )}
     </>

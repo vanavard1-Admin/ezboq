@@ -207,32 +207,15 @@ export function PartnersPage({ onBack, onCreateBOQForPartner }: PartnersPageProp
     try {
       setLoading(true);
       
-      // 🔥 NUCLEAR MODE: Try localStorage first (instant load)
-      const cached = localStorage.getItem('cache-partners');
-      if (cached) {
-        try {
-          const data = JSON.parse(cached);
-          setPartners(data.partners || []);
-          console.log('⚡ Partners loaded from cache (instant)');
-          setLoading(false);
-          
-          // Still fetch in background to update cache
-          fetchPartnersInBackground();
-          return;
-        } catch (e) {
-          console.warn('Failed to parse partners cache:', e);
-        }
-      }
-      
-      // If no cache, fetch normally
-      console.log('📊 Loading partners from API...');
+      // ⚡ NUCLEAR MODE: Load from cache only, graceful degradation
+      console.log('📊 Loading partners from cache...');
       const [partnersResponse, allDocsResponse] = await Promise.all([
         api.get('/partners').catch(err => {
-          console.log('⚠️ Partners API error:', err);
+          console.log('⚠️ Partners cache miss');
           return null;
         }),
         api.get('/documents?recipientType=partner&limit=20').catch(err => {
-          console.log('⚠️ Partner documents API error:', err);
+          console.log('⚠️ Partner documents cache miss');
           return null;
         })
       ]);
@@ -263,33 +246,9 @@ export function PartnersPage({ onBack, onCreateBOQForPartner }: PartnersPageProp
         
         setPartners(partnersWithStats);
         
-        // 🔥 Save to localStorage for next time
-        try {
-          localStorage.setItem('cache-partners', JSON.stringify({ partners: partnersWithStats }));
-        } catch (e) {
-          console.warn('Failed to cache partners:', e);
-        }
-        
         const duration = Date.now() - startTime;
-        if (duration > 1000) {
-          console.warn(`⚠️ Slow load: Partners took ${duration}ms`);
-        } else {
-          console.log(`✅ Partners loaded in ${duration}ms`);
-        }
+        console.log(`✅ Partners loaded in ${duration}ms`);
       } else {
-        // 🔥 Fallback to cache even on error
-        const cached = localStorage.getItem('cache-partners');
-        if (cached) {
-          try {
-            const data = JSON.parse(cached);
-            setPartners(data.partners || []);
-            console.log('⚡ Using cached partners (offline mode)');
-            return;
-          } catch (e) {
-            console.warn('Failed to use cached partners:', e);
-          }
-        }
-        
         // No cache available - show empty state
         setPartners([]);
         console.log('ℹ️ No cached partners available');
@@ -297,64 +256,10 @@ export function PartnersPage({ onBack, onCreateBOQForPartner }: PartnersPageProp
     } catch (error) {
       const duration = Date.now() - startTime;
       console.error(`Failed to load partners (${duration}ms):`, error);
-      
-      // 🔥 Final fallback to cache
-      const cached = localStorage.getItem('cache-partners');
-      if (cached) {
-        try {
-          const data = JSON.parse(cached);
-          setPartners(data.partners || []);
-          console.log('⚡ Using cached partners (error recovery)');
-        } catch (e) {
-          console.warn('Failed to use cached partners:', e);
-        }
-      } else {
-        setPartners([]);
-      }
+      setPartners([]);
+      // Don't show error toast for cache miss - it's expected
     } finally {
       setLoading(false);
-    }
-  };
-  
-  // 🔥 Background fetch to update cache
-  const fetchPartnersInBackground = async () => {
-    try {
-      const [partnersResponse, allDocsResponse] = await Promise.all([
-        api.get('/partners'),
-        api.get('/documents?recipientType=partner&limit=20')
-      ]);
-
-      if (partnersResponse?.ok) {
-        const data = await partnersResponse.json();
-        const loadedPartners = data.partners || [];
-        
-        let allPartnerDocs: any[] = [];
-        if (allDocsResponse?.ok) {
-          const docsData = await allDocsResponse.json();
-          allPartnerDocs = docsData.documents || [];
-        }
-        
-        const partnersWithStats = loadedPartners.map((partner: Partner) => {
-          const docs = allPartnerDocs.filter(doc => doc.partnerId === partner.id);
-          const totalRevenue = docs.reduce((sum: number, doc: any) => sum + (doc.totalAmount || 0), 0);
-          const totalProjects = docs.length;
-          
-          return {
-            ...partner,
-            totalRevenue,
-            totalProjects,
-          };
-        });
-        
-        // Update state if data changed
-        setPartners(partnersWithStats);
-        
-        // Update cache
-        localStorage.setItem('cache-partners', JSON.stringify({ partners: partnersWithStats }));
-        console.log('🔄 Partners cache updated in background');
-      }
-    } catch (error) {
-      console.log('Background fetch failed (not critical):', error);
     }
   };
 

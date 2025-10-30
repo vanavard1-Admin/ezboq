@@ -1,5 +1,5 @@
 /**
- * API Utility v2.3 - BODY STREAM FIX V5 COMPLETE
+ * API Utility v2.2 - BODY STREAM FIX V2
  * Centralized API calls with automatic demo session handling
  * 
  * ✅ Features:
@@ -8,8 +8,8 @@
  * - Error handling with detailed logging
  * - Enhanced diagnostics for "Failed to fetch" errors
  * - 🚀 FRONTEND CACHE LAYER (Nuclear Mode) - bypasses slow server!
- * - ✅ FIX V5: Clone response IMMEDIATELY before bodyUsed check
- * - ✅ FIX V5: Prevents ALL "body stream already read" errors
+ * - ✅ FIX V2: ALL paths return new Response objects to prevent "body stream already read"
+ * - ✅ FIX V2: Better error handling for 404 and cache failures
  */
 
 import { projectId, publicAnonKey } from './supabase/info';
@@ -422,75 +422,51 @@ export async function apiFetch(
     
     // Handle error responses first (before trying to read body)
     if (!response.ok) {
-      // ✅ FIX V3: Clone response FIRST, then read to prevent "body stream already read"
-      const clonedResponse = response.clone();
-      
+      // ✅ FIX: Always create new Response for errors to prevent "body stream already read"
       try {
-        const errorText = await clonedResponse.text();
+        const error = await response.text();
+        console.error(`❌ API Error (${response.status}):`, error);
         
-        // For 404, return empty data structure instead of error (NO ERROR LOG!)
-        if (response.status === 404) {
-          console.log(`ℹ️ 404 Not Found: ${endpoint} - Returning empty data (normal behavior)`);
-          return new Response(JSON.stringify({ 
-            data: null,
-            documents: [],
-            profile: null,
-            membership: null,
-            members: [],
-            error: null,
-            message: 'Not found'
-          }), {
-            status: 200, // Return 200 to prevent errors in caller
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Original-Status': '404',
-              'X-Cache': 'MISS',
-            },
-          });
+        // Return error as new Response instead of throwing
+        // This allows caller to handle errors consistently
+        if (response.status !== 404) {
+          throw new Error(`API Error (${response.status}): ${error}`);
         }
         
-        // For other errors (not 404), show error
-        console.error(`❌ API Error (${response.status}):`, errorText);
-        
-        // For other errors, throw with details
-        throw new Error(`API Error (${response.status}): ${errorText}`);
+        // For 404, return new Response with error details
+        return new Response(JSON.stringify({ 
+          error: 'Not Found', 
+          status: 404,
+          message: error 
+        }), {
+          status: 404,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Error': 'not-found',
+          },
+        });
       } catch (readError) {
-        // If we can't read the response text, return generic error
-        if (response.status === 404) {
-          console.log(`ℹ️ 404 Not Found (unreadable): ${endpoint} - Returning empty data`);
-          return new Response(JSON.stringify({ 
-            data: null,
-            documents: [],
-            error: null,
-            message: 'Not found'
-          }), {
-            status: 200, // Return 200 to prevent errors
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Original-Status': '404',
-              'X-Cache': 'MISS',
-            },
-          });
-        }
-        
+        // If we can't read the response, return generic error
         console.error(`❌ Failed to read error response:`, readError);
-        throw new Error(`API Error (${response.status}): Failed to read response`);
+        return new Response(JSON.stringify({ 
+          error: 'Unknown Error', 
+          status: response.status,
+          message: 'Failed to read error response' 
+        }), {
+          status: response.status,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Error': 'read-error',
+          },
+        });
       }
     }
     
     // 🚀 NUCLEAR MODE: Cache successful GET responses FIRST
-    // CRITICAL: Must clone BEFORE checking bodyUsed to prevent "body stream already read" error
+    // CRITICAL: Must clone and return new Response to prevent "body stream already read" error
     if (method === 'GET' && response.ok) {
       try {
-        // ✅ FIX V5: Clone IMMEDIATELY before any checks or operations
-        // response.clone() must be called BEFORE response.bodyUsed check!
         const clonedResponse = response.clone();
-        
-        // Check if body has already been consumed (after cloning)
-        if (response.bodyUsed) {
-          console.warn('⚠️ GET response body was consumed, but we have a clone');
-        }
-        
         const data = await clonedResponse.json();
         frontendCache.set(endpoint, data);
         
@@ -573,81 +549,9 @@ export async function apiFetch(
       if (endpoint.includes('tax-record')) {
         frontendCache.invalidate('/tax-records');
       }
-      
-      // ✅ FIX: For mutations, also return new Response to prevent body stream errors
-      try {
-        // Check if body has already been consumed
-        if (response.bodyUsed) {
-          console.warn('⚠️ Mutation response body already consumed');
-          return new Response(JSON.stringify({ 
-            success: true,
-            message: 'Response body was consumed during processing'
-          }), {
-            status: response.status,
-            headers: { 'Content-Type': 'application/json', 'X-Cache': 'BYPASS-BODY-USED' },
-          });
-        }
-        
-        const data = await response.clone().json();
-        return new Response(JSON.stringify(data), {
-          status: response.status,
-          statusText: response.statusText,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Cache': 'BYPASS',
-            'X-Performance-Mode': 'mutation',
-          },
-        });
-      } catch (e) {
-        console.error('❌ Failed to clone mutation response:', e);
-        // Return empty success response
-        return new Response(JSON.stringify({ 
-          success: true,
-          message: 'Mutation completed but response parsing failed',
-          error: String(e)
-        }), {
-          status: response.status,
-          headers: { 'Content-Type': 'application/json', 'X-Cache': 'BYPASS-ERROR' },
-        });
-      }
     }
     
-    // ✅ FIX V4: NEVER return original response! Always return new Response
-    // This prevents "body stream already read" errors completely
-    try {
-      // Check if body has already been consumed
-      if (response.bodyUsed) {
-        console.warn('⚠️ Response body already consumed, returning empty response');
-        return new Response(JSON.stringify({ 
-          error: 'Body already consumed',
-          success: false 
-        }), {
-          status: response.status,
-          headers: { 'Content-Type': 'application/json', 'X-Cache': 'ERROR-BODY-USED' },
-        });
-      }
-      
-      const data = await response.clone().json();
-      return new Response(JSON.stringify(data), {
-        status: response.status,
-        statusText: response.statusText,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Cache': 'PASS-THROUGH',
-        },
-      });
-    } catch (e) {
-      console.error('❌ Failed to clone final response:', e);
-      // Return empty response with more info
-      return new Response(JSON.stringify({ 
-        error: 'Failed to parse response',
-        message: String(e),
-        success: false 
-      }), {
-        status: response.status,
-        headers: { 'Content-Type': 'application/json', 'X-Cache': 'ERROR' },
-      });
-    }
+    return response;
   } catch (err: any) {
     const elapsed = Math.round(performance.now() - startTime);
     
@@ -757,71 +661,6 @@ export const api = {
     warmup: () => frontendCache.warmup((endpoint) => api.get(endpoint)), // Preload critical endpoints
   },
 };
-
-/**
- * ✅ SAFE JSON PARSER - Prevents "body stream already read" errors
- * Use this instead of response.json() to safely parse response bodies
- * 
- * @param response - Response object from fetch/api call
- * @param fallbackKey - Optional localStorage key for fallback data
- * @returns Parsed JSON data or null if body already consumed
- */
-export async function safeJson(response: Response, fallbackKey?: string): Promise<any> {
-  try {
-    // Check if body has already been consumed
-    if (response.bodyUsed) {
-      console.warn('⚠️ Response body already consumed, trying fallback...');
-      
-      // Try localStorage fallback if key provided
-      if (fallbackKey) {
-        const stored = localStorage.getItem(fallbackKey);
-        if (stored) {
-          console.log(`✅ Loaded from localStorage: ${fallbackKey}`);
-          return JSON.parse(stored);
-        }
-      }
-      
-      // Return empty data structure
-      return {
-        data: null,
-        documents: [],
-        customers: [],
-        partners: [],
-        profile: null,
-        membership: null,
-        error: null,
-        message: 'Response body was already consumed'
-      };
-    }
-    
-    // Parse JSON normally
-    const data = await response.json();
-    
-    // Save to localStorage if key provided
-    if (fallbackKey && data) {
-      try {
-        localStorage.setItem(fallbackKey, JSON.stringify(data));
-      } catch (e) {
-        console.warn('Failed to save to localStorage:', e);
-      }
-    }
-    
-    return data;
-  } catch (error) {
-    console.error('❌ Failed to parse JSON:', error);
-    
-    // Try localStorage fallback
-    if (fallbackKey) {
-      const stored = localStorage.getItem(fallbackKey);
-      if (stored) {
-        console.log(`✅ Loaded from localStorage (error fallback): ${fallbackKey}`);
-        return JSON.parse(stored);
-      }
-    }
-    
-    throw error;
-  }
-}
 
 /**
  * Test API connectivity

@@ -272,36 +272,12 @@ export function TaxManagementPage({ onBack }: TaxManagementPageProps) {
       const response = await api.get('/tax-records');
 
       if (response.ok) {
-        // ✅ FIX: Check if body is already consumed
-        if (response.bodyUsed) {
-          console.warn('⚠️ Tax records response body consumed, loading from localStorage...');
-          const stored = localStorage.getItem('boq_tax_records');
-          if (stored) {
-            const taxRecords = JSON.parse(stored);
-            setTaxRecords(taxRecords || []);
-            console.log('✅ Loaded', taxRecords.length, 'tax records from localStorage');
-          }
-          return;
-        }
-        
         const data = await response.json();
         console.log('✅ Tax records loaded:', data.taxRecords?.length || 0);
         setTaxRecords(data.taxRecords || []);
-        
-        // Save to localStorage for future use
-        if (data.taxRecords) {
-          localStorage.setItem('boq_tax_records', JSON.stringify(data.taxRecords));
-        }
       }
     } catch (error) {
       console.error('❌ Failed to load tax records:', error);
-      // Try localStorage fallback
-      const stored = localStorage.getItem('boq_tax_records');
-      if (stored) {
-        const taxRecords = JSON.parse(stored);
-        setTaxRecords(taxRecords || []);
-        console.log('✅ Loaded', taxRecords.length, 'tax records from localStorage (fallback)');
-      }
     }
   };
 
@@ -309,32 +285,11 @@ export function TaxManagementPage({ onBack }: TaxManagementPageProps) {
     try {
       const response = await api.get('/customers');
       if (response.ok) {
-        // ✅ FIX: Check if body is already consumed
-        if (response.bodyUsed) {
-          console.warn('⚠️ Customers response body consumed, loading from localStorage...');
-          const stored = localStorage.getItem('boq_customers');
-          if (stored) {
-            const customers = JSON.parse(stored);
-            setCustomers(customers || []);
-          }
-          return;
-        }
-        
         const data = await response.json();
         setCustomers(data.customers || []);
-        
-        // Save to localStorage
-        if (data.customers) {
-          localStorage.setItem('boq_customers', JSON.stringify(data.customers));
-        }
       }
     } catch (error) {
       console.error('Failed to load customers:', error);
-      // Try localStorage fallback
-      const stored = localStorage.getItem('boq_customers');
-      if (stored) {
-        setCustomers(JSON.parse(stored));
-      }
     }
   };
 
@@ -348,46 +303,18 @@ export function TaxManagementPage({ onBack }: TaxManagementPageProps) {
       });
       
       if (response?.ok) {
-        // ✅ FIX: Check if body is already consumed
-        if (response.bodyUsed) {
-          console.warn('⚠️ Documents response body consumed, loading from localStorage...');
-          const stored = localStorage.getItem('boq_tax_documents');
-          if (stored) {
-            const quotations = JSON.parse(stored);
-            setDocuments(quotations);
-            console.log('✅ Loaded', quotations.length, 'quotations from localStorage');
-          }
-          return;
-        }
-        
         const data = await response.json();
         const quotations = (data.documents || []).filter((doc: any) => doc.type === 'quotation');
         setDocuments(quotations);
         console.log('✅ Loaded', quotations.length, 'quotations from cache');
-        
-        // Save to localStorage
-        if (quotations.length > 0) {
-          localStorage.setItem('boq_tax_documents', JSON.stringify(quotations));
-        }
       } else {
-        // No cache available - try localStorage
-        const stored = localStorage.getItem('boq_tax_documents');
-        if (stored) {
-          setDocuments(JSON.parse(stored));
-        } else {
-          setDocuments([]);
-          console.log('ℹ️ No cached documents available');
-        }
+        // No cache available
+        setDocuments([]);
+        console.log('ℹ️ No cached documents available');
       }
     } catch (error) {
       console.error('Failed to load documents:', error);
-      // Try localStorage fallback
-      const stored = localStorage.getItem('boq_tax_documents');
-      if (stored) {
-        setDocuments(JSON.parse(stored));
-      } else {
-        setDocuments([]);
-      }
+      setDocuments([]);
     }
   };
 

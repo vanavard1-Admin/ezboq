@@ -7,7 +7,6 @@ import { InvoicePage } from "./pages/InvoicePage";
 import { ReceiptPageEnhanced } from "./pages/ReceiptPageEnhanced";
 import { SettingsDialog } from "./components/SettingsDialog";
 import { PDFExportWrapper } from "./components/PDFExportWrapper";
-import { CompletionSummaryDialog } from "./components/CompletionSummaryDialog";
 import { 
   BOQItem, 
   Profile, 
@@ -36,18 +35,12 @@ type Page = "selector" | "boq" | "quotation" | "invoice" | "receipt";
 interface AppWorkflowProps {
   user: User | null;
   editingDocument?: Document | null;
-  onNavigate?: (view: string) => void;
 }
 
-function AppWorkflow({ user, editingDocument, onNavigate }: AppWorkflowProps) {
+function AppWorkflow({ user, editingDocument }: AppWorkflowProps) {
   const [currentPage, setCurrentPage] = useState<Page>("selector");
   const [currentDocumentId, setCurrentDocumentId] = useState<string | null>(null);
   const [projectId_internal, setProjectIdInternal] = useState<string>(`project-${Date.now()}`);
-  
-  // Completion dialog state
-  const [showCompletionDialog, setShowCompletionDialog] = useState(false);
-  const [completedDocumentType, setCompletedDocumentType] = useState<"quotation" | "invoice" | "receipt">("quotation");
-  const [completedDocumentNumber, setCompletedDocumentNumber] = useState("");
   
   // Project data
   const [projectTitle, setProjectTitle] = useState("โครงการใหม่");
@@ -136,9 +129,9 @@ function AppWorkflow({ user, editingDocument, onNavigate }: AppWorkflowProps) {
   };
 
   /**
-   * Save document to backend and show completion dialog
+   * Save document to backend
    */
-  const saveDocument = async (type: 'boq' | 'quotation' | 'invoice' | 'receipt', showDialog = false) => {
+  const saveDocument = async (type: 'boq' | 'quotation' | 'invoice' | 'receipt') => {
     const saveStartTime = performance.now();
     
     try {
@@ -204,12 +197,6 @@ function AppWorkflow({ user, editingDocument, onNavigate }: AppWorkflowProps) {
           console.warn(`⚠️ Save operation took ${elapsed}ms - consider optimization`);
         } else if (elapsed > 2000) {
           console.log(`ℹ️ Save operation completed in ${elapsed}ms (normal for large documents)`);
-        }
-        
-        if (showDialog) {
-          setCompletedDocumentType(type);
-          setCompletedDocumentNumber(result.document?.documentNumber || '');
-          setShowCompletionDialog(true);
         }
         
         return true;
@@ -530,7 +517,7 @@ function AppWorkflow({ user, editingDocument, onNavigate }: AppWorkflowProps) {
                 taxInvoice={taxInvoice}
                 setTaxInvoice={setTaxInvoice}
                 onBack={() => goToPage("invoice")}
-                onSave={async () => await saveDocument('receipt', true)}
+                onSave={async () => await saveDocument('receipt')}
                 recipientType={recipientType}
                 selectedPartner={selectedPartner}
                 mainProjectTag={mainProjectTag}
@@ -562,25 +549,6 @@ function AppWorkflow({ user, editingDocument, onNavigate }: AppWorkflowProps) {
         withholdingTaxRate={withholdingTaxRate}
         withholdingTaxType={withholdingTaxType}
         selectedInstallmentForExport={selectedInstallmentForExport}
-      />
-
-      {/* Completion Summary Dialog */}
-      <CompletionSummaryDialog
-        open={showCompletionDialog}
-        onOpenChange={setShowCompletionDialog}
-        documentType={completedDocumentType}
-        documentNumber={completedDocumentNumber}
-        onNavigate={(destination) => {
-          if (onNavigate) {
-            const viewMap = {
-              history: 'history',
-              tax: 'tax-management',
-              reports: 'reports',
-              dashboard: 'dashboard'
-            };
-            onNavigate(viewMap[destination]);
-          }
-        }}
       />
     </>
   );
