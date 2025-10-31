@@ -1,0 +1,514 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #030213;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f3f5;
+  --secondary-foreground: #030213;
+  --muted: #ececf0;
+  --muted-foreground: #717182;
+  --accent: #e9ebef;
+  --accent-foreground: #030213;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.1);
+  --input: transparent;
+  --input-background: #f3f3f5;
+  --switch-background: #cbced4;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #b5b5b5;
+  --chart-1: #f59e0b;
+  --chart-2: #3b82f6;
+  --chart-3: #8b5cf6;
+  --chart-4: #84cc16;
+  --chart-5: #eab308;
+  --radius: 0.625rem;
+  --sidebar: #fafafa;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #030213;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #f5f5f5;
+  --sidebar-accent-foreground: #353535;
+  --sidebar-border: #ebebeb;
+  --sidebar-ring: #b5b5b5;
+}
+
+.dark {
+  --background: #1a1a1a;
+  --foreground: #fafafa;
+  --card: #1a1a1a;
+  --card-foreground: #fafafa;
+  --popover: #1a1a1a;
+  --popover-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #353535;
+  --secondary: #454545;
+  --secondary-foreground: #fafafa;
+  --muted: #454545;
+  --muted-foreground: #b5b5b5;
+  --accent: #454545;
+  --accent-foreground: #fafafa;
+  --destructive: #dc2626;
+  --destructive-foreground: #fca5a5;
+  --border: #454545;
+  --input: #454545;
+  --ring: #707070;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: #6366f1;
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #ec4899;
+  --chart-5: #ef4444;
+  --sidebar: #353535;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #6366f1;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #454545;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #454545;
+  --sidebar-ring: #707070;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    /* 📱 Mobile Performance Fixes */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    /* 📱 Prevent text selection during touch */
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* ✅ Allow text selection in input/textarea */
+  input, textarea, [contenteditable] {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  
+  /* 📱 Mobile-friendly buttons */
+  button, a[role="button"], [role="button"] {
+    touch-action: manipulation;
+    user-select: none;
+    cursor: pointer;
+    min-height: 44px; /* Apple HIG minimum */
+    min-width: 44px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* ✅ Clickable elements */
+  a, button, [role="button"] {
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* Screen reader only utility - visually hidden but accessible */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Custom scrollbar styles - Always visible */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(96 165 250) rgb(243 244 246);
+}
+
+/* Force scrollbar to always show on Webkit browsers */
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: rgb(243 244 246);
+  border-radius: 5px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgb(156 163 175);
+  border-radius: 5px;
+  border: 2px solid rgb(243 244 246);
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(107 114 128);
+}
+
+/* Blue scrollbar for tabs */
+.scrollbar-thumb-blue-400::-webkit-scrollbar-thumb {
+  background-color: rgb(96 165 250);
+  border: 2px solid rgb(243 244 246);
+}
+
+.scrollbar-thumb-blue-500::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(59 130 246);
+}
+
+.scrollbar-thumb-blue-600::-webkit-scrollbar-thumb {
+  background-color: rgb(37 99 235);
+}
+
+.scrollbar-track-gray-100::-webkit-scrollbar-track {
+  background: rgb(243 244 246);
+}
+
+.scrollbar-track-gray-800::-webkit-scrollbar-track {
+  background: rgb(31 41 55);
+}
+
+/* Dark mode scrollbar */
+.dark .scrollbar-thin {
+  scrollbar-color: rgb(75 85 99) rgb(31 41 55);
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-track {
+  background: rgb(31 41 55);
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgb(75 85 99);
+  border-color: rgb(31 41 55);
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(107 114 128);
+}
+
+.dark .scrollbar-thumb-blue-600::-webkit-scrollbar-thumb {
+  background-color: rgb(37 99 235);
+  border-color: rgb(31 41 55);
+}
+
+.dark .scrollbar-thumb-blue-500::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(59 130 246);
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+body {
+  font-family: 'Sarabun', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* PDF Export Wrapper - Hidden but accessible to html2canvas */
+[data-pdf-export-wrapper] {
+  position: fixed !important;
+  width: 210mm !important;
+  min-height: 297mm !important;
+  top: 0 !important;
+  left: -99999px !important; /* Move far offscreen instead of opacity trick */
+  opacity: 1 !important; /* Full opacity to ensure proper rendering */
+  pointer-events: none !important;
+  z-index: -9999 !important;
+  background-color: #ffffff !important;
+  overflow: visible !important;
+  visibility: visible !important; /* Ensure it's visible to html2canvas */
+  display: block !important; /* Ensure it's not hidden */
+}
+
+/* Remove any clip restrictions on children */
+[data-pdf-export-wrapper] * {
+  overflow: visible !important;
+}
+
+/* Skinny Export Container - Optimized for large BOQ exports */
+.export-skinny {
+  position: fixed !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  width: 210mm !important;
+  background: #ffffff !important;
+  font-family: "Sarabun", "Noto Sans Thai", sans-serif !important;
+  pointer-events: none !important;
+  overflow: visible !important;
+}
+
+.export-skinny * {
+  box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+  position: static !important;
+  transform: none !important;
+  background-image: none !important;
+  font-family: inherit !important;
+}
+
+/* PDF Export sections - Force simple colors and Thai font support */
+#boq-export-section,
+#quotation-export-section,
+#invoice-export-section,
+#receipt-export-section {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  font-family: 'Sarabun', 'Noto Sans Thai', sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
+  width: 210mm !important;
+  min-height: 297mm !important;
+  position: relative !important;
+}
+
+#boq-export-section *,
+#quotation-export-section *,
+#invoice-export-section *,
+#receipt-export-section * {
+  border-color: #333333 !important;
+  font-family: inherit !important;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+  
+  body.print-landscape {
+    @page {
+      size: A4 landscape;
+    }
+  }
+
+  body.print-a3 {
+    @page {
+      size: A3 portrait;
+    }
+  }
+  
+  body.print-a3.print-landscape {
+    @page {
+      size: A3 landscape;
+    }
+  }
+  
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  * {
+    overflow: visible !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print\:block {
+    display: block !important;
+  }
+
+  .print\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .print\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  table {
+    font-size: 10px !important;
+  }
+
+  th, td {
+    padding: 4px !important;
+  }
+}
+
+/* Custom animations for AddItemDialog */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Scrollbar for horizontal tabs navigation */
+.scrollbar-visible {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(59 130 246) rgb(243 244 246);
+}
+
+.scrollbar-visible::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.scrollbar-visible::-webkit-scrollbar-track {
+  background: rgb(243 244 246);
+  border-radius: 6px;
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  background-color: rgb(59 130 246);
+  border-radius: 6px;
+  border: 3px solid rgb(243 244 246);
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(37 99 235);
+}
+
+/* Dark mode scrollbar for tabs */
+.dark .scrollbar-visible {
+  scrollbar-color: rgb(59 130 246) rgb(31 41 55);
+}
+
+.dark .scrollbar-visible::-webkit-scrollbar-track {
+  background: rgb(31 41 55);
+}
+
+.dark .scrollbar-visible::-webkit-scrollbar-thumb {
+  background-color: rgb(59 130 246);
+  border-color: rgb(31 41 55);
+}
+
+.dark .scrollbar-visible::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(96 165 250);
+}
