@@ -53,7 +53,7 @@ import {
   EyeOff,
 } from 'lucide-react';
 import { UserProfile, ProposerType, CompanyInfo, Membership } from '../types/boq';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { api } from '../utils/api';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';

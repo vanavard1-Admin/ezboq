@@ -1,40 +1,12 @@
-import { createClient as createSupabaseClient, SupabaseClient } from '@supabase/supabase-js';
-import { projectId, publicAnonKey } from './info';
-
-// Singleton instance
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 let supabaseInstance: SupabaseClient | null = null;
-
-/**
- * Get or create a singleton Supabase client instance
- * This prevents multiple GoTrueClient instances in the same browser context
- */
 export function getSupabaseClient(): SupabaseClient {
   if (!supabaseInstance) {
-    supabaseInstance = createSupabaseClient(
-      `https://${projectId}.supabase.co`,
-      publicAnonKey,
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true,
-          storageKey: 'boq-pro-auth', // Custom storage key for this app
-        },
-      }
-    );
+    const url = import.meta.env.VITE_SUPABASE_URL as string;
+    const anon = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+    if (!url || !anon) throw new Error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY');
+    supabaseInstance = createClient(url, anon, { auth: { persistSession: true, autoRefreshToken: true } });
   }
   return supabaseInstance;
 }
-
-/**
- * Legacy function for backward compatibility
- * @deprecated Use getSupabaseClient() instead
- */
-export function createClient(): SupabaseClient {
-  return getSupabaseClient();
-}
-
-/**
- * Export the singleton instance directly
- */
 export const supabase = getSupabaseClient();

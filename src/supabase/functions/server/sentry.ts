@@ -16,7 +16,7 @@
 /**
  * EZBOQ Release Version
  */
-export const RELEASE_VERSION = "ezboq@1.1.0";
+export const RELEASE_VERSION = "ezboq";
 
 /**
  * Initialize Sentry for Deno/Edge Functions

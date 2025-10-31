@@ -5,7 +5,7 @@ import { BOQItem, Profile, CompanyInfo, CustomerInfo, Discount, PaymentTerms, Ba
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Receipt, ArrowRight, ArrowLeft, User, Users } from "lucide-react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { calculateBOQSummaryWithTax, calculateBalancedPaymentTerms, validatePaymentBalance } from "../utils/calculations";
 import { Separator } from "../components/ui/separator";
 import { Input } from "../components/ui/input";

@@ -80,7 +80,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { Partner, ProposerType } from '../types/boq';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { api } from '../utils/api';
 import { ScrollArea } from '../components/ui/scroll-area';
 

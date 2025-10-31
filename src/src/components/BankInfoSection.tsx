@@ -15,7 +15,7 @@ import {
   DialogFooter,
   DialogDescription,
 } from "./ui/dialog";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 // Thai Bank Logos (Local Assets) - All 13 Thai Banks ✨
 import bblLogo from "figma:asset/fadd9dc0740fb66d5a878e5c893baa40b7dcb1bc.png";

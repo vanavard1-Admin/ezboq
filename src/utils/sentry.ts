@@ -21,7 +21,7 @@ import * as Sentry from "@sentry/react";
  * EZBOQ Release Version
  * Update this when releasing new versions
  */
-export const RELEASE_VERSION = "ezboq@1.1.0";
+export const RELEASE_VERSION = "ezboq";
 
 /**
  * Initialize Sentry (Frontend)

@@ -3,7 +3,7 @@ import { BOQItem, Profile, CompanyInfo, CustomerInfo, Discount, PaymentTerms, Ba
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { FileSpreadsheet, ArrowLeft, Download, Save, CheckCircle } from "lucide-react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { Separator } from "../components/ui/separator";
 import { Badge } from "../components/ui/badge";
 import { projectId, publicAnonKey } from "../utils/supabase/info";

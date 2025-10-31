@@ -28,7 +28,7 @@ import type { User } from "@supabase/supabase-js";
 import type { Document } from "./types/boq";
 import { projectId, publicAnonKey } from "./utils/supabase/info";
 import { api } from "./utils/api";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { calculateBOQSummary } from "./utils/calculations";
 
 type Page = "selector" | "boq" | "quotation" | "invoice" | "receipt";

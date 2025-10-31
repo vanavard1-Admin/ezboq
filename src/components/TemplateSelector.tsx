@@ -7,7 +7,7 @@ import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 import { Home, DoorOpen, Wrench, Sofa, Trees, Store, Search, X, TrendingUp, Clock, Building2 } from "lucide-react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface TemplateSelectorProps {
   onSelectTemplate: (template: TemplateMetadata) => void;

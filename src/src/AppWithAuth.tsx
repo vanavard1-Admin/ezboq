@@ -16,7 +16,7 @@ import { UserGuidePage } from "./pages/UserGuidePage";
 import { NavigationMenu } from "./components/NavigationMenu";
 import AppWorkflow from "./AppWorkflow";
 import { Toaster } from "./components/ui/sonner";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { cleanupOldDemoSessions } from "./utils/demoStorage";
 import type { User } from "@supabase/supabase-js";
 

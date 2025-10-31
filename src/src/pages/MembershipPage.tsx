@@ -52,7 +52,7 @@ import {
 
 const Infinity = InfinityIcon;
 import { Membership, MembershipTier, MembershipPlan, PaymentRecord, BillingCycle } from '../types/boq';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { PromoCodeSection } from '../components/PromoCodeSection';
