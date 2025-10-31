@@ -2,6 +2,12 @@
   "name": "EZBOQ.COM",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
   "dependencies": {
     "@jsr/supabase__supabase-js": "^2.49.8",
     "@radix-ui/react-accordion": "^1.2.3",
@@ -30,23 +36,22 @@
     "@radix-ui/react-toggle": "^1.1.2",
     "@radix-ui/react-toggle-group": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.8",
-    "@sentry/react": "*",
-    "@supabase/supabase-js": "*",
-    "@vitejs/plugin-react": "*",
+    "@sentry/react": "^7.120.2",
+    "@supabase/supabase-js": "^2.49.8",
     "class-variance-authority": "^0.7.1",
-    "clsx": "*",
+    "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "decimal.js": "^10.4.3",
     "embla-carousel-react": "^8.6.0",
     "hono": "^4.10.3",
-    "html2canvas": "*",
+    "html2canvas": "^1.4.1",
     "input-otp": "^1.4.2",
-    "jspdf": "*",
-    "jspdf-autotable": "*",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.2",
     "lucide-react": "^0.487.0",
-    "motion": "*",
+    "motion": "^10.18.0",
     "next-themes": "^0.4.6",
-    "path": "*",
+    "path": "^0.12.7",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
@@ -54,17 +59,17 @@
     "react-resizable-panels": "^2.1.7",
     "recharts": "^2.15.2",
     "sonner": "^2.0.3",
-    "tailwind-merge": "*",
+    "tailwind-merge": "^2.3.0",
     "vaul": "^1.1.2",
-    "vite": "6.3.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "vite": "^6.3.5",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react-swc": "^3.10.2",
     "@types/node": "^20.10.0",
-    "@vitejs/plugin-react-swc": "^3.10.2"
-  },
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build"
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13"
   }
 }
