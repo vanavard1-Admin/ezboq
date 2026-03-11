@@ -4,7 +4,7 @@ import type { Document } from "./types/boq";
 import { projectId } from "./utils/supabase/info";
 import { supabase } from "./utils/supabase/client";
 import { api } from "./utils/api";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { analyzePayloadSize, saveMonitor } from "./utils/saveOptimizer";
 
 type Page = "selector" | "boq" | "quotation" | "invoice" | "receipt";
@@ -37,7 +37,7 @@ function AppWorkflow({ user, editingDocument, onNavigate }: AppWorkflowProps) {
   
   // Completion dialog state
   const [showCompletionDialog, setShowCompletionDialog] = useState(false);
-  const [completedDocumentType, setCompletedDocumentType] = useState<"quotation" | "invoice" | "receipt">("quotation");
+  const [completedDocumentType, setCompletedDocumentType] = useState<"boq" | "quotation" | "invoice" | "receipt">("quotation");
   const [completedDocumentNumber, setCompletedDocumentNumber] = useState("");
   
   // Project data
@@ -144,7 +144,7 @@ function AppWorkflow({ user, editingDocument, onNavigate }: AppWorkflowProps) {
         id: currentDocumentId || `${type}-${Date.now()}`,
         projectId: projectId_internal,
         type,
-        documentNumber: undefined, // Server will auto-generate
+        documentNumber: '', // Server will auto-generate
         status: 'draft',
         projectTitle,
         projectDescription,
@@ -168,7 +168,7 @@ function AppWorkflow({ user, editingDocument, onNavigate }: AppWorkflowProps) {
         withholdingTaxRate,
         withholdingTaxType,
         totalAmount: summary.grandTotal,
-        createdAt: currentDocumentId ? undefined : Date.now(),
+        createdAt: currentDocumentId ? Date.now() : Date.now(),
         updatedAt: Date.now(),
       };
       

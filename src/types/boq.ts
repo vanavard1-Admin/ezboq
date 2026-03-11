@@ -17,6 +17,10 @@ export interface BOQItem {
   material: number;
   labor: number;
   quantity: number;
+  unitPrice?: number;
+  amount?: number;
+  totalPrice?: number;
+  description?: string;
   notes?: string;
 }
 
@@ -26,6 +30,12 @@ export interface Profile {
   errorPct: number;
   markupPct: number;
   vatPct: number;
+  // Aliases used in QuotationPage
+  wastePercentage?: number;
+  overheadPercentage?: number;
+  variancePercentage?: number;
+  profitPercentage?: number;
+  vatPercentage?: number;
 }
 
 export interface CompanyInfo {
@@ -35,11 +45,12 @@ export interface CompanyInfo {
   phone: string;
   email: string;
   website?: string;
+  logoUrl?: string;
 }
 
 export interface CustomerInfo {
   id?: string;
-  type: "individual" | "company";
+  type: "individual" | "company" | "person";
   name: string;
   address: string;
   phone: string;
@@ -94,12 +105,29 @@ export interface BOQSummary {
   grandTotal: number;
   
   // Aliases for backward compatibility
-  totalMaterial?: number; // = subtotalMaterial
-  totalLabor?: number; // = subtotalLabor
-  wastage?: number; // = waste
-  operational?: number; // = opex
-  contingency?: number; // = error
-  profit?: number; // = markup
+  totalMaterial?: number;
+  totalLabor?: number;
+  wastage?: number;
+  operational?: number;
+  contingency?: number;
+  profit?: number;
+
+  // Extended fields used across components
+  materialTotal?: number;
+  laborTotal?: number;
+  miscTotal?: number;
+  wasteAmount?: number;
+  overheadAmount?: number;
+  varianceAmount?: number;
+  profitAmount?: number;
+  vatAmount?: number;
+  wasteCost?: number;
+  opexCost?: number;
+  errorCost?: number;
+  discountAmount?: number;
+  totalAfterDiscount?: number;
+  withholdingTaxAmount?: number;
+  netPayable?: number;
 }
 
 export type DocumentType = "boq" | "quotation" | "invoice" | "receipt";
@@ -206,7 +234,7 @@ export interface Document {
   documentNumber: string;
   issueDate?: string;
   totalAmount: number;
-  status: 'draft' | 'sent' | 'paid' | 'cancelled' | 'overdue';
+  status: 'draft' | 'sent' | 'paid' | 'cancelled' | 'overdue' | 'approved' | 'completed';
   
   // NEW: Approval status for tax and reports
   isApproved?: boolean; // true = นับเข้าภาษี+รายงาน, false/undefined = ไม่นับ
@@ -233,6 +261,9 @@ export interface Document {
   bankInfo?: BankInfo | null;
   paymentTerms?: PaymentTerms | null;
   taxInvoice?: TaxInvoice;
+  quotationNotes?: string;
+  paymentConditions?: string;
+  signatures?: Signature[];
 }
 
 // Analytics & Reports Types
@@ -352,6 +383,8 @@ export type ProposerType =
   | 'tool_supplier'             // เครื่องมือช่าง/PPE
   
   | 'material_store'            // ร้านค้าวัสดุทั่วไป
+  | 'glass_company'             // บริษัทกระจก
+  | 'contractor'                // ผู้รับเหมาทั่วไป
   | 'other';                    // อื่นๆ
 
 export interface UserProfile {
@@ -361,6 +394,7 @@ export interface UserProfile {
   avatarUrl?: string;
   proposerType: ProposerType;
   proposerName: string;
+  companyName?: string;
   company?: CompanyInfo;
   phone?: string;
   address?: string;
@@ -386,8 +420,11 @@ export interface Partner {
 }
 
 // VIP Membership Types
-export type MembershipTier = 
+export type MembershipTier =
   | 'free'              // ฟรี (1 BOQ)
+  | 'vip'               // VIP member
+  | 'pro'               // PRO member
+  | 'premium'           // PREMIUM member
   | 'individual_month'  // รายเดือน - เดี่ยว (129 บาท/เดือน)
   | 'individual_year'   // รายปี - เดี่ยว (1,290 บาท/ปี, ประหยัด 17%)
   | 'team_month'        // รายเดือน - ทีม (499 บาท/เดือน, 5 ที่นั่ง)

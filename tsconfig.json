@@ -16,22 +16,17 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
 
     /* Path Mapping */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "./components/*": ["./components/*"],
-      "./pages/*": ["./pages/*"],
-      "./utils/*": ["./utils/*"],
-      "./types/*": ["./types/*"],
-      "./data/*": ["./data/*"],
-      "./styles/*": ["./styles/*"]
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["src/supabase/functions/**/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

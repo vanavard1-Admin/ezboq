@@ -9,7 +9,7 @@ import { Label } from "./ui/label";
 import { Separator } from "./ui/separator";
 import { FileText, Mail, Lock, User, LogIn, UserPlus, Eye, EyeOff, Sparkles, Zap, Package } from "lucide-react";
 import { api } from "../utils/api";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { SocialLogo } from "./SocialLogo";
 
 interface LoginPageProps {
@@ -126,7 +126,7 @@ export function LoginPage({ onDemoLogin }: LoginPageProps = {}) {
 
             if (signupResponse && !signupResponse.error) {
               // Successfully recreated user - now login
-              const { error: retryError } = await createClient(projectId, publicAnonKey).auth.signInWithPassword({
+              const { error: retryError } = await supabase.auth.signInWithPassword({
                 email,
                 password,
               });
@@ -173,7 +173,7 @@ export function LoginPage({ onDemoLogin }: LoginPageProps = {}) {
       setLoading(true);
       
       // Sign in with Google OAuth
-      const { data, error } = await createClient(projectId, publicAnonKey).auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: window.location.origin,
@@ -217,7 +217,7 @@ export function LoginPage({ onDemoLogin }: LoginPageProps = {}) {
       setLoading(true);
       
       // Sign in with Facebook OAuth
-      const { data, error } = await createClient(projectId, publicAnonKey).auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'facebook',
         options: {
           redirectTo: window.location.origin,

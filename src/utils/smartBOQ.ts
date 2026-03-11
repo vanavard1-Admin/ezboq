@@ -270,63 +270,97 @@ const SPA_RULES: SmartBOQRule[] = [
   { name: "ท่อระบายกลิ่น/ไอระเหย GI", itemId: "aroma-vent-duct-gi--m", uom: "m", qtyFormula: "perimeterPerFloor_m * 0.5" },
 ];
 
-// Expression evaluator (improved to handle nested functions and string comparisons)
+// Safe math expression evaluator (no eval)
+function safeMathEval(expr: string): number {
+  // Tokenize: numbers, operators, parentheses
+  const tokens: string[] = [];
+  let i = 0;
+  const s = expr.trim();
+  while (i < s.length) {
+    if (/\s/.test(s[i])) { i++; continue; }
+    if (/[\d.]/.test(s[i])) {
+      let num = '';
+      while (i < s.length && /[\d.]/.test(s[i])) { num += s[i++]; }
+      tokens.push(num);
+    } else if (s[i] === '-' && (tokens.length === 0 || /[+\-*/(]/.test(tokens[tokens.length - 1]))) {
+      // Unary minus
+      let num = '-';
+      i++;
+      while (i < s.length && /[\d.]/.test(s[i])) { num += s[i++]; }
+      tokens.push(num);
+    } else {
+      tokens.push(s[i++]);
+    }
+  }
+
+  let pos = 0;
+  function parseExpr(): number {
+    let result = parseTerm();
+    while (pos < tokens.length && (tokens[pos] === '+' || tokens[pos] === '-')) {
+      const op = tokens[pos++];
+      const right = parseTerm();
+      result = op === '+' ? result + right : result - right;
+    }
+    return result;
+  }
+  function parseTerm(): number {
+    let result = parseFactor();
+    while (pos < tokens.length && (tokens[pos] === '*' || tokens[pos] === '/')) {
+      const op = tokens[pos++];
+      const right = parseFactor();
+      result = op === '*' ? result * right : result / right;
+    }
+    return result;
+  }
+  function parseFactor(): number {
+    if (tokens[pos] === '(') {
+      pos++; // skip (
+      const result = parseExpr();
+      pos++; // skip )
+      return result;
+    }
+    return parseFloat(tokens[pos++]);
+  }
+  return parseExpr();
+}
+
+// Expression evaluator (safe, no eval)
 function evalFormula(formula: string, context: Record<string, any>): number {
   try {
-    // Replace variables with values - handle strings properly
+    // Replace variables with values
     let expr = formula;
     for (const [key, value] of Object.entries(context)) {
-      // For string values, ensure they're properly quoted when replacing
       const replacement = typeof value === 'string' ? `"${value}"` : String(value);
-      // Use word boundaries to avoid partial matches
       const regex = new RegExp(`\\b${key}\\b`, 'g');
       expr = expr.replace(regex, replacement);
     }
-    
+
     // Handle nested functions by replacing innermost first
-    // Process ceil and floor first (innermost) - loop until no more matches
-    let maxIterations = 10; // Prevent infinite loops
+    let maxIterations = 10;
     while ((expr.includes('ceil(') || expr.includes('floor(')) && maxIterations-- > 0) {
-      expr = expr.replace(/ceil\(([^()]+)\)/g, (match, a) => {
-        try {
-          return String(Math.ceil(eval(a)));
-        } catch {
-          return match; // Keep original if eval fails
-        }
+      expr = expr.replace(/ceil\(([^()]+)\)/g, (_match, a) => {
+        try { return String(Math.ceil(safeMathEval(a))); } catch { return '0'; }
       });
-      expr = expr.replace(/floor\(([^()]+)\)/g, (match, a) => {
-        try {
-          return String(Math.floor(eval(a)));
-        } catch {
-          return match; // Keep original if eval fails
-        }
+      expr = expr.replace(/floor\(([^()]+)\)/g, (_match, a) => {
+        try { return String(Math.floor(safeMathEval(a))); } catch { return '0'; }
       });
     }
-    
-    // Now handle max and min (after inner functions are resolved)
+
+    // Handle max and min
     maxIterations = 10;
     while ((expr.includes('max(') || expr.includes('min(')) && maxIterations-- > 0) {
-      expr = expr.replace(/max\(([^(),]+),([^()]+)\)/g, (match, a, b) => {
-        try {
-          return String(Math.max(eval(a.trim()), eval(b.trim())));
-        } catch {
-          return match; // Keep original if eval fails
-        }
+      expr = expr.replace(/max\(([^(),]+),([^()]+)\)/g, (_match, a, b) => {
+        try { return String(Math.max(safeMathEval(a.trim()), safeMathEval(b.trim()))); } catch { return '0'; }
       });
-      expr = expr.replace(/min\(([^(),]+),([^()]+)\)/g, (match, a, b) => {
-        try {
-          return String(Math.min(eval(a.trim()), eval(b.trim())));
-        } catch {
-          return match; // Keep original if eval fails
-        }
+      expr = expr.replace(/min\(([^(),]+),([^()]+)\)/g, (_match, a, b) => {
+        try { return String(Math.min(safeMathEval(a.trim()), safeMathEval(b.trim()))); } catch { return '0'; }
       });
     }
-    
-    // Final eval
-    const result = eval(expr);
-    return typeof result === 'number' ? result : 0;
+
+    const result = safeMathEval(expr);
+    return typeof result === 'number' && !isNaN(result) ? result : 0;
   } catch (e) {
-    console.error(`Failed to eval formula: ${formula}`, e);
+    console.error(`Failed to evaluate formula: ${formula}`, e);
     return 0;
   }
 }

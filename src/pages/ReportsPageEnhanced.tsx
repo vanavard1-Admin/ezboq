@@ -48,7 +48,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { AnalyticsData } from '../types/boq';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { api } from '../utils/api';
 import { downloadCSV } from '../utils/downloadHelper';
 

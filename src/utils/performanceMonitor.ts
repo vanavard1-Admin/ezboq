@@ -299,8 +299,8 @@ if (typeof window !== 'undefined' && getEnv('DEV') === 'true') {
     '\n  perfMonitor.printReport()          - Show performance report',
     '\n  perfMonitor.getSlowOperations()    - Get slow operations',
     '\n\n⚡ Status:',
-    '\n  Warnings: ' + (perfMonitor.logWarnings ? 'ON' : 'OFF (default)'),
-    '\n  UUID Filter: ' + (perfMonitor.logWarnings ? 'OFF' : 'ON (blocking UUIDs)'),
+    '\n  Warnings: ' + ((perfMonitor as any).logWarnings ? 'ON' : 'OFF (default)'),
+    '\n  UUID Filter: ' + ((perfMonitor as any).logWarnings ? 'OFF' : 'ON (blocking UUIDs)'),
     '\n\n💡 Note: UUID/hash operations are filtered by default to reduce noise.'
   );
 }

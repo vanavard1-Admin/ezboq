@@ -50,28 +50,15 @@ export function initSentry(dsn?: string) {
       environment: getMode(),
       
       // Performance Monitoring
-      integrations: [
-        new Sentry.BrowserTracing({
-          // Trace all page loads and navigation
-          routingInstrumentation: Sentry.reactRouterV6Instrumentation(
-            // @ts-ignore
-            React.useEffect,
-            // @ts-ignore
-            useLocation,
-            // @ts-ignore
-            useNavigationType,
-            // @ts-ignore
-            createRoutesFromChildren,
-            // @ts-ignore
-            matchRoutes
-          ),
-        }),
-        new Sentry.Replay({
-          // Mask all text and input fields
-          maskAllText: true,
-          blockAllMedia: true,
-        }),
-      ],
+      integrations: Sentry.browserTracingIntegration
+        ? [
+            Sentry.browserTracingIntegration(),
+            ...(Sentry.replayIntegration ? [Sentry.replayIntegration({
+              maskAllText: true,
+              blockAllMedia: true,
+            })] : []),
+          ]
+        : [],
       
       // Performance monitoring sample rate
       // 0.1 = 10% of transactions (reduce cost in production)
@@ -207,10 +194,7 @@ export function addBreadcrumb(message: string, category?: string, data?: Record<
  * Use for measuring operation duration
  */
 export function startTransaction(name: string, op: string) {
-  return Sentry.startTransaction({
-    name,
-    op,
-  });
+  return Sentry.startSpan({ name, op }, () => {});
 }
 
 /**

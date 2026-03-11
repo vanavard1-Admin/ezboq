@@ -6,8 +6,9 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, CheckCircle, Clock } from 'lucide-react';
+import { Zap, CheckCircle, Clock, Loader2 } from 'lucide-react';
 import { log } from '../utils/logger';
+import { api } from '../utils/api';
 
 export function CacheWarmupIndicator() {
   const [warming, setWarming] = useState(false);
@@ -15,12 +16,12 @@ export function CacheWarmupIndicator() {
 
   useEffect(() => {
     // Check if warmup is needed (cache is empty or mostly empty)
-    const stats = api.cache.stats();
+    const stats = api.cache.getStats();
     
     // 🎯 Check for critical analytics endpoints specifically
-    const hasCriticalCache = stats.entries.some(e => 
-      e.endpoint.includes('/analytics?range=month') || 
-      e.endpoint.includes('/analytics?range=6months')
+    const hasCriticalCache = stats.entries.some((e: { key: string }) =>
+      e.key.includes('/analytics?range=month') ||
+      e.key.includes('/analytics?range=6months')
     );
     
     if (!hasCriticalCache || stats.size < 8) {
@@ -30,10 +31,10 @@ export function CacheWarmupIndicator() {
       
       // Check periodically
       const checkInterval = setInterval(() => {
-        const newStats = api.cache.stats();
-        const hasAnalyticsNow = newStats.entries.some(e => 
-          e.endpoint.includes('/analytics?range=month') || 
-          e.endpoint.includes('/analytics?range=6months')
+        const newStats = api.cache.getStats();
+        const hasAnalyticsNow = newStats.entries.some((e: { key: string }) =>
+          e.key.includes('/analytics?range=month') ||
+          e.key.includes('/analytics?range=6months')
         );
         
         // ✅ Consider warmed up when we have analytics endpoints cached

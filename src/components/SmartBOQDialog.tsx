@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Sparkles, ArrowRight, Info, Calculator } from "lucide-react";
 import { getProjectTypeInfo, SmartBOQInputs } from "../utils/smartBOQ";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 
@@ -86,12 +86,13 @@ export function SmartBOQDialog({ open, onOpenChange, onGenerate }: SmartBOQDialo
     const info = getProjectTypeInfo(type);
     
     // Set defaults only for floor height and preferences
-    setFloorHeight(String(info.defaultInputs.floorHeight_m));
-    if (info.defaultInputs.kitchenType) {
-      setKitchenType(info.defaultInputs.kitchenType);
+    const defaults = info.defaultInputs as Record<string, any>;
+    setFloorHeight(String(defaults.floorHeight_m));
+    if (defaults.kitchenType) {
+      setKitchenType(defaults.kitchenType);
     }
-    if (info.defaultInputs.finishLevel) {
-      setFinishLevel(info.defaultInputs.finishLevel);
+    if (defaults.finishLevel) {
+      setFinishLevel(defaults.finishLevel);
     }
     
     setStep('details');
