@@ -9,7 +9,7 @@ import { Label } from "./ui/label";
 import { Separator } from "./ui/separator";
 import { FileText, Mail, Lock, User, LogIn, UserPlus, Eye, EyeOff, Sparkles, Zap, Package } from "lucide-react";
 import { api } from "../utils/api";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { SocialLogo } from "./SocialLogo";
 
 interface LoginPageProps {

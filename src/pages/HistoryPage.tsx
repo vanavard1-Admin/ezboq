@@ -59,7 +59,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { Document, DocumentType } from '../types/boq';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { api, getUserLocalStorage, setUserLocalStorage } from '../utils/api'; // 🔒 Add user-specific localStorage helpers
 import { exportWorkflowToPDF } from '../utils/pdfExport';
 import { PDFExportWrapper } from '../components/PDFExportWrapper';

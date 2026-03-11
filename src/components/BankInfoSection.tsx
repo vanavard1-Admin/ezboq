@@ -15,7 +15,7 @@ import { Label } from "./ui/label";
 import { BankLogo, type ThaiBank, BANK_NAMES } from "./BankLogo";
 import { Upload, X, QrCode, Loader2 } from "lucide-react";
 import { compressImage, getCompressionOptions } from "../utils/imageCompression";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { analyzePayloadSize } from "../utils/saveOptimizer";
 
 export type BankCode = ThaiBank;

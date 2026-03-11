@@ -35,7 +35,7 @@ import {
   Package,
   ArrowLeft,
 } from "lucide-react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { BOQItem } from "../types/boq";
 import { api } from "../utils/api";
 import { log } from "../utils/logger";

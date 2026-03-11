@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { CalendarDays, Plus, Trash2, Percent, DollarSign, Sparkles, Zap } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { calculatePaymentTermAmount, calculateBalancedPaymentTerms, validatePaymentBalance } from "../utils/calculations";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 interface PaymentTermsSectionProps {

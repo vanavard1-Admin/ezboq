@@ -4,7 +4,7 @@ import type { Document } from "./types/boq";
 import { projectId } from "./utils/supabase/info";
 import { supabase } from "./utils/supabase/client";
 import { api } from "./utils/api";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { analyzePayloadSize, saveMonitor } from "./utils/saveOptimizer";
 
 type Page = "selector" | "boq" | "quotation" | "invoice" | "receipt";

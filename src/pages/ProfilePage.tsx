@@ -51,7 +51,7 @@ import {
   Settings,
 } from 'lucide-react';
 import { UserProfile, ProposerType, CompanyInfo, Membership } from '../types/boq';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { api, getUserLocalStorage, setUserLocalStorage } from '../utils/api'; // 🔒 Add user-specific localStorage helpers
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { compressImage, getCompressionOptions, validateImageFile } from '../utils/imageCompression';

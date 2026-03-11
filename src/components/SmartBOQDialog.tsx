@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Sparkles, ArrowRight, Info, Calculator } from "lucide-react";
 import { getProjectTypeInfo, SmartBOQInputs } from "../utils/smartBOQ";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 

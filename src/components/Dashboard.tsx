@@ -62,7 +62,7 @@ import {
 } from "recharts";
 import { UserProfile, Membership } from "../types/boq";
 import { isDemoMode } from "../utils/demoStorage";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { SponsorCarousel } from "./SponsorCarousel";
 
 interface DashboardProps {

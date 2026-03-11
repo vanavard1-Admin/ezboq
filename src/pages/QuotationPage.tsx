@@ -7,7 +7,7 @@ import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
 import { Label } from "../components/ui/label";
 import { Building2, User, ArrowRight, ArrowLeft, FileCheck, FileText, Users, Save, Receipt, ChevronDown, ChevronUp, Package, Percent, DollarSign } from "lucide-react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { calculateBOQSummary } from "../utils/calculations";
 import { Separator } from "../components/ui/separator";
 import { Badge } from "../components/ui/badge";
