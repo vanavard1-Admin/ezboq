@@ -1,4 +1,13 @@
-import { BOQItem } from "../types/boq";
+export interface RoomTemplateItem {
+  name: string;
+  category: string;
+  subcategory: string;
+  unit: string;
+  quantity: number;
+  unitPrice: number;
+  amount: number;
+  notes?: string;
+}
 
 export interface RoomTemplate {
   id: string;
@@ -10,7 +19,7 @@ export interface RoomTemplate {
     min: number;
     max: number;
   };
-  items: Omit<BOQItem, "id">[];
+  items: RoomTemplateItem[];
   tags: string[];
 }
 

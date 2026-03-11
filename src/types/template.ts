@@ -14,7 +14,8 @@ export interface TemplateMetadata {
   name: string;
   description: string;
   mainCategory: TemplateMainCategory;
-  
+  subType?: string;           // Sub-type identifier
+
   // Specifications
   area?: number;              // พื้นที่ (ตร.ม.)
   estimatedCost?: number;     // ราคาประมาณ (บาท)

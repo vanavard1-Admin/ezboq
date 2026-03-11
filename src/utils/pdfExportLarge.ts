@@ -405,8 +405,8 @@ async function exportAutoTableMode(
     item.name,
     item.unit,
     item.quantity.toFixed(2),
-    formatCurrency(item.unitPrice),
-    formatCurrency(item.totalPrice),
+    formatCurrency(item.unitPrice ?? 0),
+    formatCurrency(item.totalPrice ?? 0),
   ]);
   
   // Add table with AutoTable
@@ -471,11 +471,11 @@ async function exportAutoTableMode(
     ['รวมทั้งหมด:', formatCurrency(summary.grandTotal)],
   ];
   
-  if (summary.discountAmount > 0) {
-    summaryItems.push(['ส่วนลด:', `-${formatCurrency(summary.discountAmount)}`]);
+  if ((summary.discountAmount ?? 0) > 0) {
+    summaryItems.push(['ส่วนลด:', `-${formatCurrency(summary.discountAmount ?? 0)}`]);
   }
-  
-  summaryItems.push(['ยอดชำระสุทธิ:', formatCurrency(summary.totalAfterDiscount)]);
+
+  summaryItems.push(['ยอดชำระสุทธิ:', formatCurrency(summary.totalAfterDiscount ?? summary.grandTotal)]);
   
   summaryItems.forEach(([label, value]) => {
     pdf.text(label, pageWidth - 220, summaryY);
@@ -679,9 +679,14 @@ async function exportSplitByCategory(
     }
     
     // Recalculate summary for this category
-    const categorySubtotal = categoryItems.reduce((sum, item) => sum + item.totalPrice, 0);
+    const categorySubtotal = categoryItems.reduce((sum, item) => sum + (item.totalPrice ?? 0), 0);
     const categorySummary: BOQSummary = {
+      subtotalMaterial: 0,
+      subtotalLabor: 0,
       subtotal: categorySubtotal,
+      waste: categorySubtotal * (options.profile.wastePct / 100),
+      opex: categorySubtotal * (options.profile.opexPct / 100),
+      error: categorySubtotal * (options.profile.errorPct / 100),
       wasteCost: categorySubtotal * (options.profile.wastePct / 100),
       opexCost: categorySubtotal * (options.profile.opexPct / 100),
       errorCost: categorySubtotal * (options.profile.errorPct / 100),

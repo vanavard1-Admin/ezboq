@@ -253,15 +253,17 @@ export function HistoryPage({ onBack, onEditDocument }: HistoryPageProps) {
     return labels[type] || type;
   };
 
-  const getStatusBadge = (status: Document['status']) => {
-    const variants = {
-      draft: { variant: 'secondary' as const, label: 'ร่าง' },
-      sent: { variant: 'default' as const, label: 'ส่งแล้ว' },
-      paid: { variant: 'default' as const, label: 'ชำระแล้ว', className: 'bg-green-500' },
-      overdue: { variant: 'destructive' as const, label: 'เกินกำหนด' },
-      cancelled: { variant: 'secondary' as const, label: 'ยกเลิก' },
+  const getStatusBadge = (status: string) => {
+    const variants: Record<string, { variant: 'secondary' | 'default' | 'destructive'; label: string; className?: string }> = {
+      draft: { variant: 'secondary', label: 'ร่าง' },
+      sent: { variant: 'default', label: 'ส่งแล้ว' },
+      paid: { variant: 'default', label: 'ชำระแล้ว', className: 'bg-green-500' },
+      overdue: { variant: 'destructive', label: 'เกินกำหนด' },
+      cancelled: { variant: 'secondary', label: 'ยกเลิก' },
+      approved: { variant: 'default', label: 'อนุมัติแล้ว', className: 'bg-blue-500' },
+      completed: { variant: 'default', label: 'เสร็จสิ้น', className: 'bg-green-600' },
     };
-    const config = variants[status];
+    const config = variants[status] || variants.draft;
     return (
       <Badge variant={config.variant} className={config.className}>
         {config.label}
@@ -1499,7 +1501,7 @@ export function HistoryPage({ onBack, onEditDocument }: HistoryPageProps) {
           company={exportingDoc.company}
           customer={exportingDoc.customer || {
             id: '',
-            type: 'person',
+            type: 'individual',
             name: '',
             phone: '',
             address: '',

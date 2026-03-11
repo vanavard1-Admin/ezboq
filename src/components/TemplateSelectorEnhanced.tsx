@@ -116,7 +116,7 @@ export function TemplateSelectorEnhanced({
 
   const loadCustomTemplates = async () => {
     try {
-      const templates = await api.get<CustomTemplate[]>('custom-templates');
+      const templates = await api.get('custom-templates') as CustomTemplate[];
       setCustomTemplates(templates || []);
     } catch (error) {
       log.error('Failed to load custom templates:', error);
@@ -203,7 +203,7 @@ export function TemplateSelectorEnhanced({
         isCustom: true,
       };
 
-      const created = await api.post<CustomTemplate>('custom-templates', newTemplate);
+      const created = await api.post('custom-templates', newTemplate) as CustomTemplate;
       setCustomTemplates(prev => [created, ...prev]);
       
       toast.success("✅ สร้าง Template สำเร็จ!", {
@@ -230,7 +230,7 @@ export function TemplateSelectorEnhanced({
 
     setIsLoading(true);
     try {
-      const updated = await api.put<CustomTemplate>(`custom-templates/${editingTemplate.id}`, {
+      const updated = await api.put(`custom-templates/${editingTemplate.id}`, {
         name: newTemplateName,
         description: newTemplateDesc,
         mainCategory: newTemplateCategory,

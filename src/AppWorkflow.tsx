@@ -37,7 +37,7 @@ function AppWorkflow({ user, editingDocument, onNavigate }: AppWorkflowProps) {
   
   // Completion dialog state
   const [showCompletionDialog, setShowCompletionDialog] = useState(false);
-  const [completedDocumentType, setCompletedDocumentType] = useState<"quotation" | "invoice" | "receipt">("quotation");
+  const [completedDocumentType, setCompletedDocumentType] = useState<"boq" | "quotation" | "invoice" | "receipt">("quotation");
   const [completedDocumentNumber, setCompletedDocumentNumber] = useState("");
   
   // Project data
@@ -144,7 +144,7 @@ function AppWorkflow({ user, editingDocument, onNavigate }: AppWorkflowProps) {
         id: currentDocumentId || `${type}-${Date.now()}`,
         projectId: projectId_internal,
         type,
-        documentNumber: undefined, // Server will auto-generate
+        documentNumber: '', // Server will auto-generate
         status: 'draft',
         projectTitle,
         projectDescription,
@@ -168,7 +168,7 @@ function AppWorkflow({ user, editingDocument, onNavigate }: AppWorkflowProps) {
         withholdingTaxRate,
         withholdingTaxType,
         totalAmount: summary.grandTotal,
-        createdAt: currentDocumentId ? undefined : Date.now(),
+        createdAt: currentDocumentId ? Date.now() : Date.now(),
         updatedAt: Date.now(),
       };
       

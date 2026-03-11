@@ -52,7 +52,7 @@ export function PaymentLogo({ brand, type, alt, className = '', priority = false
       height={28}
       loading={priority ? 'eager' : 'lazy'}
       decoding="async"
-      fetchpriority={priority ? 'high' : 'auto'}
+      fetchPriority={priority ? 'high' : 'auto'}
       className={className}
       style={{ objectFit: 'contain', display: 'block' }}
     />

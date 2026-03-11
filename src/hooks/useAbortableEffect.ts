@@ -29,7 +29,7 @@ export function useAbortableEffect(
   effect: (signal: AbortSignal) => void | (() => void),
   deps: React.DependencyList
 ): void {
-  const ctrlRef = useRef<AbortController>();
+  const ctrlRef = useRef<AbortController>(undefined);
   
   useEffect(() => {
     // Abort previous request if still running

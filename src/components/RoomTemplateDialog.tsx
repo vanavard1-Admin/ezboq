@@ -33,7 +33,18 @@ export function RoomTemplateDialog({ open, onOpenChange, onSelectTemplate }: Roo
 
   const handleConfirm = () => {
     if (selectedTemplate) {
-      onSelectTemplate(selectedTemplate.items);
+      const boqItems = selectedTemplate.items.map(item => ({
+        name: item.name,
+        category: item.category,
+        subcategory: item.subcategory,
+        unit: item.unit,
+        quantity: item.quantity,
+        material: item.unitPrice,
+        labor: 0,
+        unitPrice: item.unitPrice,
+        amount: item.amount,
+      }));
+      onSelectTemplate(boqItems);
       onOpenChange(false);
       setSelectedTemplate(null);
     }

@@ -242,11 +242,11 @@ export function PDFExportBOQ({
           <div style={{ maxWidth: '350px', marginLeft: 'auto', backgroundColor: '#f9fafb', padding: '10px', borderRadius: '4px', border: '1px solid #e5e7eb' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '9px' }}>
               <span style={{ color: '#374151' }}>รวมค่าวัสดุ:</span>
-              <span style={{ fontWeight: '600' }}>{formatCurrency(summary.totalMaterial)}</span>
+              <span style={{ fontWeight: '600' }}>{formatCurrency(summary.totalMaterial ?? 0)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '9px' }}>
               <span style={{ color: '#374151' }}>รวมค่าแรง:</span>
-              <span style={{ fontWeight: '600' }}>{formatCurrency(summary.totalLabor)}</span>
+              <span style={{ fontWeight: '600' }}>{formatCurrency(summary.totalLabor ?? 0)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '9px', paddingTop: '4px', borderTop: '1px solid #d1d5db' }}>
               <span style={{ color: '#374151' }}>รวมย่อย:</span>
@@ -254,19 +254,19 @@ export function PDFExportBOQ({
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '9px' }}>
               <span style={{ color: '#374151' }}>ค่าของเสีย (3%):</span>
-              <span style={{ fontWeight: '600' }}>{formatCurrency(summary.wastage)}</span>
+              <span style={{ fontWeight: '600' }}>{formatCurrency(summary.wastage ?? 0)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '9px' }}>
               <span style={{ color: '#374151' }}>ค่าดำเนินการ (5%):</span>
-              <span style={{ fontWeight: '600' }}>{formatCurrency(summary.operational)}</span>
+              <span style={{ fontWeight: '600' }}>{formatCurrency(summary.operational ?? 0)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '9px' }}>
               <span style={{ color: '#374151' }}>ค่าคลาดเคลื่อน (2%):</span>
-              <span style={{ fontWeight: '600' }}>{formatCurrency(summary.contingency)}</span>
+              <span style={{ fontWeight: '600' }}>{formatCurrency(summary.contingency ?? 0)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '9px' }}>
               <span style={{ color: '#374151' }}>กำไร (10%):</span>
-              <span style={{ fontWeight: '600' }}>{formatCurrency(summary.profit)}</span>
+              <span style={{ fontWeight: '600' }}>{formatCurrency(summary.profit ?? 0)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '9px', paddingTop: '4px', borderTop: '1px solid #d1d5db' }}>
               <span style={{ color: '#374151' }}>รวมก่อน VAT:</span>

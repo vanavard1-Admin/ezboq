@@ -80,8 +80,8 @@ const applyThaiFont = (element: HTMLElement): void => {
   for (let i = 0; i < allElements.length; i++) {
     const el = allElements[i] as HTMLElement;
     el.style.fontFamily = fontFamily;
-    el.style.webkitFontSmoothing = 'antialiased';
-    el.style.mozOsxFontSmoothing = 'grayscale';
+    (el.style as any).webkitFontSmoothing = 'antialiased';
+    (el.style as any).mozOsxFontSmoothing = 'grayscale';
     el.style.textRendering = 'optimizeLegibility';
   }
 };
@@ -146,7 +146,7 @@ const renderToCanvas = async (
   const currentScrollX = window.scrollX;
 
   // ⏱️ Add timeout wrapper to prevent infinite hangs
-  const renderPromise = html2canvas(element, {
+  const html2canvasOptions: Record<string, any> = {
     scale: PDF_CONFIG.scale,
     useCORS: true,
     allowTaint: false, // Prevent tainted canvas to avoid PNG errors
@@ -163,7 +163,7 @@ const renderToCanvas = async (
     proxy: undefined,
     scrollY: -currentScrollY, // Lock scroll position - prevent auto-scroll
     scrollX: -currentScrollX, // Lock horizontal scroll
-    ignoreElements: (element) => {
+    ignoreElements: (element: Element) => {
       const htmlEl = element as HTMLElement;
       
       // ✅ KEEP images with data-pdf-keep attribute (bank logos, QR codes)
@@ -183,10 +183,10 @@ const renderToCanvas = async (
       }
       return false;
     },
-    onclone: (clonedDoc) => {
+    onclone: (clonedDoc: Document) => {
       // IMPORTANT: Remove media elements BUT preserve those with data-pdf-keep
       const problematicElements = clonedDoc.querySelectorAll('img, canvas, video, iframe, svg, object, embed, picture, source, [style*="background-image"]');
-      problematicElements.forEach((el) => {
+      problematicElements.forEach((el: Element) => {
         const htmlEl = el as HTMLElement;
         
         // ✅ PRESERVE images with data-pdf-keep attribute (bank logos, QR codes)
@@ -228,7 +228,7 @@ const renderToCanvas = async (
       
       // Remove background images from all elements EXCEPT those with data-pdf-keep
       const allElements = clonedDoc.querySelectorAll('*');
-      allElements.forEach((el) => {
+      allElements.forEach((el: Element) => {
         const htmlEl = el as HTMLElement;
         
         // ✅ PRESERVE elements with data-pdf-keep
@@ -289,10 +289,11 @@ const renderToCanvas = async (
         }
       } else {
         log.error(`❌ Could not find cloned element: ${elementId}`);
-        log.debug('Available IDs in cloned document:', Array.from(clonedDoc.querySelectorAll('[id]')).map(el => el.id).slice(0, 20));
+        log.debug('Available IDs in cloned document:', Array.from(clonedDoc.querySelectorAll('[id]')).map((el: Element) => (el as HTMLElement).id).slice(0, 20));
       }
     },
-  });
+  };
+  const renderPromise = html2canvas(element, html2canvasOptions);
 
   // Create timeout promise
   const timeoutPromise = new Promise<never>((_, reject) => {
@@ -521,7 +522,7 @@ export const exportToPDF = async (
               );
               log.debug(`✅ Page ${page + 1} content drawn successfully`);
               drawSuccess = true;
-            } catch (drawError) {
+            } catch (drawError: any) {
               log.error(`❌ Failed to draw page ${page + 1} content:`, drawError);
               log.error(`❌ Draw error details:`, {
                 message: drawError.message,
@@ -552,7 +553,7 @@ export const exportToPDF = async (
               
               // Try multiple export strategies
               let pageImgData: string;
-              let exportFormat = PDF_CONFIG.imageFormat;
+              let exportFormat: string = PDF_CONFIG.imageFormat;
               
               try {
                 // Try JPEG first
@@ -574,7 +575,7 @@ export const exportToPDF = async (
               const pageHeightScaled = sourceHeight * scaleRatio;
               pdf.addImage(pageImgData, exportFormat, 0, 0, scaledWidth, pageHeightScaled, undefined, 'FAST');
               log.debug(`✅ Page ${page + 1}/${totalPages} added to PDF successfully`);
-            } catch (error) {
+            } catch (error: any) {
               log.error(`❌ Failed to convert page ${page + 1} canvas to data URL:`, error);
               log.error(`❌ Error details:`, {
                 message: error.message,

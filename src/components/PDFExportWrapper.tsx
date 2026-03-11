@@ -87,12 +87,12 @@ export function PDFExportWrapper({
 }: PDFExportWrapperProps) {
   // Safety check: Ensure minimum data is present
   const safeBoqItems = Array.isArray(boqItems) ? boqItems : [];
-  const safeProfile = profile || { 
-    labor: 0, 
-    material: 0, 
-    overhead: 0, 
-    profit: 0, 
-    vat: 7 
+  const safeProfile = profile || {
+    wastePct: 0,
+    opexPct: 0,
+    errorPct: 0,
+    markupPct: 0,
+    vatPct: 7,
   } as Profile;
   const safeCompany = company || {
     name: 'บริษัท',

@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 interface CompletionSummaryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  documentType: "quotation" | "invoice" | "receipt";
+  documentType: "boq" | "quotation" | "invoice" | "receipt";
   documentNumber: string;
   onNavigate: (destination: "history" | "tax" | "reports" | "dashboard") => void;
 }
@@ -18,7 +18,8 @@ export function CompletionSummaryDialog({
   documentNumber,
   onNavigate,
 }: CompletionSummaryDialogProps) {
-  const documentTypeNames = {
+  const documentTypeNames: Record<string, string> = {
+    boq: "BOQ",
     quotation: "ใบเสนอราคา",
     invoice: "ใบวางบิล",
     receipt: "ใบเสร็จ/ใบกำกับภาษี",

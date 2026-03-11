@@ -73,7 +73,7 @@ interface ProfilePageProps {
   user: SupabaseUser | null;
 }
 
-const proposerTypeLabels: Record<ProposerType, string> = {
+const proposerTypeLabels: Partial<Record<ProposerType, string>> = {
   // บริษัทผู้รับเหมา
   general_contractor: 'ผู้รับเหมาหลัก (General Contractor) 🏢',
   design_build: 'Design-Build / EPC / Turnkey 🏗️',
@@ -146,6 +146,8 @@ const proposerTypeLabels: Record<ProposerType, string> = {
   tool_supplier: 'เครื่องมือช่าง/PPE 🔧',
   
   material_store: 'ร้านค้าวัสดุทั่วไป 🏪',
+  glass_company: 'บริษัทกระจก 🪟',
+  contractor: 'ผู้รับเหมาทั่วไป 🏗️',
   other: 'อื่นๆ',
 };
 
@@ -404,6 +406,7 @@ export function ProfilePage({ onBack, onNavigateToMembership, user }: ProfilePag
       if (profileData) {
         setFormData({
           name: profileData.name || '',
+          avatarUrl: profileData.avatarUrl || '',
           position: profileData.position || '',
           department: profileData.department || '',
           proposerType: profileData.proposerType || 'general_contractor',
@@ -693,7 +696,7 @@ export function ProfilePage({ onBack, onNavigateToMembership, user }: ProfilePag
               onClick: () => handleSave(),
             },
           });
-          setProfile(profileData);
+          setProfile({ ...profile, ...profileData } as UserProfile);
         }
       } catch (apiError: any) {
         // API completely failed but localStorage saved
@@ -706,7 +709,7 @@ export function ProfilePage({ onBack, onNavigateToMembership, user }: ProfilePag
             onClick: () => handleSave(),
           },
         });
-        setProfile(profileData);
+        setProfile({ ...profile, ...profileData } as UserProfile);
       }
     } catch (error) {
       console.error('Failed to save profile:', error);
@@ -855,7 +858,7 @@ export function ProfilePage({ onBack, onNavigateToMembership, user }: ProfilePag
             toast.success(`บันทึก${fieldNames[field]}สำเร็จ`, {
               description: 'เก็บไว้ในเครื่องเท่านั้น (Local only)'
             });
-            setProfile(profileData);
+            setProfile({ ...profile, ...profileData } as UserProfile);
           }
         } catch (apiError) {
           console.error('API save failed:', apiError);
@@ -863,7 +866,7 @@ export function ProfilePage({ onBack, onNavigateToMembership, user }: ProfilePag
           toast.success(`บันทึก${fieldNames[field]}สำเร็จ`, {
             description: 'เก็บไว้ในเครื่องเท่านั้น (Local only)'
           });
-          setProfile(profileData);
+          setProfile({ ...profile, ...profileData } as UserProfile);
         }
       } catch (error) {
         console.error('Failed to auto-save image:', error);

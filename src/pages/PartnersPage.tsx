@@ -88,7 +88,7 @@ interface PartnersPageProps {
   onCreateBOQForPartner?: (partnerId: string, partnerName: string) => void;
 }
 
-const proposerTypeIcons: Record<ProposerType, any> = {
+const proposerTypeIcons: Partial<Record<ProposerType, any>> = {
   electrician: Zap,
   plumber: Droplet,
   glass_company: Building2,
@@ -97,7 +97,7 @@ const proposerTypeIcons: Record<ProposerType, any> = {
   other: Handshake,
 };
 
-const proposerTypeLabels: Record<ProposerType, string> = {
+const proposerTypeLabels: Partial<Record<ProposerType, string>> = {
   electrician: 'ช่างไฟฟ้า',
   plumber: 'ช่างประปา',
   glass_company: 'บริษัทขายกระจก',
@@ -106,7 +106,7 @@ const proposerTypeLabels: Record<ProposerType, string> = {
   other: 'อื่นๆ',
 };
 
-const proposerTypeColors: Record<ProposerType, string> = {
+const proposerTypeColors: Partial<Record<ProposerType, string>> = {
   electrician: 'bg-orange-100 text-orange-700 border-orange-300',
   plumber: 'bg-blue-100 text-blue-700 border-blue-300',
   glass_company: 'bg-purple-100 text-purple-700 border-purple-300',
@@ -594,7 +594,7 @@ export function PartnersPage({ onBack, onCreateBOQForPartner }: PartnersPageProp
   };
 
   const getPartnersByType = () => {
-    const counts: Record<ProposerType, number> = {
+    const counts: Partial<Record<ProposerType, number>> = {
       electrician: 0,
       plumber: 0,
       glass_company: 0,
@@ -604,7 +604,7 @@ export function PartnersPage({ onBack, onCreateBOQForPartner }: PartnersPageProp
     };
 
     partners.forEach(p => {
-      counts[p.type]++;
+      counts[p.type] = ((counts[p.type] ?? 0) as number) + 1;
     });
 
     return counts;
@@ -1054,7 +1054,7 @@ export function PartnersPage({ onBack, onCreateBOQForPartner }: PartnersPageProp
           <TabsContent value="analytics" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {Object.entries(proposerTypeLabels).map(([type, label]) => {
-                const count = partnerTypeCounts[type as ProposerType];
+                const count: number = partnerTypeCounts[type as ProposerType] ?? 0;
                 const typePartners = partners.filter(p => p.type === type);
                 const totalRevenue = typePartners.reduce(
                   (sum, p) => sum + p.totalRevenue,

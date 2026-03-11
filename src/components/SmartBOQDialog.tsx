@@ -86,12 +86,13 @@ export function SmartBOQDialog({ open, onOpenChange, onGenerate }: SmartBOQDialo
     const info = getProjectTypeInfo(type);
     
     // Set defaults only for floor height and preferences
-    setFloorHeight(String(info.defaultInputs.floorHeight_m));
-    if (info.defaultInputs.kitchenType) {
-      setKitchenType(info.defaultInputs.kitchenType);
+    const defaults = info.defaultInputs as Record<string, any>;
+    setFloorHeight(String(defaults.floorHeight_m));
+    if (defaults.kitchenType) {
+      setKitchenType(defaults.kitchenType);
     }
-    if (info.defaultInputs.finishLevel) {
-      setFinishLevel(info.defaultInputs.finishLevel);
+    if (defaults.finishLevel) {
+      setFinishLevel(defaults.finishLevel);
     }
     
     setStep('details');

@@ -5,6 +5,46 @@ import {
 import { templateMetadata } from "../data/boqTemplates";
 import { calculateBOQSummary } from "./calculations";
 
+// Type definitions for template calculator
+export interface BudgetCalculationInput {
+  budget: number;
+  category?: string;
+  preferredQuality?: 'basic' | 'standard' | 'premium';
+}
+
+export interface BudgetCalculationResult {
+  suggestedTemplates: TemplateMetadata[];
+  budgetBreakdown: {
+    material: number;
+    labor: number;
+    overhead: number;
+    profit: number;
+    total: number;
+  };
+  recommendations: string[];
+  warnings?: string[];
+}
+
+export interface AreaCalculationInput {
+  area: number;
+  houseType: string;
+  quality?: 'basic' | 'standard' | 'premium';
+  includeRooms?: {
+    bathrooms: number;
+    kitchens: number;
+    bedrooms: number;
+  };
+}
+
+export interface AreaCalculationResult {
+  generatedTemplate: TemplateMetadata;
+  estimatedCost: number;
+  materialCost: number;
+  laborCost: number;
+  roomBreakdown: { room: string; area: number; items: number; cost: number }[];
+  recommendations: string[];
+}
+
 // Default profile for calculation
 const DEFAULT_PROFILE = {
   wastePct: 3,
@@ -233,7 +273,7 @@ export function calculateByArea(input: AreaCalculationInput): AreaCalculationRes
   const summary = calculateBOQSummary(scaledItems, DEFAULT_PROFILE);
 
   // Room breakdown
-  const roomBreakdown = [];
+  const roomBreakdown: { room: string; area: number; items: number; cost: number }[] = [];
   
   // Group by category
   const categories = new Set(scaledItems.map(item => item.category));

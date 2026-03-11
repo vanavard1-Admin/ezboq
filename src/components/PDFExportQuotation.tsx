@@ -53,7 +53,7 @@ export function PDFExportQuotation({
     let finalAmount = summary.grandTotal || 0;
     
     if (discount) {
-      if (discount.type === 'percentage' || discount.type === 'percent') {
+      if (discount.type === 'percent') {
         finalAmount = finalAmount * (1 - discount.value / 100);
       } else {
         finalAmount = finalAmount - discount.value;
@@ -265,9 +265,9 @@ export function PDFExportQuotation({
             {discount && (
               <>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '9px', color: '#dc2626' }}>
-                  <span>ส่วนลด ({discount.type === 'percentage' || discount.type === 'percent' ? `${discount.value}%` : formatCurrency(discount.value)}):</span>
+                  <span>ส่วนลด ({discount.type === 'percent' ? `${discount.value}%` : formatCurrency(discount.value)}):</span>
                   <span style={{ fontWeight: '600' }}>
-                    -{(discount.type === 'percentage' || discount.type === 'percent')
+                    -{discount.type === 'percent'
                       ? formatCurrency((summary.grandTotal || 0) * (discount.value / 100))
                       : formatCurrency(discount.value)}
                   </span>

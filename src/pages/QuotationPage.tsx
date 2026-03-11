@@ -116,7 +116,7 @@ export function QuotationPage({
       }
 
       // ✅ FIX: api.post returns data directly, not response object
-      const data = await api.post('/documents', document, idempotencyKeyRef.current);
+      const data = await api.post('/documents', { ...document, idempotencyKey: idempotencyKeyRef.current });
 
       // ✅ If we got here without error, save was successful
       setIsSaved(true);
@@ -180,7 +180,7 @@ export function QuotationPage({
         }
 
         // ✅ FIX: api.post returns data directly, not response object
-        const data = await api.post('/documents', document, idempotencyKeyRef.current);
+        const data = await api.post('/documents', { ...document, idempotencyKey: idempotencyKeyRef.current });
 
         // ✅ If we got here without error, save was successful
         setIsSaved(true);
@@ -390,35 +390,35 @@ export function QuotationPage({
                       <span>฿{(summary.subtotal || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
                     </div>
                     
-                    {profile.wastePercentage > 0 && (
+                    {(profile.wastePercentage ?? 0) > 0 && (
                       <div className="flex justify-between p-2 sm:p-3 bg-amber-50 rounded-lg text-amber-800">
                         <span>ค่าของเสีย ({profile.wastePercentage}%):</span>
                         <span>฿{(summary.wasteAmount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
                       </div>
                     )}
                     
-                    {profile.overheadPercentage > 0 && (
+                    {(profile.overheadPercentage ?? 0) > 0 && (
                       <div className="flex justify-between p-2 sm:p-3 bg-blue-50 rounded-lg text-blue-800">
                         <span>ค่าดำเนินการ ({profile.overheadPercentage}%):</span>
                         <span>฿{(summary.overheadAmount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
                       </div>
                     )}
                     
-                    {profile.variancePercentage > 0 && (
+                    {(profile.variancePercentage ?? 0) > 0 && (
                       <div className="flex justify-between p-2 sm:p-3 bg-purple-50 rounded-lg text-purple-800">
                         <span>ค่าคลาดเคลื่อน ({profile.variancePercentage}%):</span>
                         <span>฿{(summary.varianceAmount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
                       </div>
                     )}
                     
-                    {profile.profitPercentage > 0 && (
+                    {(profile.profitPercentage ?? 0) > 0 && (
                       <div className="flex justify-between p-2 sm:p-3 bg-green-50 rounded-lg text-green-800">
                         <span>กำไร ({profile.profitPercentage}%):</span>
                         <span>฿{(summary.profitAmount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
                       </div>
                     )}
                     
-                    {profile.vatPercentage > 0 && (
+                    {(profile.vatPercentage ?? 0) > 0 && (
                       <div className="flex justify-between p-2 sm:p-3 bg-indigo-50 rounded-lg text-indigo-800">
                         <span>VAT ({profile.vatPercentage}%):</span>
                         <span>฿{(summary.vatAmount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
