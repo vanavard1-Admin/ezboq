@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:1080px; height:1080px; overflow:hidden; font-family:'Noto Sans Thai','Segoe UI',sans-serif; }
+  .card { width:1080px; height:1080px; background:#fff; display:flex; flex-direction:column; position:relative; }
+  .top { background:#1a1a1a; color:#fff; padding:40px 60px; }
+  .step-num { font-size:60px; font-weight:700; line-height:1; }
+  .step-title { font-size:28px; margin-top:8px; color:rgba(255,255,255,0.8); }
+  .middle { flex:1; display:flex; align-items:center; justify-content:center; padding:40px 60px; }
+  .docs-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; width:100%; }
+  .doc-item { background:#FAFAFA; border:2px solid #eee; border-radius:12px; padding:28px; text-align:center; }
+  .doc-icon { font-size:40px; margin-bottom:12px; }
+  .doc-name { font-size:20px; font-weight:600; color:#1a1a1a; }
+  .doc-desc { font-size:15px; color:#999; margin-top:6px; }
+  .bottom { padding:20px 60px 40px; }
+  .desc { font-size:20px; color:#888; }
+  .page-dots { position:absolute; bottom:20px; right:40px; display:flex; gap:8px; }
+  .dot { width:10px; height:10px; border-radius:50%; background:#ddd; }
+  .dot.active { background:#1a1a1a; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700&display=swap" rel="stylesheet">
+</head><body>
+<div class="card">
+  <div class="top">
+    <div class="step-num">03</div>
+    <div class="step-title">เลือกเอกสารที่ต้องการ</div>
+  </div>
+  <div class="middle">
+    <div class="docs-grid">
+      <div class="doc-item"><div class="doc-icon">📋</div><div class="doc-name">ใบเสนอราคา BOQ</div><div class="doc-desc">รายการวัสดุ + ค่าแรง</div></div>
+      <div class="doc-item"><div class="doc-icon">📝</div><div class="doc-name">สัญญาจ้าง</div><div class="doc-desc">สัญญารับเหมา + เงื่อนไข</div></div>
+      <div class="doc-item"><div class="doc-icon">📄</div><div class="doc-name">ใบแจ้งหนี้</div><div class="doc-desc">Invoice + กำหนดชำระ</div></div>
+      <div class="doc-item"><div class="doc-icon">🧾</div><div class="doc-name">ใบเสร็จรับเงิน</div><div class="doc-desc">Receipt + ภาษี</div></div>
+      <div class="doc-item"><div class="doc-icon">📊</div><div class="doc-name">แผนงาน</div><div class="doc-desc">Work Plan + Timeline</div></div>
+      <div class="doc-item"><div class="doc-icon">📑</div><div class="doc-name">ใบสั่งซื้อ PO</div><div class="doc-desc">Purchase Order</div></div>
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="desc">เอกสารครบทุกชนิด สำหรับงานรับเหมาและก่อสร้าง</div>
+  </div>
+  <div class="page-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div></div>
+</div>
+</body></html>

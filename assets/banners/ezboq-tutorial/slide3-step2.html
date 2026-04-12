@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:1080px; height:1080px; overflow:hidden; font-family:'Noto Sans Thai','Segoe UI',sans-serif; }
+  .card { width:1080px; height:1080px; background:#fff; display:flex; flex-direction:column; position:relative; }
+  .top { background:#1a1a1a; color:#fff; padding:40px 60px; }
+  .step-num { font-size:60px; font-weight:700; line-height:1; }
+  .step-title { font-size:28px; margin-top:8px; color:rgba(255,255,255,0.8); }
+  .middle { flex:1; display:flex; align-items:center; justify-content:center; padding:40px 60px; }
+  .features { list-style:none; width:100%; }
+  .features li { font-size:26px; color:#333; padding:20px 0; border-bottom:1px solid #eee; display:flex; align-items:center; gap:16px; }
+  .features li::before { content:"✓"; background:#1a1a1a; color:#fff; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .bottom { padding:20px 60px 40px; }
+  .desc { font-size:20px; color:#888; }
+  .page-dots { position:absolute; bottom:20px; right:40px; display:flex; gap:8px; }
+  .dot { width:10px; height:10px; border-radius:50%; background:#ddd; }
+  .dot.active { background:#1a1a1a; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700&display=swap" rel="stylesheet">
+</head><body>
+<div class="card">
+  <div class="top">
+    <div class="step-num">02</div>
+    <div class="step-title">สร้างโปรเจคใหม่</div>
+  </div>
+  <div class="middle">
+    <ul class="features">
+      <li>เลือก Template ที่ต้องการ (งานรับเหมา, ต่อเติม, ซ่อมแซม)</li>
+      <li>ตั้งชื่อโปรเจค + ที่อยู่ลูกค้า</li>
+      <li>ใส่พื้นที่ (ตร.ม.) + งบประมาณ</li>
+      <li>เลือกรายการวัสดุจาก BOQ สำเร็จรูป</li>
+      <li>ระบบคำนวณราคาให้อัตโนมัติ</li>
+    </ul>
+  </div>
+  <div class="bottom">
+    <div class="desc">แค่กรอกข้อมูล ระบบจัดการเอกสารให้ทั้งหมด</div>
+  </div>
+  <div class="page-dots"><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+</body></html>

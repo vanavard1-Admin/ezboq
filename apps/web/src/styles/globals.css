@@ -1,0 +1,29 @@
+@layer base {
+  #root {
+    min-height: 100vh;
+  }
+}
+
+/* ── Print mode ─────────────────────────────────── */
+@media print {
+  body, #root {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* When DocumentViewer is open: hide main content, show only document */
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  /* DocumentViewer overlay becomes static flow for print */
+  [data-print-document] {
+    position: static !important;
+    overflow: visible !important;
+  }
+
+  [data-print-document] .overflow-y-auto {
+    overflow: visible !important;
+  }
+}

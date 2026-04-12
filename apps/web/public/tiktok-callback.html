@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Authorization</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #f5f5f5; }
+    .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); text-align: center; max-width: 500px; }
+    .success { color: #10b981; }
+    .error { color: #ef4444; }
+    code { background: #f3f4f6; padding: 4px 8px; border-radius: 4px; font-size: 14px; word-break: break-all; }
+    #status { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>TikTok Authorization</h1>
+    <div id="status">กำลังดำเนินการ...</div>
+    <div id="code-display" style="margin-top:1rem;display:none;">
+      <p>Authorization Code:</p>
+      <code id="auth-code"></code>
+      <p style="margin-top:1rem;font-size:14px;color:#666;">คัดลอก code นี้ส่งให้ม้าน้ำใน Discord</p>
+    </div>
+  </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const error = params.get('error');
+    const statusEl = document.getElementById('status');
+    const codeEl = document.getElementById('code-display');
+    const authCodeEl = document.getElementById('auth-code');
+
+    if (error) {
+      statusEl.innerHTML = `<p class="error">Error: ${error}</p><p>${params.get('error_description') || ''}</p>`;
+    } else if (code) {
+      statusEl.innerHTML = '<p class="success">Authorization สำเร็จ!</p>';
+      authCodeEl.textContent = code;
+      codeEl.style.display = 'block';
+    } else {
+      statusEl.innerHTML = '<p class="error">ไม่ได้รับ authorization code</p>';
+    }
+  </script>
+</body>
+</html>

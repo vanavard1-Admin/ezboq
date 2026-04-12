@@ -1,0 +1,105 @@
+{
+  "info": {
+    "name": "EzBOQ Firebase Functions",
+    "description": "Core Firebase Functions endpoints for generate PDF, LINE delivery, slip OCR task, and Lazada integration.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "project_id", "value": "ezdoc-v1-th" },
+    { "key": "function_base", "value": "https://asia-southeast1-{{project_id}}.cloudfunctions.net" },
+    { "key": "firebase_id_token", "value": "" },
+    { "key": "document_id", "value": "doc_123" },
+    { "key": "business_id", "value": "biz_123" },
+    { "key": "redirect_uri", "value": "https://ezdoc-v1-th.web.app/" },
+    { "key": "keyword", "value": "ปูนซีเมนต์" },
+    { "key": "category_id", "value": "cement-mortar" }
+  ],
+  "item": [
+    {
+      "name": "Generate PDF",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{firebase_id_token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"businessId\": \"{{business_id}}\"\n}"
+        },
+        "url": {
+          "raw": "{{function_base}}/api/v1/documents/{{document_id}}/generate-pdf",
+          "host": ["{{function_base}}"],
+          "path": ["api", "v1", "documents", "{{document_id}}", "generate-pdf"]
+        }
+      }
+    },
+    {
+      "name": "Send LINE",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{firebase_id_token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"businessId\": \"{{business_id}}\"\n}"
+        },
+        "url": {
+          "raw": "{{function_base}}/api/v1/documents/{{document_id}}/deliver",
+          "host": ["{{function_base}}"],
+          "path": ["api", "v1", "documents", "{{document_id}}", "deliver"]
+        }
+      }
+    },
+    {
+      "name": "Verify Slip (Internal OCR Task)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer <cloud_tasks_oidc_token>" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"uid_123\",\n  \"lineUserId\": \"Uxxxxxxxx\",\n  \"messageId\": \"1234567890\",\n  \"purchaseId\": \"purchase_123\"\n}"
+        },
+        "url": {
+          "raw": "{{function_base}}/processSlipOcrTask",
+          "host": ["{{function_base}}"],
+          "path": ["processSlipOcrTask"]
+        }
+      }
+    },
+    {
+      "name": "Lazada Auth URL",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{function_base}}/lazadaAuthorizeUrl?redirectUri={{redirect_uri}}",
+          "host": ["{{function_base}}"],
+          "path": ["lazadaAuthorizeUrl"],
+          "query": [
+            { "key": "redirectUri", "value": "{{redirect_uri}}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Lazada Products",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{function_base}}/lazadaProductSearch?keyword={{keyword}}&categoryId={{category_id}}",
+          "host": ["{{function_base}}"],
+          "path": ["lazadaProductSearch"],
+          "query": [
+            { "key": "keyword", "value": "{{keyword}}" },
+            { "key": "categoryId", "value": "{{category_id}}" }
+          ]
+        }
+      }
+    }
+  ]
+}

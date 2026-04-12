@@ -1,0 +1,9 @@
+# Ignore auth state files
+user.json
+*.json
+
+
+
+
+
+

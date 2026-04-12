@@ -1,0 +1,72 @@
+[
+  {
+    "name": "01-ezboq-home",
+    "url": "https://ezboq.com",
+    "ok": true,
+    "finalUrl": "https://ezboq.com/",
+    "status": 200,
+    "checks": [
+      {
+        "label": "page contains ezboq text",
+        "pass": true,
+        "count": 2
+      }
+    ],
+    "error": null
+  },
+  {
+    "name": "02-doc-login",
+    "url": "https://doc.ezboq.com/login",
+    "ok": false,
+    "finalUrl": "https://doc.ezboq.com/login",
+    "status": 404,
+    "checks": [
+      {
+        "label": "email login CTA",
+        "pass": false,
+        "count": 0
+      },
+      {
+        "label": "google auth CTA",
+        "pass": false,
+        "count": 0
+      },
+      {
+        "label": "line auth CTA",
+        "pass": false,
+        "count": 0
+      }
+    ],
+    "error": null
+  },
+  {
+    "name": "03-shop-page",
+    "url": "https://ezboq.com/shop",
+    "ok": false,
+    "finalUrl": "https://ezboq.com/shop",
+    "status": 404,
+    "checks": [
+      {
+        "label": "shop-like content",
+        "pass": false,
+        "count": 0
+      }
+    ],
+    "error": null
+  },
+  {
+    "name": "04-doc-dashboard-gate",
+    "url": "https://doc.ezboq.com/dashboard/documents",
+    "ok": false,
+    "finalUrl": "https://doc.ezboq.com/dashboard/documents",
+    "status": 404,
+    "checks": [
+      {
+        "label": "redirect or login visible",
+        "pass": false,
+        "count": 0
+      }
+    ],
+    "error": null
+  }
+]

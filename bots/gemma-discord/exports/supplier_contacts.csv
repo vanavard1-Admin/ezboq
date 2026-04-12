@@ -1,0 +1,19 @@
+﻿id,supplier_id,contact_type,contact_value,normalized_value,contact_label,is_primary,confidence_score,source_kb_id,source_title,source_row_id,created_at
+2,1,line,@thaiwatsadu,@thaiwatsadu,,1,0.94,279,"รวม Directory ร้านวัสดุ — บุญถาวร, โฮมโปร, ไทวัสดุ",11,2026-04-09 11:03:53
+1,1,phone,1308,1308,ช่องทางติดต่อ: Call Center 1308 | Line: @thaiwatsadu | สาขา: 80+ ทั่วประเทศ,1,0.96,279,"รวม Directory ร้านวัสดุ — บุญถาวร, โฮมโปร, ไทวัสดุ",11,2026-04-09 11:03:53
+4,2,line,@boonthavorn,@boonthavorn,,1,0.94,279,"รวม Directory ร้านวัสดุ — บุญถาวร, โฮมโปร, ไทวัสดุ",13,2026-04-09 11:03:53
+3,2,phone,02-657-1111,026571111,ช่องทางติดต่อ: Call Center 02-657-1111 | Line: @boonthavorn | สาขา: 15+ (เน้นหัวเมือง),1,0.96,279,"รวม Directory ร้านวัสดุ — บุญถาวร, โฮมโปร, ไทวัสดุ",13,2026-04-09 11:03:53
+6,3,line,@homepro,@homepro,,1,0.94,279,"รวม Directory ร้านวัสดุ — บุญถาวร, โฮมโปร, ไทวัสดุ",12,2026-04-09 11:03:53
+5,3,phone,1284,1284,ช่องทางติดต่อ: Call Center 1284 | Line: @homepro | สาขา: 90+ ทั่วประเทศ,1,0.96,279,"รวม Directory ร้านวัสดุ — บุญถาวร, โฮมโปร, ไทวัสดุ",12,2026-04-09 11:03:53
+9,4,email,project@beger.co.th,project@beger.co.th,,1,0.92,273,"ซัพพลายเออร์สี — TOA, Jotun, Beger, Nippon",9,2026-04-09 11:03:53
+8,4,line,@beger.co.th,@beger.co.th,,1,0.94,273,"ซัพพลายเออร์สี — TOA, Jotun, Beger, Nippon",9,2026-04-09 11:03:53
+7,4,phone,02-815-5888,028155888,,1,0.96,273,"ซัพพลายเออร์สี — TOA, Jotun, Beger, Nippon",9,2026-04-09 11:03:53
+11,5,email,thailand@jotun.com,thailand@jotun.com,,1,0.76,273,"ซัพพลายเออร์สี — TOA, Jotun, Beger, Nippon",8,2026-04-09 11:03:53
+10,5,phone,02-022-9888,020229888,,1,0.76,273,"ซัพพลายเออร์สี — TOA, Jotun, Beger, Nippon",8,2026-04-09 11:03:53
+13,6,line,@lamptitude,@lamptitude,,1,0.9,267,"ซัพพลายเออร์ไฟฟ้า — Lamptitude, Philips, Panasonic",2,2026-04-09 11:03:53
+12,6,phone,02-392-1717,023921717,โทร: 02-392-1717 (สำนักงานใหญ่/สาขาเอกมัย),1,0.9,267,"ซัพพลายเออร์ไฟฟ้า — Lamptitude, Philips, Panasonic",2,2026-04-09 11:03:53
+16,7,line,@SCGBrand,@scgbrand,,1,0.9,269,"ซัพพลายเออร์ปูนซีเมนต์ — SCG, TPI, INSEE",5,2026-04-09 11:03:53
+14,7,phone,02-586-2222,025862222,,1,0.9,269,"ซัพพลายเออร์ปูนซีเมนต์ — SCG, TPI, INSEE",5,2026-04-09 11:03:53
+15,7,phone,02-555-5555,025555555,,0,0.9,269,"ซัพพลายเออร์ปูนซีเมนต์ — SCG, TPI, INSEE",5,2026-04-09 11:03:53
+18,8,email,contact@toagroup.com,contact@toagroup.com,,1,0.76,273,"ซัพพลายเออร์สี — TOA, Jotun, Beger, Nippon",7,2026-04-09 11:03:53
+17,8,phone,02-335-5555,023355555,,1,0.76,273,"ซัพพลายเออร์สี — TOA, Jotun, Beger, Nippon",7,2026-04-09 11:03:53

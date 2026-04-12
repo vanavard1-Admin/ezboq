@@ -1,0 +1,8 @@
+{
+  "buildCommand": "npm run build:web",
+  "outputDirectory": "apps/web/build",
+  "rewrites": [
+    { "source": "/__/auth/:path*", "destination": "https://ezdoc-v1-th.firebaseapp.com/__/auth/:path*" },
+    { "source": "/(.*)", "destination": "/" }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-04-09T14:38:51Z",
+  "gcsUri": "gs://ezdoc-v1-th.firebasestorage.app/project-memory/latest.json",
+  "firestoreProjectId": "ezdoc-v1-th",
+  "namespace": "ezboq-construction",
+  "gcsSummaryCounts": {
+    "project_memory": 252,
+    "code_index": 320,
+    "test_observations": 5,
+    "project_issues": 9
+  },
+  "collections": {
+    "project_memory": {
+      "expectedCount": 252,
+      "expectedUnique": 252,
+      "firestoreActiveDocs": 252,
+      "firestoreUnique": 252,
+      "matchedUnique": 252,
+      "missingUnique": 0,
+      "unexpectedUnique": 0,
+      "duplicateDocs": 0,
+      "sampleMissing": [],
+      "sampleUnexpected": []
+    },
+    "code_index": {
+      "expectedCount": 320,
+      "expectedUnique": 320,
+      "firestoreActiveDocs": 320,
+      "firestoreUnique": 320,
+      "matchedUnique": 320,
+      "missingUnique": 0,
+      "unexpectedUnique": 0,
+      "duplicateDocs": 0,
+      "sampleMissing": [],
+      "sampleUnexpected": []
+    },
+    "incidents": {
+      "expectedCount": 0,
+      "expectedUnique": 0,
+      "firestoreActiveDocs": 0,
+      "firestoreUnique": 0,
+      "matchedUnique": 0,
+      "missingUnique": 0,
+      "unexpectedUnique": 0,
+      "duplicateDocs": 0,
+      "sampleMissing": [],
+      "sampleUnexpected": []
+    },
+    "project_issues": {
+      "expectedCount": 9,
+      "expectedUnique": 9,
+      "firestoreActiveDocs": 9,
+      "firestoreUnique": 9,
+      "matchedUnique": 9,
+      "missingUnique": 0,
+      "unexpectedUnique": 0,
+      "duplicateDocs": 0,
+      "sampleMissing": [],
+      "sampleUnexpected": []
+    },
+    "test_observations": {
+      "expectedCount": 5,
+      "expectedUnique": 5,
+      "firestoreActiveDocs": 5,
+      "firestoreUnique": 5,
+      "matchedUnique": 5,
+      "missingUnique": 0,
+      "unexpectedUnique": 0,
+      "duplicateDocs": 0,
+      "sampleMissing": [],
+      "sampleUnexpected": []
+    }
+  },
+  "ok": true,
+  "exact": true
+}

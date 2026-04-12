@@ -1,0 +1,10 @@
+{
+  "generatedAt": "2026-04-09T14:21:49Z",
+  "total": 601,
+  "counts": {
+    "project_memory": 252,
+    "code_index": 320,
+    "test_observations": 5,
+    "incidents": 24
+  }
+}

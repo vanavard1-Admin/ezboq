@@ -1,0 +1,7 @@
+{
+  "dbPath": "/Users/l168/Documents/ใบเสนอราคา/bots/gemma-discord/gemma-memory.db",
+  "outputDir": "/Users/l168/Documents/ใบเสนอราคา/bots/gemma-discord/exports",
+  "knowledge_base_rows": 252,
+  "normalized_suppliers_rows": 13,
+  "normalized_material_prices_rows": 226
+}

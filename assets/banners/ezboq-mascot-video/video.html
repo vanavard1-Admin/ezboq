@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:1080px; height:1920px; overflow:hidden; font-family:'Noto Sans Thai','Segoe UI',sans-serif; }
+
+  .frame { position:absolute; inset:0; display:flex; flex-direction:column; opacity:0; transition:opacity 0.6s; }
+  .frame.active { opacity:1; }
+
+  /* Mascot area - bottom left */
+  .mascot-area { position:fixed; bottom:40px; left:40px; z-index:100; }
+  .mascot-img { width:280px; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.2)); transition:transform 0.3s; }
+  .mascot-img.bounce { animation:mascotBounce 0.6s ease; }
+  .speech-bubble { position:absolute; bottom:260px; left:120px; background:#fff; border-radius:20px; padding:16px 24px; font-size:20px; color:#1a1a1a; max-width:300px; box-shadow:0 4px 16px rgba(0,0,0,0.1); opacity:0; transition:all 0.4s; }
+  .speech-bubble.show { opacity:1; }
+  .speech-bubble::after { content:''; position:absolute; bottom:-12px; left:40px; border:8px solid transparent; border-top-color:#fff; }
+
+  /* Frame 1: Intro */
+  .f1 { background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%); align-items:center; justify-content:center; text-align:center; color:#fff; }
+  .f1 .logo { width:220px; opacity:0; transform:scale(0.5); transition:all 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+  .f1 .logo.show { opacity:1; transform:scale(1); }
+  .f1 .title { font-size:44px; font-weight:700; margin-top:24px; opacity:0; transition:all 0.6s ease 0.3s; }
+  .f1 .title.show { opacity:1; }
+  .f1 .subtitle { font-size:22px; color:rgba(255,255,255,0.6); margin-top:12px; opacity:0; transition:all 0.6s ease 0.5s; }
+  .f1 .subtitle.show { opacity:1; }
+
+  /* Frame 2: Problem */
+  .f2 { background:#1a1a1a; padding:120px 60px 360px; color:#fff; }
+  .f2 .header { font-size:42px; font-weight:700; color:#ff4444; margin-bottom:40px; opacity:0; transition:all 0.5s; }
+  .f2 .header.show { opacity:1; }
+  .pain { display:flex; align-items:center; gap:20px; padding:20px 24px; margin-bottom:14px; background:rgba(255,60,60,0.08); border-left:4px solid #ff4444; border-radius:0 14px 14px 0; font-size:22px; opacity:0; transform:translateX(-40px); transition:all 0.4s; }
+  .pain.show { opacity:1; transform:translateX(0); }
+  .pain-icon { font-size:32px; }
+
+  /* Frame 3: Solution */
+  .f3 { background:#fff; align-items:center; justify-content:center; text-align:center; padding-bottom:300px; }
+  .f3 .big-logo { width:300px; opacity:0; transform:scale(0.3); transition:all 1s cubic-bezier(0.34,1.56,0.64,1); }
+  .f3 .big-logo.show { opacity:1; transform:scale(1); }
+  .f3 .solve { font-size:48px; font-weight:700; color:#1a1a1a; margin-top:30px; opacity:0; transition:all 0.6s ease 0.4s; }
+  .f3 .solve.show { opacity:1; }
+  .f3 .tagline { font-size:24px; color:#888; margin-top:12px; opacity:0; transition:all 0.6s ease 0.6s; }
+  .f3 .tagline.show { opacity:1; }
+
+  /* Frame 4: Features */
+  .f4 { background:#fff; padding:120px 60px 360px; }
+  .f4 .header { font-size:38px; font-weight:700; color:#1a1a1a; margin-bottom:30px; text-align:center; opacity:0; transition:all 0.5s; }
+  .f4 .header.show { opacity:1; }
+  .feat { display:flex; align-items:center; gap:20px; padding:20px 24px; margin-bottom:14px; background:rgba(26,26,26,0.04); border-left:4px solid #1a1a1a; border-radius:0 14px 14px 0; font-size:22px; color:#1a1a1a; opacity:0; transform:translateX(-40px); transition:all 0.4s; }
+  .feat.show { opacity:1; transform:translateX(0); }
+  .feat-icon { font-size:32px; }
+
+  /* Frame 5: CTA */
+  .f5 { background:#1a1a1a; align-items:center; justify-content:center; text-align:center; color:#fff; padding-bottom:300px; }
+  .f5 .cta-logo { width:200px; filter:brightness(10); opacity:0; transition:all 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+  .f5 .cta-logo.show { opacity:1; transform:scale(1); }
+  .f5 .cta-text { font-size:52px; font-weight:700; margin-top:30px; opacity:0; transition:all 0.6s ease 0.3s; }
+  .f5 .cta-text.show { opacity:1; }
+  .f5 .url-btn { font-size:28px; margin-top:24px; background:rgba(255,255,255,0.15); padding:16px 44px; border-radius:50px; opacity:0; transition:all 0.6s ease 0.5s; }
+  .f5 .url-btn.show { opacity:1; }
+  .f5 .free-text { font-size:22px; color:rgba(255,255,255,0.4); margin-top:20px; opacity:0; transition:all 0.6s ease 0.7s; }
+  .f5 .free-text.show { opacity:1; }
+
+  @keyframes mascotBounce { 0%{transform:translateY(0)} 30%{transform:translateY(-20px)} 60%{transform:translateY(5px)} 100%{transform:translateY(0)} }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700&display=swap" rel="stylesheet">
+</head><body>
+
+<!-- Mascot always visible -->
+<div class="mascot-area" id="mascot">
+  <div class="speech-bubble" id="bubble"></div>
+  <img src="/Users/l168/.claude/mcp-servers/image-gen/images/ezboq-mascot.png" class="mascot-img" id="mascotImg">
+</div>
+
+<!-- Frame 1: Intro -->
+<div class="frame f1" id="f1">
+  <img src="/Users/l168/Documents/ใบเสนอราคา/apps/web/public/ezboq-logo.png" class="logo" id="f1logo">
+  <div class="title" id="f1title">ทำไมช่างรับเหมา<br>ถึงต้องใช้ EzBOQ?</div>
+  <div class="subtitle" id="f1sub">น้องอีซี่จะมาเล่าให้ฟัง 🐱</div>
+</div>
+
+<!-- Frame 2: Problem -->
+<div class="frame f2" id="f2">
+  <div class="header" id="f2h">😩 ปัญหาที่เจอทุกวัน</div>
+  <div class="pain" id="pa1"><span class="pain-icon">📄</span>ใบเสนอราคาต้องพิมพ์ใหม่ทุกครั้ง</div>
+  <div class="pain" id="pa2"><span class="pain-icon">🧾</span>ใบกำกับภาษีผิดบ่อย แก้ไม่จบ</div>
+  <div class="pain" id="pa3"><span class="pain-icon">📑</span>เอกสารกองเป็นตั้ง หาไม่เจอ</div>
+  <div class="pain" id="pa4"><span class="pain-icon">🧮</span>คำนวณ BOQ ผิดพลาดบ่อย</div>
+  <div class="pain" id="pa5"><span class="pain-icon">⏰</span>เสียเวลาทำเอกสาร<br>มากกว่าทำงานจริง</div>
+</div>
+
+<!-- Frame 3: Solution reveal -->
+<div class="frame f3" id="f3">
+  <img src="/Users/l168/Documents/ใบเสนอราคา/apps/web/public/ezboq-logo.png" class="big-logo" id="f3logo">
+  <div class="solve" id="f3solve">EzBOQ<br>แก้ได้หมด!</div>
+  <div class="tagline" id="f3tag">ใบเสนอราคาออนไลน์ ง่ายแค่ปลายนิ้ว</div>
+</div>
+
+<!-- Frame 4: Features -->
+<div class="frame f4" id="f4">
+  <div class="header" id="f4h">✨ ทำได้ครบจบที่เดียว</div>
+  <div class="feat" id="fe1"><span class="feat-icon">⚡</span>สร้างใบเสนอราคาได้ใน 5 นาที</div>
+  <div class="feat" id="fe2"><span class="feat-icon">📋</span>ครบทุกเอกสาร BOQ ถึง Receipt</div>
+  <div class="feat" id="fe3"><span class="feat-icon">📱</span>ใช้ได้ทุกที่ ทั้ง PC และมือถือ</div>
+  <div class="feat" id="fe4"><span class="feat-icon">💬</span>ส่ง PDF ผ่าน LINE ได้เลย</div>
+  <div class="feat" id="fe5"><span class="feat-icon">🆓</span>ฟรี! ไม่มีค่าใช้จ่าย</div>
+</div>
+
+<!-- Frame 5: CTA -->
+<div class="frame f5" id="f5">
+  <img src="/Users/l168/Documents/ใบเสนอราคา/apps/web/public/ezboq-logo.png" class="cta-logo" id="f5logo">
+  <div class="cta-text" id="f5cta">เริ่มใช้ฟรี<br>วันนี้!</div>
+  <div class="url-btn" id="f5url">ezboq.com</div>
+  <div class="free-text" id="f5free">🆓 ฟรี ไม่มีค่าใช้จ่าย</div>
+</div>
+
+<script>
+window.step = 0;
+window.advance = function() {
+  const s = window.step++;
+  const $ = id => document.getElementById(id);
+  const show = id => $(id)?.classList.add('show');
+  const activate = id => $(id)?.classList.add('active');
+  const deactivate = id => $(id)?.classList.remove('active');
+  const bubble = (text) => { $('bubble').textContent = text; $('bubble').classList.add('show'); };
+  const hideBubble = () => { $('bubble').classList.remove('show'); };
+  const bounce = () => { $('mascotImg').classList.remove('bounce'); void $('mascotImg').offsetWidth; $('mascotImg').classList.add('bounce'); };
+
+  // Intro: 0-7
+  if(s===0){ activate('f1'); bounce(); bubble('สวัสดีครับ!'); }
+  if(s===1){ show('f1logo'); }
+  if(s===2){ show('f1title'); bubble('ผมน้องอีซี่ครับ'); bounce(); }
+  if(s===3){ show('f1sub'); }
+  if(s===4){ /* hold */ }
+  if(s===5){ /* hold */ }
+  if(s===6){ /* hold */ }
+  if(s===7){ hideBubble(); }
+
+  // Problem: 8-19
+  if(s===8){ deactivate('f1'); activate('f2'); bounce(); bubble('ปัญหาที่เจอทุกวัน...'); }
+  if(s===9){ show('f2h'); }
+  if(s===10){ show('pa1'); bubble('พิมพ์ใหม่ทุกครั้ง!'); bounce(); }
+  if(s===11){ show('pa2'); }
+  if(s===12){ show('pa3'); bubble('หาไม่เจอเลย!'); bounce(); }
+  if(s===13){ show('pa4'); }
+  if(s===14){ show('pa5'); bubble('เสียเวลามาก!'); bounce(); }
+  if(s===15){ /* hold */ }
+  if(s===16){ /* hold */ }
+  if(s===17){ /* hold */ }
+  if(s===18){ /* hold */ }
+  if(s===19){ hideBubble(); }
+
+  // Solution: 20-26
+  if(s===20){ deactivate('f2'); activate('f3'); bounce(); }
+  if(s===21){ show('f3logo'); bubble('EzBOQ มาแล้ว!'); bounce(); }
+  if(s===22){ show('f3solve'); }
+  if(s===23){ show('f3tag'); bubble('ง่ายมากครับ'); }
+  if(s===24){ /* hold */ }
+  if(s===25){ /* hold */ }
+  if(s===26){ hideBubble(); }
+
+  // Features: 27-37
+  if(s===27){ deactivate('f3'); activate('f4'); bounce(); bubble('มาดูฟีเจอร์กัน!'); }
+  if(s===28){ show('f4h'); }
+  if(s===29){ show('fe1'); bubble('แค่ 5 นาที!'); bounce(); }
+  if(s===30){ show('fe2'); }
+  if(s===31){ show('fe3'); bubble('มือถือก็ได้!'); bounce(); }
+  if(s===32){ show('fe4'); }
+  if(s===33){ show('fe5'); bubble('ฟรีด้วยนะ!'); bounce(); }
+  if(s===34){ /* hold */ }
+  if(s===35){ /* hold */ }
+  if(s===36){ /* hold */ }
+  if(s===37){ hideBubble(); }
+
+  // CTA: 38-44
+  if(s===38){ deactivate('f4'); activate('f5'); bounce(); }
+  if(s===39){ show('f5logo'); }
+  if(s===40){ show('f5cta'); bubble('เริ่มใช้ฟรีเลย!'); bounce(); }
+  if(s===41){ show('f5url'); }
+  if(s===42){ show('f5free'); bubble('ezboq.com ครับ!'); bounce(); }
+  if(s===43){ /* hold */ }
+  if(s===44){ /* hold */ }
+};
+</script>
+</body></html>

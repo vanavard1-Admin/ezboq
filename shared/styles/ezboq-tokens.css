@@ -1,0 +1,980 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   EzBOQ Design System — "Zen Contractor"
+   Japanese minimal + Thai practicality | Warm wood + Earth tones
+   Version: 2.0.0
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Tailwind v4 Theme Registration ─────────────────────────────────── */
+@theme inline {
+  /* shadcn semantic colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-ring: var(--ring);
+
+  /* Extended semantic colors */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  /* Brand colors — accessible via bg-wood-500 etc. */
+  --color-wood-50: #faf8f5;
+  --color-wood-100: #f3efe8;
+  --color-wood-200: #e8e0d4;
+  --color-wood-300: #d4c8b5;
+  --color-wood-400: #bfad94;
+  --color-wood-500: #a89279;
+  --color-wood-600: #8d7560;
+  --color-wood-700: #6f5c4b;
+  --color-wood-800: #574a3d;
+  --color-wood-900: #3d3430;
+  --color-wood-950: #2a2320;
+
+  --color-matcha-50: #f3f8f4;
+  --color-matcha-100: #e2efe5;
+  --color-matcha-200: #c5dfcb;
+  --color-matcha-300: #9cc7a5;
+  --color-matcha-400: #6daa7a;
+  --color-matcha-500: #4d8f5e;
+  --color-matcha-600: #3b7349;
+  --color-matcha-700: #305c3c;
+  --color-matcha-800: #294a33;
+  --color-matcha-900: #233d2b;
+  --color-matcha-950: #122117;
+
+  --color-kinari-50: #fefdfb;
+  --color-kinari-100: #fcf9f3;
+  --color-kinari-200: #f7f1e4;
+  --color-kinari-300: #f0e5cf;
+  --color-kinari-400: #e5d3b1;
+  --color-kinari-500: #d9c098;
+  --color-kinari-600: #c4a573;
+  --color-kinari-700: #a68753;
+  --color-kinari-800: #876d43;
+  --color-kinari-900: #6e5938;
+  --color-kinari-950: #3d301d;
+
+  --color-sumi-50: #f7f7f6;
+  --color-sumi-100: #eeeded;
+  --color-sumi-200: #dedddb;
+  --color-sumi-300: #c3c1be;
+  --color-sumi-400: #a5a29e;
+  --color-sumi-500: #8a8683;
+  --color-sumi-600: #716e6b;
+  --color-sumi-700: #5d5b58;
+  --color-sumi-800: #4e4c4a;
+  --color-sumi-900: #3a3937;
+  --color-sumi-950: #1c1b1a;
+
+  /* Typography — Thai-optimized font stack */
+  --font-sans: 'Sarabun', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: 'IBM Plex Sans Thai', 'Sarabun', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+
+  /* Font size scale — readable for Thai characters */
+  --text-2xs: 0.625rem;       /* 10px — overline */
+  --text-xs: 0.75rem;         /* 12px — caption */
+  --text-sm: 0.8125rem;       /* 13px — small body */
+  --text-base: 0.875rem;      /* 14px — body (Thai needs slightly larger) */
+  --text-md: 0.9375rem;       /* 15px — emphasized body */
+  --text-lg: 1.0625rem;       /* 17px — h6 */
+  --text-xl: 1.25rem;         /* 20px — h5 */
+  --text-2xl: 1.5rem;         /* 24px — h4 */
+  --text-3xl: 1.875rem;       /* 30px — h3 */
+  --text-4xl: 2.25rem;        /* 36px — h2 */
+  --text-5xl: 3rem;           /* 48px — h1 */
+
+  /* Line heights — generous for Thai readability */
+  --leading-none: 1;
+  --leading-tight: 1.3;
+  --leading-snug: 1.45;
+  --leading-normal: 1.65;     /* Thai body text sweet spot */
+  --leading-relaxed: 1.8;
+
+  /* Spacing scale (4px base grid) */
+  --spacing-0: 0;
+  --spacing-px: 1px;
+  --spacing-0\.5: 0.125rem;   /* 2px */
+  --spacing-1: 0.25rem;       /* 4px */
+  --spacing-1\.5: 0.375rem;   /* 6px */
+  --spacing-2: 0.5rem;        /* 8px */
+  --spacing-2\.5: 0.625rem;   /* 10px */
+  --spacing-3: 0.75rem;       /* 12px */
+  --spacing-4: 1rem;          /* 16px */
+  --spacing-5: 1.25rem;       /* 20px */
+  --spacing-6: 1.5rem;        /* 24px */
+  --spacing-8: 2rem;          /* 32px */
+  --spacing-10: 2.5rem;       /* 40px */
+  --spacing-12: 3rem;         /* 48px */
+  --spacing-16: 4rem;         /* 64px */
+  --spacing-20: 5rem;         /* 80px */
+  --spacing-24: 6rem;         /* 96px */
+
+  /* Border radius — rounded but not childish */
+  --radius-xs: 0.25rem;       /* 4px — badges, chips */
+  --radius-sm: 0.375rem;      /* 6px — buttons, inputs */
+  --radius-md: 0.5rem;        /* 8px — cards */
+  --radius-lg: 0.75rem;       /* 12px — dialogs, panels */
+  --radius-xl: 1rem;          /* 16px — hero sections */
+  --radius-2xl: 1.25rem;      /* 20px — large cards */
+  --radius-3xl: 1.5rem;       /* 24px — feature sections */
+  --radius-full: 9999px;      /* pill */
+
+  /* Breakpoints */
+  --breakpoint-xs: 475px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
+
+  /* Z-index scale */
+  --z-dropdown: 50;
+  --z-sticky: 100;
+  --z-overlay: 200;
+  --z-modal: 300;
+  --z-toast: 400;
+  --z-tooltip: 500;
+}
+
+/* ── 2. Light Mode (Default) ───────────────────────────────────────────── */
+@layer base {
+  :root {
+    /* ── App-level tokens ── */
+    --app-bg: #faf8f5;
+    --app-bg-elevated: rgba(255, 255, 255, 0.94);
+    --app-text: #2a2320;
+    --app-text-soft: #5d5b58;
+    --app-muted: #8a8683;
+    --app-border: rgba(169, 146, 121, 0.16);
+    --app-border-strong: rgba(111, 92, 75, 0.22);
+    --app-surface: rgba(255, 255, 255, 0.92);
+    --app-surface-soft: rgba(250, 248, 245, 0.86);
+
+    /* ── Shadows — warm-tinted ── */
+    --app-shadow-xs: 0 1px 2px rgba(42, 35, 32, 0.04);
+    --app-shadow-sm: 0 2px 6px rgba(42, 35, 32, 0.05);
+    --app-shadow-md: 0 8px 24px rgba(42, 35, 32, 0.06);
+    --app-shadow-lg: 0 16px 48px rgba(42, 35, 32, 0.07);
+    --app-shadow-xl: 0 24px 80px rgba(42, 35, 32, 0.09);
+
+    /* ── Layout tokens ── */
+    --app-radius-xl: 1.5rem;
+    --app-radius-lg: 1rem;
+    --app-radius-md: 0.75rem;
+    --app-space-page: clamp(1rem, 3vw, 2rem);
+    --app-space-section: clamp(1.5rem, 3vw, 2.5rem);
+    --app-content-max: 1280px;
+    --app-sidebar-width: 260px;
+    --app-topbar-height: 56px;
+    --app-bottom-tab-height: 64px;
+
+    /* ── Document-specific ── */
+    --doc-primary: #3d3430;
+    --doc-primary-hover: #2a2320;
+    --doc-primary-text: #ffffff;
+    --doc-accent: #8d7560;
+    --doc-accent-light: #f3efe8;
+    --doc-success: #3b7349;
+    --doc-warning: #a68753;
+    --doc-info: #4d8f5e;
+
+    /* ── shadcn semantic tokens — Light ── */
+    --background: #fefdfb;
+    --foreground: #2a2320;
+
+    --card: #ffffff;
+    --card-foreground: #2a2320;
+
+    --popover: rgba(255, 255, 255, 0.98);
+    --popover-foreground: #2a2320;
+
+    --primary: #574a3d;
+    --primary-foreground: #fefdfb;
+
+    --secondary: #f3efe8;
+    --secondary-foreground: #3d3430;
+
+    --muted: #f3efe8;
+    --muted-foreground: #8a8683;
+
+    --accent: #f3f8f4;
+    --accent-foreground: #305c3c;
+
+    --destructive: #c53030;
+    --destructive-foreground: #ffffff;
+
+    --success: #3b7349;
+    --success-foreground: #ffffff;
+
+    --warning: #a68753;
+    --warning-foreground: #ffffff;
+
+    --info: #4d8f5e;
+    --info-foreground: #ffffff;
+
+    --border: rgba(169, 146, 121, 0.18);
+    --input: rgba(169, 146, 121, 0.24);
+    --input-background: #ffffff;
+    --ring: rgba(87, 74, 61, 0.25);
+
+    /* ── Pipeline step colors ── */
+    --step-boq: #574a3d;
+    --step-po: #6daa7a;
+    --step-shop: #a68753;
+    --step-invoice: #4d8f5e;
+    --step-receipt: #305c3c;
+
+    /* ── Gold accent for premium elements ── */
+    --gold: #c4a573;
+    --gold-light: #e5d3b1;
+    --gold-dark: #876d43;
+  }
+
+  /* ── 3. Dark Mode ─────────────────────────────────────────────────────── */
+  .dark {
+    --app-bg: #1a1816;
+    --app-bg-elevated: rgba(38, 34, 30, 0.94);
+    --app-text: #e8e0d4;
+    --app-text-soft: #a5a29e;
+    --app-muted: #716e6b;
+    --app-border: rgba(169, 146, 121, 0.12);
+    --app-border-strong: rgba(169, 146, 121, 0.20);
+    --app-surface: rgba(38, 34, 30, 0.92);
+    --app-surface-soft: rgba(45, 40, 36, 0.86);
+
+    --app-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --app-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.25);
+    --app-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+    --app-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.35);
+    --app-shadow-xl: 0 24px 80px rgba(0, 0, 0, 0.4);
+
+    --doc-primary: #e8e0d4;
+    --doc-primary-hover: #f3efe8;
+    --doc-primary-text: #1a1816;
+    --doc-accent: #c4a573;
+    --doc-accent-light: #2d2824;
+    --doc-success: #6daa7a;
+    --doc-warning: #d9c098;
+    --doc-info: #9cc7a5;
+
+    --background: #1a1816;
+    --foreground: #e8e0d4;
+
+    --card: #221f1c;
+    --card-foreground: #e8e0d4;
+
+    --popover: rgba(34, 31, 28, 0.98);
+    --popover-foreground: #e8e0d4;
+
+    --primary: #d4c8b5;
+    --primary-foreground: #2a2320;
+
+    --secondary: #2d2824;
+    --secondary-foreground: #d4c8b5;
+
+    --muted: #2d2824;
+    --muted-foreground: #8a8683;
+
+    --accent: #1e2a20;
+    --accent-foreground: #9cc7a5;
+
+    --destructive: #e53e3e;
+    --destructive-foreground: #ffffff;
+
+    --success: #6daa7a;
+    --success-foreground: #122117;
+
+    --warning: #d9c098;
+    --warning-foreground: #3d301d;
+
+    --info: #9cc7a5;
+    --info-foreground: #122117;
+
+    --border: rgba(169, 146, 121, 0.14);
+    --input: rgba(169, 146, 121, 0.18);
+    --input-background: #221f1c;
+    --ring: rgba(212, 200, 181, 0.25);
+
+    --step-boq: #d4c8b5;
+    --step-po: #9cc7a5;
+    --step-shop: #d9c098;
+    --step-invoice: #6daa7a;
+    --step-receipt: #9cc7a5;
+
+    --gold: #d9c098;
+    --gold-light: #c4a573;
+    --gold-dark: #e5d3b1;
+  }
+
+  /* ── 4. Base Resets & Typography ──────────────────────────────────────── */
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    min-height: 100%;
+    background-color: var(--app-bg);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100%;
+    background:
+      radial-gradient(ellipse at top, rgba(243, 239, 232, 0.6), transparent 50%),
+      linear-gradient(180deg, var(--app-bg) 0%, #f3efe8 100%);
+    color: var(--app-text);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    letter-spacing: 0.01em;
+    line-height: var(--leading-normal);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .dark body {
+    background:
+      radial-gradient(ellipse at top, rgba(45, 40, 36, 0.6), transparent 50%),
+      linear-gradient(180deg, var(--app-bg) 0%, #151311 100%);
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  /* Headings use IBM Plex Sans Thai for clarity */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: var(--leading-tight);
+    color: var(--app-text);
+  }
+
+  ::selection {
+    background-color: #e5d3b1;
+    color: #2a2320;
+  }
+
+  .dark ::selection {
+    background-color: #574a3d;
+    color: #e8e0d4;
+  }
+
+  /* ── Scrollbar — warm tinted ── */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background: rgba(169, 146, 121, 0.3);
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(141, 117, 96, 0.45);
+    background-clip: content-box;
+  }
+}
+
+/* ── 5. Component Layer ────────────────────────────────────────────────── */
+@layer components {
+
+  /* ── Layout Shells ── */
+  .ez-shell {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--app-content-max);
+    padding-inline: var(--app-space-page);
+  }
+
+  .ez-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--app-space-section);
+  }
+
+  /* ── Dashboard Layout ── */
+  .ez-dashboard {
+    display: grid;
+    grid-template-columns: var(--app-sidebar-width) 1fr;
+    grid-template-rows: var(--app-topbar-height) 1fr;
+    min-height: 100vh;
+  }
+
+  @media (max-width: 1023px) {
+    .ez-dashboard {
+      grid-template-columns: 1fr;
+      grid-template-rows: var(--app-topbar-height) 1fr var(--app-bottom-tab-height);
+    }
+  }
+
+  /* ── Cards ── */
+  .ez-card {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-lg);
+    background: var(--app-bg-elevated);
+    box-shadow: var(--app-shadow-sm);
+    backdrop-filter: blur(12px);
+  }
+
+  .ez-card-elevated {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-lg);
+    background: var(--app-bg-elevated);
+    box-shadow: var(--app-shadow-md);
+    backdrop-filter: blur(18px);
+  }
+
+  .ez-card-outlined {
+    border: 1px solid var(--app-border-strong);
+    border-radius: var(--app-radius-lg);
+    background: transparent;
+  }
+
+  .ez-card-filled {
+    border: none;
+    border-radius: var(--app-radius-lg);
+    background: var(--app-surface-soft);
+  }
+
+  /* ── Hero Section ── */
+  .ez-hero {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-xl);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.96),
+      rgba(243, 239, 232, 0.9)
+    );
+    box-shadow: var(--app-shadow-lg);
+  }
+
+  .dark .ez-hero {
+    background: linear-gradient(
+      135deg,
+      rgba(34, 31, 28, 0.96),
+      rgba(45, 40, 36, 0.9)
+    );
+  }
+
+  /* ── Navigation: Sidebar ── */
+  .ez-sidebar {
+    width: var(--app-sidebar-width);
+    border-right: 1px solid var(--app-border);
+    background: var(--app-bg-elevated);
+    backdrop-filter: blur(16px);
+    padding: 1rem 0.75rem;
+  }
+
+  .ez-sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
+    color: var(--app-text-soft);
+    font-size: 0.875rem;
+    font-weight: 400;
+    transition: all 150ms ease;
+    cursor: pointer;
+  }
+
+  .ez-sidebar-item:hover {
+    background: var(--app-surface-soft);
+    color: var(--app-text);
+  }
+
+  .ez-sidebar-item[data-active="true"],
+  .ez-sidebar-item.active {
+    background: var(--secondary);
+    color: var(--primary);
+    font-weight: 500;
+  }
+
+  /* ── Navigation: Top Bar ── */
+  .ez-topbar {
+    height: var(--app-topbar-height);
+    border-bottom: 1px solid var(--app-border);
+    background: var(--app-bg-elevated);
+    backdrop-filter: blur(16px);
+    display: flex;
+    align-items: center;
+    padding-inline: var(--app-space-page);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  /* ── Navigation: Bottom Tab (Mobile) ── */
+  .ez-bottom-tab {
+    height: var(--app-bottom-tab-height);
+    border-top: 1px solid var(--app-border);
+    background: var(--app-bg-elevated);
+    backdrop-filter: blur(16px);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-bottom: env(safe-area-inset-bottom);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+
+  .ez-bottom-tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-sm);
+    color: var(--app-muted);
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: color 150ms ease;
+  }
+
+  .ez-bottom-tab-item[data-active="true"],
+  .ez-bottom-tab-item.active {
+    color: var(--primary);
+  }
+
+  /* ── Buttons ── */
+  .ez-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    transition: all 150ms ease;
+    cursor: pointer;
+    outline: none;
+    white-space: nowrap;
+  }
+
+  .ez-btn-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border: 1px solid transparent;
+    box-shadow: var(--app-shadow-xs);
+  }
+
+  .ez-btn-primary:hover {
+    opacity: 0.9;
+    box-shadow: var(--app-shadow-sm);
+  }
+
+  .ez-btn-secondary {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--app-border);
+  }
+
+  .ez-btn-secondary:hover {
+    background: var(--muted);
+  }
+
+  .ez-btn-ghost {
+    background: transparent;
+    color: var(--app-text-soft);
+    border: 1px solid transparent;
+  }
+
+  .ez-btn-ghost:hover {
+    background: var(--app-surface-soft);
+    color: var(--app-text);
+  }
+
+  .ez-btn-destructive {
+    background: var(--destructive);
+    color: var(--destructive-foreground);
+    border: 1px solid transparent;
+  }
+
+  .ez-btn-destructive:hover {
+    opacity: 0.9;
+  }
+
+  .ez-btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #fefdfb;
+    border: 1px solid transparent;
+    box-shadow: var(--app-shadow-xs);
+  }
+
+  .ez-btn-gold:hover {
+    box-shadow: var(--app-shadow-sm), 0 0 0 1px var(--gold-light);
+  }
+
+  /* Button sizes */
+  .ez-btn-sm { padding: 0.375rem 0.75rem; font-size: 0.8125rem; }
+  .ez-btn-lg { padding: 0.625rem 1.5rem; font-size: 0.9375rem; }
+  .ez-btn-icon { padding: 0.5rem; aspect-ratio: 1; }
+
+  /* ── Form Inputs ── */
+  .ez-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--input);
+    border-radius: var(--radius-sm);
+    background: var(--input-background);
+    color: var(--foreground);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+    outline: none;
+  }
+
+  .ez-input::placeholder {
+    color: var(--muted-foreground);
+  }
+
+  .ez-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--ring);
+  }
+
+  .ez-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .ez-input[aria-invalid="true"] {
+    border-color: var(--destructive);
+    box-shadow: 0 0 0 2px rgba(197, 48, 48, 0.15);
+  }
+
+  .ez-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--app-text);
+    margin-bottom: 0.25rem;
+    display: block;
+  }
+
+  /* ── Tables ── */
+  .ez-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.8125rem;
+  }
+
+  .ez-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .ez-table th {
+    padding: 0.625rem 0.75rem;
+    background: var(--app-surface-soft);
+    color: var(--app-muted);
+    font-weight: 600;
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: left;
+    border-bottom: 1px solid var(--app-border-strong);
+    white-space: nowrap;
+  }
+
+  .ez-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+  .ez-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+
+  .ez-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--app-border);
+    color: var(--app-text);
+  }
+
+  .ez-table tbody tr:hover td {
+    background: var(--app-surface-soft);
+  }
+
+  .ez-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* ── Pipeline Steps (BOQ → PO → Shop → Invoice → Receipt) ── */
+  .ez-pipeline {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    overflow-x: auto;
+  }
+
+  .ez-pipeline-step {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    background: var(--secondary);
+    color: var(--muted-foreground);
+    transition: all 200ms ease;
+  }
+
+  .ez-pipeline-step[data-active="true"] {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    box-shadow: var(--app-shadow-sm);
+  }
+
+  .ez-pipeline-step[data-completed="true"] {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  .ez-pipeline-connector {
+    width: 1.5rem;
+    height: 1px;
+    background: var(--app-border-strong);
+    flex-shrink: 0;
+  }
+
+  /* ── Typography classes ── */
+  .ez-kicker {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--app-muted);
+  }
+
+  .ez-title {
+    font-family: var(--font-heading);
+    color: var(--app-text);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .ez-subtitle {
+    color: var(--app-text-soft);
+    font-weight: 300;
+  }
+
+  .ez-overline {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--app-muted);
+  }
+
+  .ez-caption {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    line-height: 1.5;
+  }
+
+  /* ── Badges / Status Pills ── */
+  .ez-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius-full);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.6;
+  }
+
+  .ez-badge-default { background: var(--secondary); color: var(--secondary-foreground); }
+  .ez-badge-success { background: var(--accent); color: var(--accent-foreground); }
+  .ez-badge-warning { background: #fef3c7; color: #92400e; }
+  .ez-badge-error { background: #fee2e2; color: #991b1b; }
+  .ez-badge-info { background: #f3f8f4; color: #305c3c; }
+  .ez-badge-gold { background: var(--gold-light); color: var(--gold-dark); }
+
+  .dark .ez-badge-warning { background: rgba(166, 135, 83, 0.2); color: #d9c098; }
+  .dark .ez-badge-error { background: rgba(229, 62, 62, 0.15); color: #fc8181; }
+  .dark .ez-badge-gold { background: rgba(196, 165, 115, 0.2); color: #e5d3b1; }
+
+  /* ── Divider ── */
+  .ez-divider {
+    height: 1px;
+    background: var(--app-border);
+    border: none;
+    margin: 0;
+  }
+
+  /* ── Glass surface (for overlays) ── */
+  .ez-glass {
+    background: var(--app-bg-elevated);
+    backdrop-filter: blur(20px) saturate(1.2);
+    border: 1px solid var(--app-border);
+  }
+
+  /* ── Legacy compat (old ez-suite-* prefix) ── */
+  .ez-suite-shell {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--app-content-max);
+    padding-inline: var(--app-space-page);
+  }
+
+  .ez-suite-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--app-space-section);
+  }
+
+  .ez-suite-hero {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-xl);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(243, 239, 232, 0.9));
+    box-shadow: var(--app-shadow-lg);
+  }
+
+  .ez-suite-card {
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius-lg);
+    background: var(--app-bg-elevated);
+    box-shadow: var(--app-shadow-md);
+    backdrop-filter: blur(18px);
+  }
+
+  .ez-suite-card-soft {
+    border: none;
+    border-radius: var(--app-radius-lg);
+    background: var(--app-surface-soft);
+  }
+
+  .ez-suite-kicker {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--app-muted);
+  }
+
+  .ez-suite-title {
+    font-family: var(--font-heading);
+    color: var(--app-text);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .ez-suite-subtitle {
+    color: var(--app-text-soft);
+    font-weight: 300;
+  }
+}
+
+/* ── 6. Utility Layer ──────────────────────────────────────────────────── */
+@layer utilities {
+  .safe-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .safe-area-top {
+    padding-top: max(0px, env(safe-area-inset-top));
+  }
+
+  .safe-area-bottom {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+
+  .h-safe-area-inset-bottom {
+    height: env(safe-area-inset-bottom);
+  }
+
+  /* Gold gradient text for premium labels */
+  .text-gold-gradient {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Zen line — thin decorative accent */
+  .zen-line {
+    width: 3rem;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    border-radius: 1px;
+  }
+
+  /* Washi texture overlay */
+  .washi-texture {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a89279' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+}
+
+/* ── 7. Accessibility ──────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── 8. Print ──────────────────────────────────────────────────────────── */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+}

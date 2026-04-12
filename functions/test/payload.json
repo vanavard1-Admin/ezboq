@@ -1,0 +1,13 @@
+{
+  "destination": "Uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "events": [
+    {
+      "type": "message",
+      "message": { "type": "text", "id": "1", "text": "ทำใบเสร็จ\nลูกค้า: คุณเอ\nกาแฟ 2 แก้ว 120" },
+      "timestamp": 1735340000000,
+      "source": { "type": "user", "userId": "U11111111111111111111111111111111" },
+      "replyToken": "00000000000000000000000000000000",
+      "mode": "active"
+    }
+  ]
+}

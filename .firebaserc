@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "ezdoc-v1-th"
+  },
+  "targets": {
+    "ezdoc-v1-th": {
+      "hosting": {
+        "web": [
+          "ezdoc-v1-th"
+        ],
+        "portal": [
+          "ezdoc-portal"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

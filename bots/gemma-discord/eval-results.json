@@ -1,0 +1,130 @@
+{
+  "timestamp": "2026-04-06T18:45:44.005Z",
+  "model": "gemma4:latest",
+  "total": 12,
+  "passed": 12,
+  "failed": 0,
+  "criticalFails": 0,
+  "passRate": 100,
+  "grade": "A",
+  "gatesPassed": true,
+  "gates": [
+    {
+      "category": "tier_resolve",
+      "label": "Tier Classifier (must be 100%)",
+      "required": 100,
+      "actual": 100,
+      "passed": true
+    }
+  ],
+  "results": [
+    {
+      "id": "tier-01",
+      "category": "tier_resolve",
+      "severity": "critical",
+      "passed": true,
+      "reason": null,
+      "durationMs": 1,
+      "response": "tier:micro"
+    },
+    {
+      "id": "tier-02",
+      "category": "tier_resolve",
+      "severity": "critical",
+      "passed": true,
+      "reason": null,
+      "durationMs": 1,
+      "response": "tier:micro"
+    },
+    {
+      "id": "tier-03",
+      "category": "tier_resolve",
+      "severity": "high",
+      "passed": true,
+      "reason": null,
+      "durationMs": 0,
+      "response": "tier:micro"
+    },
+    {
+      "id": "tier-04",
+      "category": "tier_resolve",
+      "severity": "high",
+      "passed": true,
+      "reason": null,
+      "durationMs": 0,
+      "response": "tier:micro"
+    },
+    {
+      "id": "tier-05",
+      "category": "tier_resolve",
+      "severity": "critical",
+      "passed": true,
+      "reason": null,
+      "durationMs": 0,
+      "response": "tier:standard"
+    },
+    {
+      "id": "tier-06",
+      "category": "tier_resolve",
+      "severity": "critical",
+      "passed": true,
+      "reason": null,
+      "durationMs": 0,
+      "response": "tier:standard"
+    },
+    {
+      "id": "tier-07",
+      "category": "tier_resolve",
+      "severity": "critical",
+      "passed": true,
+      "reason": null,
+      "durationMs": 0,
+      "response": "tier:creative_light"
+    },
+    {
+      "id": "tier-08",
+      "category": "tier_resolve",
+      "severity": "high",
+      "passed": true,
+      "reason": null,
+      "durationMs": 0,
+      "response": "tier:creative_light"
+    },
+    {
+      "id": "tier-09",
+      "category": "tier_resolve",
+      "severity": "critical",
+      "passed": true,
+      "reason": null,
+      "durationMs": 0,
+      "response": "tier:heavy"
+    },
+    {
+      "id": "tier-10",
+      "category": "tier_resolve",
+      "severity": "critical",
+      "passed": true,
+      "reason": null,
+      "durationMs": 0,
+      "response": "tier:heavy"
+    },
+    {
+      "id": "tier-11",
+      "category": "tier_resolve",
+      "severity": "high",
+      "passed": true,
+      "reason": null,
+      "durationMs": 0,
+      "response": "tier:heavy"
+    },
+    {
+      "id": "tier-12",
+      "category": "tier_resolve",
+      "severity": "high",
+      "passed": true,
+      "reason": null,
+      "durationMs": 0,
+      "response": "tier:heavy"
+    }
+  ]
+}

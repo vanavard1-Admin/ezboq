@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:1080px; height:1920px; overflow:hidden; font-family:'Noto Sans Thai','Segoe UI',sans-serif; background:#1a1a1a; }
+  .scene { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; transition: opacity 0.8s ease; }
+  .scene.active { opacity:1; }
+
+  /* Scene 1 */
+  .scene1 { background:#1a1a1a; }
+  .scene1 .emojis { font-size:80px; letter-spacing:20px; margin-bottom:40px; opacity:0; transform:translateY(-30px); transition:all 0.6s ease; }
+  .scene1 .emojis.show { opacity:1; transform:translateY(0); }
+  .scene1 .problem-text { font-size:56px; font-weight:700; color:#fff; text-align:center; line-height:1.4; opacity:0; transform:scale(0.8); transition:all 0.6s ease 0.3s; }
+  .scene1 .problem-text.show { opacity:1; transform:scale(1); }
+  .scene1 .sub { font-size:24px; color:rgba(255,255,255,0.5); margin-top:20px; opacity:0; transition:all 0.6s ease 0.6s; }
+  .scene1 .sub.show { opacity:1; }
+
+  /* Scene 2 */
+  .scene2 { background:#1a1a1a; padding:0 50px; }
+  .scene2 .pain-header { font-size:40px; font-weight:700; color:#ff4444; margin-bottom:30px; text-align:center; opacity:0; transform:translateY(-20px); transition:all 0.5s ease; }
+  .scene2 .pain-header.show { opacity:1; transform:translateY(0); }
+  .pain-item { display:flex; align-items:center; gap:20px; padding:22px 28px; margin-bottom:14px; background:rgba(255,60,60,0.08); border-left:4px solid #ff4444; border-radius:0 14px 14px 0; color:#fff; font-size:23px; opacity:0; transform:translateX(-40px); transition:all 0.4s ease; }
+  .pain-item.show { opacity:1; transform:translateX(0); }
+  .pain-icon { font-size:34px; flex-shrink:0; }
+
+  /* Scene 3 */
+  .scene3 { background:#fff; }
+  .scene3 .logo { width:260px; opacity:0; transform:scale(0.3); transition:all 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+  .scene3 .logo.show { opacity:1; transform:scale(1); }
+  .scene3 .solution-text { font-size:48px; font-weight:700; color:#1a1a1a; text-align:center; margin-top:30px; line-height:1.3; opacity:0; transition:all 0.6s ease 0.3s; }
+  .scene3 .solution-text.show { opacity:1; }
+  .scene3 .tagline { font-size:24px; color:#888; margin-top:16px; opacity:0; transition:all 0.6s ease 0.5s; }
+  .scene3 .tagline.show { opacity:1; }
+
+  /* Scene 4 */
+  .scene4 { background:#fff; padding:0 50px; }
+  .scene4 .feat-header { font-size:40px; font-weight:700; color:#1a1a1a; margin-bottom:30px; text-align:center; opacity:0; transition:all 0.5s ease; }
+  .scene4 .feat-header.show { opacity:1; }
+  .feat-item { display:flex; align-items:center; gap:20px; padding:22px 28px; margin-bottom:14px; background:rgba(26,26,26,0.04); border-left:4px solid #1a1a1a; border-radius:0 14px 14px 0; color:#1a1a1a; font-size:23px; opacity:0; transform:translateX(-40px); transition:all 0.4s ease; }
+  .feat-item.show { opacity:1; transform:translateX(0); }
+  .feat-icon { font-size:34px; flex-shrink:0; }
+
+  /* Scene 5 */
+  .scene5 { background:#1a1a1a; }
+  .scene5 .logo { width:220px; filter:brightness(10); opacity:0; transform:scale(0.5); transition:all 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+  .scene5 .logo.show { opacity:1; transform:scale(1); }
+  .scene5 .cta-text { font-size:52px; font-weight:700; color:#fff; text-align:center; margin-top:30px; line-height:1.3; opacity:0; transition:all 0.6s ease 0.3s; }
+  .scene5 .cta-text.show { opacity:1; }
+  .scene5 .url { font-size:30px; color:#fff; margin-top:24px; background:rgba(255,255,255,0.15); padding:16px 44px; border-radius:50px; opacity:0; transition:all 0.6s ease 0.5s; }
+  .scene5 .url.show { opacity:1; }
+  .scene5 .free { font-size:24px; color:rgba(255,255,255,0.4); margin-top:20px; opacity:0; transition:all 0.6s ease 0.7s; }
+  .scene5 .free.show { opacity:1; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700&display=swap" rel="stylesheet">
+</head><body>
+
+<div class="scene scene1" id="s1">
+  <div class="emojis" id="s1e">📄 🧾 📋 📑 📊</div>
+  <div class="problem-text" id="s1t">เอกสารเยอะ<br>จัดการไม่ไหว?</div>
+  <div class="sub" id="s1s">ใบเสนอราคา ภาษี ใบวางบิล ใบเสร็จ...</div>
+</div>
+
+<div class="scene scene2" id="s2">
+  <div class="pain-header" id="s2h">😩 ปัญหาที่เจอทุกวัน</div>
+  <div class="pain-item" id="p1"><span class="pain-icon">📄</span>ใบเสนอราคาต้องพิมพ์ใหม่ทุกครั้ง</div>
+  <div class="pain-item" id="p2"><span class="pain-icon">🧾</span>ใบกำกับภาษีผิดบ่อย แก้ไม่จบ</div>
+  <div class="pain-item" id="p3"><span class="pain-icon">📑</span>ใบวางบิลหาไม่เจอ กองเป็นตั้ง</div>
+  <div class="pain-item" id="p4"><span class="pain-icon">📋</span>สัญญาจ้างต้องนั่งพิมพ์เอง</div>
+  <div class="pain-item" id="p5"><span class="pain-icon">🧮</span>คำนวณ BOQ ผิดพลาดบ่อย</div>
+  <div class="pain-item" id="p6"><span class="pain-icon">⏰</span>เสียเวลาทำเอกสารมากกว่างานจริง</div>
+</div>
+
+<div class="scene scene3" id="s3">
+  <img src="/Users/l168/Documents/ใบเสนอราคา/apps/web/public/ezboq-logo.png" class="logo" id="s3l">
+  <div class="solution-text" id="s3t">EzBOQ<br>แก้ทุกปัญหา</div>
+  <div class="tagline" id="s3s">ใบเสนอราคาออนไลน์ ง่ายแค่ปลายนิ้ว</div>
+</div>
+
+<div class="scene scene4" id="s4">
+  <div class="feat-header" id="s4h">✨ ทำได้ครบจบที่เดียว</div>
+  <div class="feat-item" id="f1"><span class="feat-icon">📋</span>สร้างใบเสนอราคา BOQ อัตโนมัติ</div>
+  <div class="feat-item" id="f2"><span class="feat-icon">📝</span>สัญญาจ้าง + ใบแจ้งหนี้</div>
+  <div class="feat-item" id="f3"><span class="feat-icon">🧾</span>ใบเสร็จ + ใบกำกับภาษี</div>
+  <div class="feat-item" id="f4"><span class="feat-icon">📱</span>ใช้ได้ทุกที่ ทั้ง PC และมือถือ</div>
+  <div class="feat-item" id="f5"><span class="feat-icon">💬</span>ส่ง PDF ผ่าน LINE ได้เลย</div>
+</div>
+
+<div class="scene scene5" id="s5">
+  <img src="/Users/l168/Documents/ใบเสนอราคา/apps/web/public/ezboq-logo.png" class="logo" id="s5l">
+  <div class="cta-text" id="s5t">เริ่มใช้ฟรี<br>วันนี้!</div>
+  <div class="url" id="s5u">ezboq.com</div>
+  <div class="free" id="s5f">🆓 ฟรี ไม่มีค่าใช้จ่าย</div>
+</div>
+
+<script>
+// Animation timeline controlled by JS — called from Playwright
+window.animationStep = 0;
+window.advanceAnimation = function() {
+  const step = window.animationStep++;
+  const $ = id => document.getElementById(id);
+
+  // Scene 1: steps 0-4 (0-4s)
+  if (step === 0) { $('s1').classList.add('active'); }
+  if (step === 1) { $('s1e').classList.add('show'); }
+  if (step === 2) { $('s1t').classList.add('show'); }
+  if (step === 3) { $('s1s').classList.add('show'); }
+  if (step === 4) { /* hold */ }
+
+  // Scene 2: steps 5-13 (5-13s)
+  if (step === 5) { $('s1').classList.remove('active'); $('s2').classList.add('active'); }
+  if (step === 6) { $('s2h').classList.add('show'); }
+  if (step === 7) { $('p1').classList.add('show'); }
+  if (step === 8) { $('p2').classList.add('show'); }
+  if (step === 9) { $('p3').classList.add('show'); }
+  if (step === 10) { $('p4').classList.add('show'); }
+  if (step === 11) { $('p5').classList.add('show'); }
+  if (step === 12) { $('p6').classList.add('show'); }
+  if (step === 13) { /* hold */ }
+
+  // Scene 3: steps 14-18 (14-18s)
+  if (step === 14) { $('s2').classList.remove('active'); $('s3').classList.add('active'); }
+  if (step === 15) { $('s3l').classList.add('show'); }
+  if (step === 16) { $('s3t').classList.add('show'); }
+  if (step === 17) { $('s3s').classList.add('show'); }
+  if (step === 18) { /* hold */ }
+
+  // Scene 4: steps 19-26 (19-26s)
+  if (step === 19) { $('s3').classList.remove('active'); $('s4').classList.add('active'); }
+  if (step === 20) { $('s4h').classList.add('show'); }
+  if (step === 21) { $('f1').classList.add('show'); }
+  if (step === 22) { $('f2').classList.add('show'); }
+  if (step === 23) { $('f3').classList.add('show'); }
+  if (step === 24) { $('f4').classList.add('show'); }
+  if (step === 25) { $('f5').classList.add('show'); }
+  if (step === 26) { /* hold */ }
+
+  // Scene 5: steps 27-32 (27-32s)
+  if (step === 27) { $('s4').classList.remove('active'); $('s5').classList.add('active'); }
+  if (step === 28) { $('s5l').classList.add('show'); }
+  if (step === 29) { $('s5t').classList.add('show'); }
+  if (step === 30) { $('s5u').classList.add('show'); }
+  if (step === 31) { $('s5f').classList.add('show'); }
+  if (step === 32) { /* hold */ }
+};
+</script>
+</body></html>

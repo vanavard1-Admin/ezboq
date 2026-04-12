@@ -1,0 +1,25 @@
+.vercel
+.firebase
+.next
+node_modules
+build
+dist
+out
+build-backups
+test-results
+playwright-report
+coverage
+.DS_Store
+.env
+.env.local
+.env*.local
+*.bak
+*.backup
+*.tsbuildinfo
+apps/*/build
+apps/portal/out
+apps/portal/.next
+functions/dist
+
+# Bot secrets
+bots/gemma-discord/.env

@@ -1,0 +1,20 @@
+{
+  "dbPath": "/Users/l168/Documents/ใบเสนอราคา/bots/gemma-discord/gemma-memory.db",
+  "outputDir": "/Users/l168/Documents/ใบเสนอราคา/bots/gemma-discord/exports",
+  "suppliers_rows": 8,
+  "supplier_contacts_rows": 18,
+  "material_catalog_rows": 106,
+  "material_price_quotes_rows": 116,
+  "material_catalog_structural_enriched_rows": 14,
+  "material_catalog_series_rows": 10,
+  "material_catalog_size_mm_rows": 26,
+  "material_catalog_size_inch_rows": 7,
+  "material_catalog_grade_code_rows": 9,
+  "material_catalog_width_rows": 20,
+  "material_catalog_height_rows": 20,
+  "material_catalog_thickness_rows": 12,
+  "material_catalog_thickness_bound_rows": 13,
+  "material_catalog_thickness_actual_range_rows": 1,
+  "material_catalog_cross_section_rows": 3,
+  "material_catalog_strength_rows": 1
+}

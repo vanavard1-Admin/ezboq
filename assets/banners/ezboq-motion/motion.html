@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:1080px; height:1920px; overflow:hidden; font-family:'Noto Sans Thai','Segoe UI',sans-serif; background:#1a1a1a; }
+
+  .scene { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; }
+
+  /* Scene 1: Problem - messy documents */
+  .scene1 { animation: fadeScene 2s 0s forwards; background:#1a1a1a; }
+  .scene1 .emoji-rain { font-size:60px; position:absolute; animation:rain 2s linear infinite; }
+  .scene1 .emoji-rain:nth-child(1) { left:10%; animation-delay:0s; }
+  .scene1 .emoji-rain:nth-child(2) { left:30%; animation-delay:0.3s; }
+  .scene1 .emoji-rain:nth-child(3) { left:50%; animation-delay:0.6s; }
+  .scene1 .emoji-rain:nth-child(4) { left:70%; animation-delay:0.9s; }
+  .scene1 .emoji-rain:nth-child(5) { left:90%; animation-delay:0.2s; }
+  .scene1 .problem-text { font-size:52px; font-weight:700; color:#fff; text-align:center; z-index:2; animation:pulseIn 0.8s 0.3s both; }
+  .scene1 .sub { font-size:26px; color:rgba(255,255,255,0.6); margin-top:16px; z-index:2; animation:pulseIn 0.8s 0.6s both; }
+
+  /* Scene 2: Pain points */
+  .scene2 { animation: fadeScene 3s 3s forwards; background:#1a1a1a; }
+  .scene2 .pain-list { list-style:none; padding:0 60px; width:100%; }
+  .scene2 .pain-item { display:flex; align-items:center; gap:20px; padding:24px 30px; margin-bottom:16px; background:rgba(255,60,60,0.1); border-left:4px solid #ff4444; border-radius:0 12px 12px 0; color:#fff; font-size:24px; }
+  .scene2 .pain-item:nth-child(1) { animation:slideRight 0.5s 3.3s both; }
+  .scene2 .pain-item:nth-child(2) { animation:slideRight 0.5s 3.6s both; }
+  .scene2 .pain-item:nth-child(3) { animation:slideRight 0.5s 3.9s both; }
+  .scene2 .pain-item:nth-child(4) { animation:slideRight 0.5s 4.2s both; }
+  .scene2 .pain-item:nth-child(5) { animation:slideRight 0.5s 4.5s both; }
+  .scene2 .pain-item:nth-child(6) { animation:slideRight 0.5s 4.8s both; }
+  .scene2 .pain-icon { font-size:36px; flex-shrink:0; }
+  .scene2 .pain-header { font-size:36px; font-weight:700; color:#ff4444; margin-bottom:30px; text-align:center; animation:pulseIn 0.5s 3.2s both; }
+
+  /* Scene 3: Solution reveal */
+  .scene3 { animation: fadeScene 2s 7s forwards; background:#fff; }
+  .scene3 .logo { width:240px; animation:bounceIn 0.8s 7.3s both; }
+  .scene3 .solution-text { font-size:44px; font-weight:700; color:#1a1a1a; text-align:center; margin-top:30px; animation:pulseIn 0.8s 7.6s both; }
+  .scene3 .tagline { font-size:24px; color:#888; margin-top:12px; animation:pulseIn 0.8s 7.9s both; }
+
+  /* Scene 4: Features */
+  .scene4 { animation: fadeScene 3s 10s forwards; background:#fff; }
+  .scene4 .feat-list { list-style:none; padding:0 60px; width:100%; }
+  .scene4 .feat-item { display:flex; align-items:center; gap:20px; padding:24px 30px; margin-bottom:16px; background:rgba(26,26,26,0.05); border-left:4px solid #1a1a1a; border-radius:0 12px 12px 0; color:#1a1a1a; font-size:24px; }
+  .scene4 .feat-item:nth-child(1) { animation:slideRight 0.5s 10.3s both; }
+  .scene4 .feat-item:nth-child(2) { animation:slideRight 0.5s 10.6s both; }
+  .scene4 .feat-item:nth-child(3) { animation:slideRight 0.5s 10.9s both; }
+  .scene4 .feat-item:nth-child(4) { animation:slideRight 0.5s 11.2s both; }
+  .scene4 .feat-item:nth-child(5) { animation:slideRight 0.5s 11.5s both; }
+  .scene4 .feat-icon { font-size:36px; flex-shrink:0; }
+  .scene4 .feat-header { font-size:36px; font-weight:700; color:#1a1a1a; margin-bottom:30px; text-align:center; animation:pulseIn 0.5s 10.2s both; }
+
+  /* Scene 5: CTA */
+  .scene5 { animation: fadeScene 2s 14s forwards; background:#1a1a1a; }
+  .scene5 .logo { width:200px; filter:brightness(10); animation:bounceIn 0.8s 14.3s both; }
+  .scene5 .cta-text { font-size:48px; font-weight:700; color:#fff; text-align:center; margin-top:30px; animation:pulseIn 0.8s 14.6s both; }
+  .scene5 .url { font-size:32px; color:rgba(255,255,255,0.8); margin-top:16px; animation:pulseIn 0.8s 14.9s both; background:rgba(255,255,255,0.1); padding:14px 40px; border-radius:50px; }
+  .scene5 .free { font-size:28px; color:rgba(255,255,255,0.5); margin-top:20px; animation:pulseIn 0.8s 15.2s both; }
+
+  @keyframes fadeScene { 0%{opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{opacity:0} }
+  @keyframes rain { 0%{transform:translateY(-100px);opacity:1} 100%{transform:translateY(2000px);opacity:0.3} }
+  @keyframes pulseIn { 0%{opacity:0;transform:scale(0.8)} 100%{opacity:1;transform:scale(1)} }
+  @keyframes bounceIn { 0%{opacity:0;transform:scale(0.3)} 50%{transform:scale(1.05)} 100%{opacity:1;transform:scale(1)} }
+  @keyframes slideRight { 0%{opacity:0;transform:translateX(-60px)} 100%{opacity:1;transform:translateX(0)} }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700&display=swap" rel="stylesheet">
+</head><body>
+
+<!-- Scene 1: Problem -->
+<div class="scene scene1">
+  <div class="emoji-rain">📄</div><div class="emoji-rain">🧾</div><div class="emoji-rain">📋</div><div class="emoji-rain">📑</div><div class="emoji-rain">📊</div>
+  <div class="problem-text">เอกสารเยอะ<br>จัดการไม่ไหว?</div>
+  <div class="sub">ใบเสนอราคา ภาษี ใบวางบิล ใบเสร็จ...</div>
+</div>
+
+<!-- Scene 2: Pain points -->
+<div class="scene scene2">
+  <div class="pain-header">😩 ปัญหาที่เจอทุกวัน</div>
+  <ul class="pain-list">
+    <li class="pain-item"><span class="pain-icon">📄</span>ใบเสนอราคาต้องพิมพ์ใหม่ทุกครั้ง</li>
+    <li class="pain-item"><span class="pain-icon">🧾</span>ใบกำกับภาษีผิดบ่อย แก้ไม่จบ</li>
+    <li class="pain-item"><span class="pain-icon">📑</span>ใบวางบิลหาไม่เจอ กองเป็นตั้ง</li>
+    <li class="pain-item"><span class="pain-icon">📋</span>สัญญาจ้างต้องนั่งพิมพ์เอง</li>
+    <li class="pain-item"><span class="pain-icon">🧮</span>คำนวณ BOQ ผิดพลาดบ่อย</li>
+    <li class="pain-item"><span class="pain-icon">⏰</span>เสียเวลาทำเอกสารมากกว่าทำงานจริง</li>
+  </ul>
+</div>
+
+<!-- Scene 3: Solution -->
+<div class="scene scene3">
+  <img src="/Users/l168/Documents/ใบเสนอราคา/apps/web/public/ezboq-logo.png" class="logo">
+  <div class="solution-text">EzBOQ<br>แก้ทุกปัญหา</div>
+  <div class="tagline">ใบเสนอราคาออนไลน์ ง่ายแค่ปลายนิ้ว</div>
+</div>
+
+<!-- Scene 4: Features -->
+<div class="scene scene4">
+  <div class="feat-header">✨ ทำได้ครบจบที่เดียว</div>
+  <ul class="feat-list">
+    <li class="feat-item"><span class="feat-icon">📋</span>สร้างใบเสนอราคา BOQ อัตโนมัติ</li>
+    <li class="feat-item"><span class="feat-icon">📝</span>สัญญาจ้าง + ใบแจ้งหนี้</li>
+    <li class="feat-item"><span class="feat-icon">🧾</span>ใบเสร็จ + ใบกำกับภาษี</li>
+    <li class="feat-item"><span class="feat-icon">📱</span>ใช้ได้ทุกที่ ทั้ง PC และมือถือ</li>
+    <li class="feat-item"><span class="feat-icon">💬</span>ส่ง PDF ผ่าน LINE ได้เลย</li>
+  </ul>
+</div>
+
+<!-- Scene 5: CTA -->
+<div class="scene scene5">
+  <img src="/Users/l168/Documents/ใบเสนอราคา/apps/web/public/ezboq-logo.png" class="logo">
+  <div class="cta-text">เริ่มใช้ฟรี<br>วันนี้!</div>
+  <div class="url">ezboq.com</div>
+  <div class="free">🆓 ฟรี ไม่มีค่าใช้จ่าย</div>
+</div>
+
+</body></html>

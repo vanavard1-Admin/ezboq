@@ -1,0 +1,222 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function authed() { return request.auth != null; }
+    function uid() { return request.auth.uid; }
+    function hasUserRecord() {
+      return authed() && exists(/databases/$(database)/documents/users/$(uid()));
+    }
+    function currentUserData() {
+      return get(/databases/$(database)/documents/users/$(uid())).data;
+    }
+    function inWorkspace(workspaceId) {
+      return hasUserRecord() && currentUserData().workspaceId == workspaceId;
+    }
+    function hasFullWorkspaceAccess(workspaceId) {
+      return inWorkspace(workspaceId) && currentUserData().hasFullProjectAccess == true;
+    }
+    function canManageWorkspace(workspaceId) {
+      return inWorkspace(workspaceId) && currentUserData().canManageProjects == true;
+    }
+    function userLineFieldsUnchanged() {
+      return request.resource.data.lineUserId == resource.data.lineUserId
+        && request.resource.data.line_user_id == resource.data.line_user_id;
+    }
+
+    function userLineFieldsNotSet() {
+      return !request.resource.data.keys().hasAny(['lineUserId', 'line_user_id']);
+    }
+
+    // User profile - Client can read/write their own user doc (for UI prefs, activeBusinessId)
+    match /users/{userId} {
+      allow read: if authed() && uid() == userId;
+      allow create: if authed() && uid() == userId && userLineFieldsNotSet();
+      allow update: if authed() && uid() == userId && userLineFieldsUnchanged();
+      allow delete: if false;
+
+      // Nested Businesses (Current Schema)
+      // Client can READ if they are the owner
+      // Client CANNOT WRITE (Must use API /v1/*)
+      match /businesses/{businessId} {
+        allow read: if false; // API ONLY
+        allow write: if false; // API ONLY
+
+        match /customers/{customerId} {
+          allow read: if false; // API ONLY
+          allow write: if false; // API ONLY
+        }
+
+        match /documents/{docId} {
+          allow read: if false; // API ONLY
+          allow write: if false; // API ONLY
+        }
+
+        match /processed_events/{eventId} {
+          allow read: if authed() && uid() == userId;
+          allow write: if false;
+        }
+      }
+      
+      match /drafts/{draftId} {
+         allow read, write: if false; // API ONLY
+      }
+    }
+
+    // Delivery Jobs - Server-only (Admin SDK)
+    // Client must never write or read deliveryJobs directly
+    // All delivery job operations go through API endpoints and Cloud Tasks
+    match /deliveryJobs/{jobId} {
+      allow read, write: if false; // Completely blocked for client SDKs
+    }
+
+    // ========================================
+    // SERVER-ONLY COLLECTIONS (API/Admin SDK only)
+    // ========================================
+    
+    // Credit Purchases - Server-only
+    match /credit_purchases/{purchaseId} {
+      allow read, write: if false; // API ONLY
+      
+      // Payment Events subcollection - Server-only (watchdog audit log)
+      match /payment_events/{eventId} {
+        allow read, write: if false; // Admin SDK only (bypasses rules)
+      }
+    }
+    
+    // Subscriptions - User can read own, but not write
+    match /subscriptions/{userId} {
+      allow read: if authed() && uid() == userId; // User can read own subscription
+      allow write: if false; // API ONLY (balance updates via ledger)
+    }
+    
+    // Credits Ledger - User can read own entries (for audit trail)
+    match /credits_ledger/{entryId} {
+      allow read: if authed() && resource.data.userId == uid(); // User can read own ledger
+      allow write: if false; // API ONLY
+    }
+    
+    // Async Failures - Server-only (dead letter queue)
+    match /async_failures/{traceId} {
+      allow read, write: if false; // Admin/API ONLY
+    }
+    
+    // Processed Events - Server-only (idempotency tracking)
+    match /processed_events/{eventId} {
+      allow read, write: if false; // API ONLY
+    }
+    
+    // Pending Intents - Server-only (account linking resume)
+    match /pending_intents/{lineUserId} {
+      allow read, write: if false; // API ONLY
+    }
+    
+    // PDF Generation Jobs - Server-only
+    match /pdf_generation_jobs/{jobId} {
+      allow read, write: if false; // API ONLY
+    }
+    
+    // PDF Short Links - Server-only
+    match /pdf_short_links/{token} {
+      allow read, write: if false; // API ONLY (redirect endpoint handles access)
+    }
+    
+    // LINE UID to Firebase mapping - Server-only
+    match /line_uid_to_firebase/{lineUserId} {
+      allow read, write: if false; // API ONLY
+    }
+    
+    // LINE Links - Server-only
+    match /line_links/{lineUserId} {
+      allow read, write: if false; // API ONLY
+    }
+    
+    // LINE Link Nonces - Server-only
+    match /_line_link_nonces/{nonce} {
+      allow read, write: if false; // API ONLY
+    }
+    
+    // Conversation State - User can read own, but not write
+    match /users/{userId}/conversation_state/{stateId} {
+      allow read: if authed() && uid() == userId; // User can read own state
+      allow write: if false; // API ONLY
+    }
+
+    match /workspaces/{workspaceId} {
+      allow read: if inWorkspace(workspaceId);
+      allow create, update: if canManageWorkspace(workspaceId);
+      allow delete: if false;
+
+      match /projects/{projectId} {
+        allow read: if inWorkspace(workspaceId);
+        allow create, update, delete: if canManageWorkspace(workspaceId);
+      }
+
+      match /meta/{docId} {
+        allow read: if inWorkspace(workspaceId);
+        allow create, update, delete: if canManageWorkspace(workspaceId);
+      }
+
+      match /subscription/{docId} {
+        allow read: if inWorkspace(workspaceId);
+        allow create, update: if canManageWorkspace(workspaceId);
+        allow delete: if false;
+      }
+
+      match /shop_meta/{docId} {
+        allow read: if inWorkspace(workspaceId);
+        allow create, update, delete: if canManageWorkspace(workspaceId);
+      }
+
+      match /shop_categories/{docId} {
+        allow read: if inWorkspace(workspaceId);
+        allow create, update, delete: if canManageWorkspace(workspaceId);
+      }
+
+      match /shop_products/{docId} {
+        allow read: if inWorkspace(workspaceId);
+        allow create, update, delete: if canManageWorkspace(workspaceId);
+      }
+
+      match /shop_vendors/{docId} {
+        allow read: if inWorkspace(workspaceId);
+        allow create, update, delete: if canManageWorkspace(workspaceId);
+      }
+
+      match /shop_rfqs/{docId} {
+        allow read: if inWorkspace(workspaceId);
+        allow create, update, delete: if canManageWorkspace(workspaceId);
+      }
+    }
+
+    match /subscription_requests/{workspaceId} {
+      allow read, create, update: if canManageWorkspace(workspaceId);
+      allow delete: if false;
+    }
+    
+    // Stats Events - Server-only
+    match /businesses/{businessId}/stats_events/{eventId} {
+      allow read, write: if false; // API ONLY
+    }
+    
+    // Automation Runs - Server-only
+    match /automations/{automationId}/runs/{runId} {
+      allow read, write: if false; // API ONLY
+    }
+    
+    // Audit Logs - Server-only
+    match /auditLogs/{logId} {
+      allow read, write: if false; // Admin/API ONLY
+    }
+    
+    // Review Queue - Server-only (watchdog routes stuck purchases here)
+    match /review_queue/{purchaseId} {
+      allow read, write: if false; // Admin SDK only (bypasses rules)
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

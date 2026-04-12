@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lazada Authorization</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #f5f5f5; }
+    .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); text-align: center; max-width: 500px; }
+    .success { color: #10b981; }
+    .error { color: #ef4444; }
+    code { background: #f3f4f6; padding: 8px 12px; border-radius: 4px; font-size: 14px; word-break: break-all; display: inline-block; margin: 8px 0; user-select: all; }
+    .copy-btn { background: #2563EB; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-top: 8px; }
+    .copy-btn:hover { background: #1d4ed8; }
+    .copied { background: #10b981; }
+    #status { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Lazada Authorization</h1>
+    <div id="status">Loading...</div>
+    <div id="code-display" style="margin-top:1rem;display:none;">
+      <p>Authorization Code:</p>
+      <code id="auth-code"></code>
+      <br>
+      <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+      <p style="margin-top:1rem;font-size:14px;color:#666;">Copy code นี้ส่งให้ม้าน้ำใน Discord</p>
+    </div>
+  </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const error = params.get('error');
+    const statusEl = document.getElementById('status');
+    const codeEl = document.getElementById('code-display');
+    const authCodeEl = document.getElementById('auth-code');
+
+    if (error) {
+      statusEl.innerHTML = '<p class="error">Error: ' + error + '</p>';
+    } else if (code) {
+      statusEl.innerHTML = '<p class="success">Authorization Lazada สำเร็จ!</p>';
+      authCodeEl.textContent = code;
+      codeEl.style.display = 'block';
+    } else {
+      statusEl.innerHTML = '<p class="error">ไม่ได้รับ authorization code</p>';
+    }
+
+    function copyCode() {
+      navigator.clipboard.writeText(authCodeEl.textContent);
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy Code'; btn.classList.remove('copied'); }, 2000);
+    }
+  </script>
+</body>
+</html>

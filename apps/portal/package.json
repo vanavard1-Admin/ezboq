@@ -1,0 +1,38 @@
+{
+  "name": "@ezboq/portal",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node ../../node_modules/next/dist/bin/next dev",
+    "build": "node ../../node_modules/next/dist/bin/next build --webpack && node ./scripts/create-export-route-aliases.mjs",
+    "start": "node ../../node_modules/next/dist/bin/next start",
+    "typecheck": "node ../../node_modules/typescript/bin/tsc --noEmit --project tsconfig.json",
+    "lint": "node ../../node_modules/eslint/bin/eslint.js .",
+    "test": "node -e \"console.log('No unit tests configured for @ezboq/portal. Run npm run test:e2e for browser smoke coverage.')\"",
+    "test:e2e": "node ../../node_modules/@playwright/test/cli.js test -c tests/playwright.config.ts",
+    "test:e2e:mobile": "node ../../node_modules/@playwright/test/cli.js test --project=\"Mobile Chrome\"",
+    "test:e2e:report": "node ../../node_modules/@playwright/test/cli.js show-report",
+    "e2e": "./scripts/run-e2e.sh"
+  },
+  "dependencies": {
+    "@line/liff": "^2.27.3",
+    "firebase": "^11.7.0",
+    "lucide-react": "^0.469.0",
+    "next": "^16.1.6",
+    "next-themes": "^0.4.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "recharts": "^3.7.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.1",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

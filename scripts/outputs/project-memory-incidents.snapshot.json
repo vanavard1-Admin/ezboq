@@ -1,0 +1,170 @@
+[
+  {
+    "id": "375aed46-4217-45f6-9aa9-3b7a43b7f794",
+    "identifier": "LMA-150",
+    "title": "[P0] Payment & Subscription QA — End-to-end payment flow verification",
+    "description": "## Problem\nPayment flow has multiple paths (web slip upload, LINE bot, admin approve) that need thorough testing.\n\n## Test Matrix\n1. **Web payment flow**: Select plan → QR code → Upload slip → OCR auto-approve → Active\n2. **Web payment flow (manual)**: Upload slip → OCR fails → Admin manual approve → Active\n3. **LINE bot payment**: Purchase via LINE → credit_purchases sync → subscription active\n4. **Subscription display**: Plan badge shows in header (desktop + mobile)\n5. **Expiry handling**: Expired subscription → reverts to free tier\n6. **Re-subscription**: Expired user → re-subscribes → active again\n7. **Discord notifications**: Signup, payment, approval all fire correctly\n\n## Acceptance\n- All 7 flows pass without errors\n- No edge cases where user pays but stays on free tier\n- Discord notifications arrive in correct channels",
+    "status": "blocked"
+  },
+  {
+    "id": "624a6e0c-3b0f-4b93-893f-4152dfa407d4",
+    "identifier": "LMA-148",
+    "title": "[P0] Production UI Polish — Landing page, subscription flow, responsive fixes",
+    "description": "## Problem\nFrontend needs polish before production launch at ezboq.com.\n\n## Tasks\n1. Landing page: hero section, pricing cards, feature showcase\n2. Subscription payment flow: QR code display, slip upload UX, success/pending states\n3. Mobile responsive: header plan badge, navigation drawer, BOQ editor\n4. Error states: friendly error pages, loading skeletons\n5. Meta tags: OG image, title, description for SEO\n6. Performance: lazy loading, code splitting, image optimization\n\n## Brand\n- Minimal cozy Japanese-inspired (NOT corporate tech)\n- Colors: warm neutrals, soft accents\n- Typography: clean, readable\n\n## Acceptance\n- Lighthouse score > 90 on mobile\n- All flows work on iPhone SE → iPad Pro\n- No broken layouts or orphaned components",
+    "status": "todo"
+  },
+  {
+    "id": "224b50bf-dd36-48a9-9d06-8620221f9015",
+    "identifier": "LMA-93",
+    "title": "Full Production QA Pass",
+    "description": "QA ครบทุก feature ก่อน production launch\n\n## QA Checklist\n\n### Auth Flow\n- [ ] Email/Password register + login\n- [ ] Google OAuth login\n- [ ] Facebook OAuth login\n- [ ] LINE link/unlink\n- [ ] Password reset flow\n\n### Document Creation\n- [ ] สร้าง Quotation (ใบเสนอราคา)\n- [ ] สร้าง Invoice (ใบแจ้งหนี้)\n- [ ] สร้าง Receipt (ใบเสร็จ)\n- [ ] สร้าง Purchase Order\n- [ ] สร้าง Contract\n- [ ] PDF export ทุกประเภท\n\n### Payment\n- [ ] PromptPay QR แสดงผล\n- [ ] Slip upload ทำงาน\n- [ ] Subscription status update\n\n### Shop Module\n- [ ] ดู product catalog\n- [ ] เพิ่ม cart\n- [ ] RFQ flow\n\n### LINE Bot\n- [ ] ส่งข้อความ test\n- [ ] เมนู \"สร้างเอกสาร\" ทำงาน\n- [ ] Notification ส่งถูก\n\n### Performance\n- [ ] Load time < 3s (initial)\n- [ ] Mobile responsive\n- [ ] No console errors\n\n## Environment\n- Path: `~/Documents/ใบเสนอราคา`\n- Branch: `feature/monorepo-merge`\n- Dev server: `npm run dev` in `apps/web`",
+    "status": "cancelled"
+  },
+  {
+    "id": "943f8fef-d4a7-44fd-a5e2-59e1d1953512",
+    "identifier": "LMA-137",
+    "title": "[P0] LIFF Error Page — Graceful fallback for LINE in-app browser",
+    "description": "## Problem\nLIFF pages show raw 404 error when URL is broken. Bad UX for LINE users.\n\n## Tasks\n- [ ] Create friendly error page for LIFF 404/500\n- [ ] Show \"กรุณาลองใหม่\" with retry button\n- [ ] Add deep link to open in external browser as fallback\n- [ ] Style consistent with EzBOQ brand\n- [ ] Test in LINE in-app browser (iOS + Android)\n\n## Files\n- `apps/web/src/pages/liff/`\n- `apps/web/src/components/ErrorBoundary/`\n\n## Plan ref\n[LMA-61 Plan](/LMA/issues/LMA-61#document-plan) item #7",
+    "status": "todo"
+  },
+  {
+    "id": "b8856e7c-3844-4c27-8fde-a11f38df709f",
+    "identifier": "LMA-24",
+    "title": "Fix Auth Flow — Email + Google + Facebook Login",
+    "description": "1. ตรวจสอบ Firebase Auth config\\n2. แก้ Facebook OAuth redirect URI\\n3. ทดสอบ login ทุก provider\\n4. Handle auth errors gracefully",
+    "status": "done"
+  },
+  {
+    "id": "637f4c31-aec4-467c-9a71-66fbc2d956e8",
+    "identifier": "LMA-51",
+    "title": "แก้ Auth Flow — Login/Signup ทั้งระบบ",
+    "description": "Fix authentication flow ให้ครบ:\n1. Email + Password login/signup\n2. Google OAuth login\n3. Session management + token refresh\n4. Error messages ภาษาไทย\n5. ทดสอบ flow ทั้งหมดให้ผ่าน\n\nRelated: LMA-24 (blocked)",
+    "status": "done"
+  },
+  {
+    "id": "c08098b2-8ba9-48db-b7d8-4d634118b5ff",
+    "identifier": "LMA-56",
+    "title": "Deploy Final Production + ตั้งค่า Domain",
+    "description": "Deploy EzBOQ ขึ้น production:\n1. Build + deploy hosting (firebase deploy)\n2. ตรวจ Firebase rules + security\n3. ตั้งค่า custom domain ezboq.com\n4. ตรวจ SSL + performance\n5. Setup error monitoring\n6. ทดสอบ production ทุก flow",
+    "status": "done"
+  },
+  {
+    "id": "cebc1e40-dd82-4cfb-8a74-78eb25c1bb1a",
+    "identifier": "LMA-44",
+    "title": "CTO Review — ตรวจสอบ EzBOQ codebase + architecture",
+    "description": "1. Review apps/web/src ทุกไฟล์สำคัญ\n2. หา critical bugs\n3. เช็ค security vulnerabilities\n4. ตรวจ Firebase rules\n5. สรุป technical debt list\n6. Priority fixes list",
+    "status": "done"
+  },
+  {
+    "id": "f8d6e54d-922b-4009-9942-452b1ed3b99a",
+    "identifier": "LMA-152",
+    "title": "[P1] Gemma Runtime Unification — shared AI gateway + project memory",
+    "description": "## Scope\n- unify EzBOQ runtime AI behind a single gateway in functions\n- replace static construction RAG path with Gemma-backed memory retrieval\n- scaffold project memory for codebase, incidents, tests, and release context\n- keep frontend calling server APIs only\n\n## Acceptance\n- ezboqAi no longer couples directly to static knowledge-base.json\n- shared gateway/service contract exists\n- project memory schema + ingestion plan are defined in repo\n- follow-up subtasks for QA and UI/admin surface are linked under this issue",
+    "status": "in_progress"
+  },
+  {
+    "id": "90889b01-b7df-4496-a177-66f5bb68960a",
+    "identifier": "LMA-153",
+    "title": "[P1] QA Gemma gateway, E2E risks, and incident memory coverage",
+    "description": "Validate the new Gemma gateway contract, identify regression risks, define E2E checks, and review how incident/test observations should be represented for recall. Focus on safe server-side behavior and failure visibility.",
+    "status": "todo"
+  },
+  {
+    "id": "5799ab5e-20df-4354-bf55-aa581a5c381f",
+    "identifier": "LMA-155",
+    "title": "[P1] Unblock QA by promoting Gemma gateway artifacts to VPS source-of-truth",
+    "description": "## Objective\nPromote the [LMA-152](/LMA/issues/LMA-152) implementation artifacts to the VPS source-of-truth branch/runtime so QA can execute [LMA-153](/LMA/issues/LMA-153).\n\n## Why This Is Blocking\n- QA in [LMA-153](/LMA/issues/LMA-153) is blocked because Gemma gateway + project memory artifacts are not present on VPS `feature/monorepo-merge` HEAD.\n- Parent implementation currently exists only in local workspace and is not yet available on the QA target runtime.\n\n## Needed Deliverables\n- Commit/push or sync operation that places Gemma gateway + project memory files on the VPS source-of-truth branch.\n- If deployment is required for QA, provide deployed endpoint URL plus request/response/error contract notes.\n- Post confirmation evidence in this ticket and link back to [LMA-152](/LMA/issues/LMA-152) and [LMA-153](/LMA/issues/LMA-153).",
+    "status": "todo"
+  },
+  {
+    "id": "3d9be33a-309c-416d-9941-1587e9e6fca5",
+    "identifier": "LMA-140",
+    "title": "[P1] Lazada Product Sync — Complete catalog pull & cache",
+    "description": "## Status\nOAuth flow works. Product sync pending.\n\n## Tasks\n- [ ] Implement Lazada product search API integration\n- [ ] Build product catalog cache in Firestore (refresh daily)\n- [ ] Map Lazada categories to EzBOQ material categories\n- [ ] Generate affiliate links for matched products\n- [ ] Handle token refresh when access token expires\n- [ ] Add error handling for Lazada API rate limits\n\n## API Credentials\n- Seller App Key: 137775\n- Affiliate App Key: 105827\n- Callback: https://ezdoc-v1-th.web.app/lazada-callback\n\n## Files\n- `functions/src/services/lazadaService.ts`\n- `functions/src/lazadaCallback.ts`\n\n## Plan ref\n[LMA-61 Plan](/LMA/issues/LMA-61#document-plan) item #10",
+    "status": "done"
+  },
+  {
+    "id": "5d21fa05-0653-44da-af85-1c999f215bc9",
+    "identifier": "LMA-141",
+    "title": "[P1] AI Jarvis Stabilization — Real APIs for skills framework",
+    "description": "## Status\nSkills framework is real but uses approximate/mock API responses.\n\n## Tasks\n- [ ] Audit all Jarvis skills — identify which use real vs mock APIs\n- [ ] Replace mock API calls with real endpoints\n- [ ] Add proper error handling for API failures\n- [ ] Test each skill with real data\n- [ ] Document skill capabilities and limitations\n- [ ] Add rate limiting to prevent API abuse\n\n## Plan ref\n[LMA-61 Plan](/LMA/issues/LMA-61#document-plan) item #11",
+    "status": "done"
+  },
+  {
+    "id": "d3f382c8-afc5-4f4e-81b5-e4988a296251",
+    "identifier": "LMA-151",
+    "title": "[P1] Production Readiness Checklist — Pre-launch verification & documentation",
+    "description": "## Problem\nNeed a comprehensive pre-launch checklist to ensure nothing is missed.\n\n## Deliverables\n1. **Pre-launch checklist**: DNS, SSL, env vars, secrets, API keys\n2. **Monitoring setup**: Error tracking, uptime monitoring, alerting\n3. **Rollback plan**: How to revert if something breaks\n4. **Feature flag audit**: What is enabled/disabled in production\n5. **Environment audit**: All secrets set in Firebase, Discord bot token, LINE tokens, Lazada keys\n6. **Performance baseline**: Core Web Vitals before launch\n\n## Acceptance\n- Checklist covers all 8 known issues from audit\n- Each item has owner + status\n- Rollback procedure documented and tested",
+    "status": "todo"
+  },
+  {
+    "id": "33f5b0bb-1965-4600-9f85-811940f5b23e",
+    "identifier": "LMA-111",
+    "title": "QA Unblock — Provide production/staging test account for document-flow regression",
+    "description": "Unblock [LMA-57](/LMA/issues/LMA-57) regression execution.\n\nContext:\n- Browser smoke run executed against `https://ezboq.com` and `https://ezdoc-v1-th.web.app` using the agreed baseline from [LMA-110](/LMA/issues/LMA-110).\n- Public/login flows pass, but document-flow smoke remains behind auth gate. Existing mock-session E2E harness does not unlock docs on deployed env.\n\nNeeded from board:\n- Provide QA test account credentials (or SSO path) valid on both production and staging\n- Confirm data scope for safe QA actions (create/issue/PDF/LINE test docs)\n- Confirm whether LINE delivery should be mocked or allowed in this QA pass\n\nEvidence:\n- Playwright traces generated under local `test-results/*/trace.zip` for the failed document-flow tests.\n\nRelated:\n- Epic: [LMA-23](/LMA/issues/LMA-23)\n- QA task: [LMA-57](/LMA/issues/LMA-57)",
+    "status": "done"
+  },
+  {
+    "id": "dd2db3c9-14fc-4dbe-b460-b4a7eab5a9ba",
+    "identifier": "LMA-130",
+    "title": "🐋 [ปลาวาฬ] API Docs + Error Reporting + Security Audit",
+    "description": "Document all API endpoints. Create in-app feedback widget for error reporting (boss asked). Security audit: Firestore rules, Storage rules, API auth, secrets management, CORS, rate limiting.",
+    "status": "cancelled"
+  },
+  {
+    "id": "72f98e3e-ac1c-49a1-9629-e3676a378b34",
+    "identifier": "LMA-144",
+    "title": "[P1] Security Audit — OWASP Top 10 review",
+    "description": "## Goal\nSecurity review before production launch.\n\n## OWASP Top 10 Checklist\n- [ ] A01: Broken Access Control — verify auth on all endpoints\n- [ ] A02: Cryptographic Failures — check secrets management\n- [ ] A03: Injection — SQL/NoSQL injection in Firestore queries\n- [ ] A04: Insecure Design — review auth flow design\n- [ ] A05: Security Misconfiguration — Firebase rules audit\n- [ ] A06: Vulnerable Components — npm audit\n- [ ] A07: Auth Failures — brute force protection, session management\n- [ ] A08: Data Integrity — verify webhook signatures\n- [ ] A09: Logging — security event logging\n- [ ] A10: SSRF — validate external API calls\n\n## Additional Checks\n- [ ] Firebase Security Rules (Firestore + Storage)\n- [ ] API keys not exposed in client-side code\n- [ ] CORS configuration\n- [ ] Rate limiting on public endpoints\n- [ ] Input validation on all user inputs\n\n## Output\nSecurity audit report with severity ratings\n\n## Plan ref\n[LMA-61 Plan](/LMA/issues/LMA-61#document-plan) item #15",
+    "status": "todo"
+  },
+  {
+    "id": "8ef36fdf-d443-466a-b543-c1804ecd894d",
+    "identifier": "LMA-143",
+    "title": "[P1] API Documentation — Firebase Functions endpoints",
+    "description": "## Goal\nDocument all Firebase Functions endpoints for developer reference.\n\n## Tasks\n- [ ] Inventory all deployed Functions\n- [ ] Document each endpoint:\n  - URL pattern\n  - HTTP method\n  - Auth requirements\n  - Request/response schema\n  - Error codes\n- [ ] Group by domain: Auth, Documents, Payment, LINE, Lazada, AI\n- [ ] Include curl examples\n- [ ] Note rate limits and quotas\n\n## Functions to document\n- lineWebhookV1\n- createDocument / updateDocument\n- generatePDF\n- processSlip\n- lazadaCallback\n- All API endpoints\n\n## Output\nMarkdown docs in `docs/api/` directory\n\n## Plan ref\n[LMA-61 Plan](/LMA/issues/LMA-61#document-plan) item #14",
+    "status": "todo"
+  },
+  {
+    "id": "226b1aed-7cf5-4d6a-af59-1174e3bdcf77",
+    "identifier": "LMA-46",
+    "title": "COO — QA Review งานที่ done ทั้งหมด",
+    "description": "1. เช็ค LMA-25 Document Pipeline\n2. เช็ค LMA-27 Landing Page\n3. ทดสอบ ezboq.com จริง\n4. Report bugs ที่เจอ\n5. สรุป quality status",
+    "status": "cancelled"
+  },
+  {
+    "id": "7595480b-dcdb-4849-a05e-f5eb041fd3ac",
+    "identifier": "LMA-112",
+    "title": "QA Support — align remote smoke suite with production auth model",
+    "description": "Please review remote E2E smoke failures from [LMA-57](/LMA/issues/LMA-57) and define the production-safe test path.\n\nObserved on both `https://ezboq.com` and `https://ezdoc-v1-th.web.app`:\n- PASS: `tests/e2e/login.spec.ts`, `tests/e2e/public-info.spec.ts`\n- FAIL: `tests/e2e/documents.spec.ts`, `tests/e2e/pipeline-documents.spec.ts`, `tests/e2e/mobile-footer.spec.ts`\n\nCurrent failures indicate tests rely on mock/local session behavior that does not unlock authenticated document flows on deployed env.\n\nNeeded from engineering:\n- Confirm if this is expected behavior in production builds\n- Provide/approve a production-safe remote smoke test subset for QA\n- If regression, create/own fix task and link it back to [LMA-57](/LMA/issues/LMA-57)\n\nEvidence: local Playwright traces in `test-results/*/trace.zip`.\n\nRelated: [LMA-110](/LMA/issues/LMA-110), [LMA-111](/LMA/issues/LMA-111)",
+    "status": "done"
+  },
+  {
+    "id": "f305be4b-eb6d-4f49-bced-5a2049f9e8d8",
+    "identifier": "LMA-110",
+    "title": "QA Baseline Handoff — clean commit/deploy target for regression",
+    "description": "Provide a deterministic QA baseline for [LMA-57](/LMA/issues/LMA-57).\n\nRequired handoff:\n- production/staging URL to validate\n- baseline commit SHA for web and functions\n- list of known in-flight local-only changes that should be excluded from QA verdict\n- recommended smoke-test checklist order\n\nContext: local workspace currently has extensive in-flight changes from multiple tickets, so local ad-hoc test runs are noisy without an agreed baseline.",
+    "status": "done"
+  },
+  {
+    "id": "8583e60b-867c-45eb-a5b3-f29618608ee1",
+    "identifier": "LMA-57",
+    "title": "QA Coordinator — ตรวจงานทุก agent + สรุปผล",
+    "description": "เป็น QA coordinator:\n1. ตรวจงานที่แต่ละ agent ส่งมา\n2. ทดสอบ EzBOQ จาก user perspective\n3. รายงาน bugs ที่เจอ\n4. สรุปผล progress ทุกวัน\n5. Coordinate ระหว่าง agents ถ้าติดปัญหา",
+    "status": "cancelled"
+  },
+  {
+    "id": "d092f8f0-b1f9-4aa1-8d3c-0b4e4ed8922f",
+    "identifier": "LMA-49",
+    "title": "QA Regression: Market→Craft→Shop→Profit Core Loop",
+    "description": "Manual QA regression ตาม PROD_QA_CHECKLIST.md สำหรับ core game loop Imperial Rise\n\n## Scope\n- Section 3: Shop Core Flow (E2E) — E-01 to E-05\n- Section 5: Crafting System (W-03 crafter work loop)\n- Section 6: Staff/Buyer loops (W-04 buyer work loop)\n- Section 2: Data Persistence (D-01 to D-06)\n\n## Files\n- Checklist: `src/PROD_QA_CHECKLIST.md`\n- Services verified by CTO: PlayerShopService, CraftingService, StaffService, PlotService, RecipeDB\n\n## CTO Notes\nRecipeDB flat table ✅ | ListItem/BuyFromShop ✅ | Craft loop ✅ | Staff assign/unassign ✅ | PurchaseUpgrade/Expansion ✅\n\nParent: LMA-39",
+    "status": "todo"
+  },
+  {
+    "id": "0894354f-d29d-499b-b0b7-eae24a7270bb",
+    "identifier": "LMA-108",
+    "title": "[QA] API Documentation — Firebase Functions Endpoints",
+    "description": "Document all Firebase Functions endpoints for team reference:\n1. List all HTTP endpoints (URL, method, auth required)\n2. Document request/response JSON format for each endpoint\n3. Error codes and error response format\n4. Rate limiting rules (if any)\n5. Endpoints: generatePDF, sendLINE, verifySlip, lazadaAuth, lazadaProducts\n6. Create Postman collection or similar for easy testing\nStore docs in /docs/api/ folder in repo",
+    "status": "done"
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "name": "discord-bots-vps",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy:vps": "./deploy-vps.sh"
+  },
+  "dependencies": {
+    "discord.js": "^14.26.2"
+  }
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1200px; height: 630px; overflow: hidden; font-family: 'Noto Sans Thai', 'Segoe UI', sans-serif; }
+  .card {
+    width: 1200px; height: 630px;
+    background: #1a1a1a; color: #fff;
+    display: flex; align-items: center;
+    position: relative;
+  }
+  .left { flex: 1; padding: 60px; }
+  .right { width: 480px; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .tag {
+    display: inline-block; border: 1px solid rgba(255,255,255,0.3);
+    padding: 6px 16px; border-radius: 20px; font-size: 13px;
+    color: rgba(255,255,255,0.7); margin-bottom: 20px;
+  }
+  .headline { font-size: 36px; font-weight: 700; line-height: 1.4; margin-bottom: 16px; }
+  .features { list-style: none; padding: 0; }
+  .features li {
+    font-size: 17px; color: rgba(255,255,255,0.8);
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .features li::before { content: "✓"; color: #fff; font-weight: bold; }
+  .logo { width: 180px; filter: invert(1); margin-bottom: 20px; }
+  .cta {
+    background: #fff; color: #1a1a1a;
+    padding: 14px 36px; border-radius: 50px;
+    font-size: 16px; font-weight: 600;
+  }
+  .divider { position: absolute; left: 55%; top: 10%; bottom: 10%; width: 1px; background: rgba(255,255,255,0.1); }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="card">
+  <div class="divider"></div>
+  <div class="left">
+    <div class="tag">สำหรับช่างและผู้รับเหมา</div>
+    <div class="headline">ทำงานเอกสาร<br>ให้เป็นเรื่องง่าย</div>
+    <ul class="features">
+      <li>ใบเสนอราคา BOQ อัตโนมัติ</li>
+      <li>สัญญาจ้าง + ใบแจ้งหนี้</li>
+      <li>Export PDF พร้อมส่งลูกค้า</li>
+      <li>ฟรี ไม่มีค่าใช้จ่าย</li>
+    </ul>
+  </div>
+  <div class="right">
+    <img src="/Users/l168/Documents/ใบเสนอราคา/apps/web/public/ezboq-logo.png" class="logo">
+    <div class="cta">ลองเลย ezboq.com</div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 820px; height: 312px; overflow: hidden; font-family: 'Noto Sans Thai', 'Segoe UI', sans-serif; }
+  .cover {
+    width: 820px; height: 312px;
+    background: #FAFAFA;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    border-bottom: 3px solid #1a1a1a;
+  }
+  .left { flex: 1; padding: 40px 20px 40px 60px; }
+  .right { width: 280px; display: flex; align-items: center; justify-content: center; padding-right: 40px; }
+  .logo { width: 200px; opacity: 0.9; }
+  .tagline {
+    font-size: 26px; font-weight: 700; color: #1a1a1a;
+    line-height: 1.4; margin-bottom: 12px;
+  }
+  .sub {
+    font-size: 14px; color: #666; line-height: 1.5;
+  }
+  .dot-pattern {
+    position: absolute; top: 0; right: 0; width: 200px; height: 100%;
+    background: radial-gradient(circle, #e0e0e0 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.4;
+  }
+  .line-accent {
+    width: 40px; height: 3px; background: #1a1a1a; margin-bottom: 16px; border-radius: 2px;
+  }
+  .url { font-size: 12px; color: #999; margin-top: 8px; letter-spacing: 1px; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="cover">
+  <div class="dot-pattern"></div>
+  <div class="left">
+    <div class="line-accent"></div>
+    <div class="tagline">ใบเสนอราคาออนไลน์<br>ง่ายแค่ปลายนิ้ว</div>
+    <div class="sub">สร้างใบเสนอราคา สัญญา ใบแจ้งหนี้<br>ครบจบในที่เดียว สำหรับช่างและผู้รับเหมา</div>
+    <div class="url">ezboq.com</div>
+  </div>
+  <div class="right">
+    <img src="/Users/l168/Documents/ใบเสนอราคา/apps/web/public/ezboq-logo.png" class="logo">
+  </div>
+</div>
+</body>
+</html>

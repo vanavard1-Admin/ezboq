@@ -1,0 +1,33 @@
+2025-12-30T20:34:24.593666Z I api: {"method":"POST","ip":"::ffff:169.254.169.126","requestId":"7624f37a-bfe4-4b96-aebe-0a834ad73a88","userAgent":"node","url":"/v1/documents","message":"Incoming POST /v1/documents"}
+2025-12-30T20:34:24.595287Z ? api: Token verification failed: FirebaseAuthError: Decoding Firebase ID token failed. Make sure you passed the entire string JWT which represents an ID token. See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.
+    at /workspace/node_modules/firebase-admin/lib/auth/token-verifier.js:174:23
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  errorInfo: {
+    code: 'auth/argument-error',
+    message: 'Decoding Firebase ID token failed. Make sure you passed the entire string JWT which represents an ID token. See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.'
+  },
+  codePrefix: 'auth'
+}
+
+2025-12-30T20:34:24.596023Z I api: {"statusCode":401,"message":"Response 401 POST /v1/documents","requestId":"7624f37a-bfe4-4b96-aebe-0a834ad73a88"}
+2025-12-30T20:34:34.458749Z I api: 
+2025-12-30T20:34:34.463795Z I api: {"url":"/v1/health","method":"GET","ip":"::ffff:169.254.169.126","message":"Incoming GET /v1/health","requestId":"d274e519-9459-4195-919a-ea3ae07fdadf","userAgent":"node"}
+2025-12-30T20:34:34.465035Z I api: {"statusCode":200,"message":"Response 200 GET /v1/health","requestId":"d274e519-9459-4195-919a-ea3ae07fdadf"}
+2025-12-30T20:34:34.556806Z W api: 
+2025-12-30T20:34:34.560881Z I api: {"url":"/v1/me","message":"Incoming GET /v1/me","ip":"::ffff:169.254.169.126","requestId":"0c15aabc-fc55-4a9b-8a2a-82db8081a3fd","userAgent":"node","method":"GET"}
+2025-12-30T20:34:34.562093Z ? api: Token verification failed: FirebaseAuthError: Decoding Firebase ID token failed. Make sure you passed the entire string JWT which represents an ID token. See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.
+    at /workspace/node_modules/firebase-admin/lib/auth/token-verifier.js:174:23
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  errorInfo: {
+    code: 'auth/argument-error',
+    message: 'Decoding Firebase ID token failed. Make sure you passed the entire string JWT which represents an ID token. See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token.'
+  },
+  codePrefix: 'auth'
+}
+
+2025-12-30T20:34:34.562605Z I api: {"requestId":"0c15aabc-fc55-4a9b-8a2a-82db8081a3fd","statusCode":401,"message":"Response 401 GET /v1/me"}
+2025-12-30T20:34:48.403920Z I api: 
+2025-12-30T20:34:48.408282Z I api: {"method":"GET","requestId":"b5e502b7-87f4-4141-ada6-721e04d6b824","ip":"::ffff:169.254.169.126","userAgent":"node","message":"Incoming GET /v1/health","url":"/v1/health"}
+2025-12-30T20:34:48.408836Z I api: {"message":"Response 200 GET /v1/health","statusCode":200,"requestId":"b5e502b7-87f4-4141-ada6-721e04d6b824"}
+2025-12-30T20:34:48.505946Z W api: 
+2025-12-30T20:34:48.509727Z I api: {"requestId":"4372022e-c962-426c-ab59-1028d4d8f9c9","method":"GET","message":"Incoming GET /v1/me","userAgent":"node","ip":"::ffff:169.254.169.126","url":"/v1/me"}
